@@ -595,6 +595,7 @@ class CartoonEngine {
     if (cfg.customThemeSets && typeof cfg.customThemeSets === 'object') {
       this.customThemeSets = cfg.customThemeSets;
     }
+    const themeChanged = Boolean(cfg.activeThemeSet && cfg.activeThemeSet !== this.activeThemeSetId);
     if (cfg.activeThemeSet) {
       this.activeThemeSetId = cfg.activeThemeSet;
     }
@@ -609,9 +610,10 @@ class CartoonEngine {
     }
 
     const list = this.getActiveBehaviorsList();
-    if (!list.some((b) => b.id === this.currentBehaviorId)) {
+    if (themeChanged || !list.some((b) => b.id === this.currentBehaviorId)) {
       this.currentBehaviorIndex = 0;
       this.currentBehaviorId = list[0].id;
+      this.particles = [];
     }
 
     const targetMode = this.isAlerting
@@ -625,12 +627,15 @@ class CartoonEngine {
     const list = this.getActiveBehaviorsList();
     if (mode !== 'cycle') {
       const idx = list.findIndex((b) => b.id === mode);
-      if (idx !== -1 && this.currentBehaviorId !== mode) {
+      if (idx !== -1) {
+        const changed = this.currentBehaviorId !== mode;
         this.currentBehaviorIndex = idx;
         this.currentBehaviorId = mode;
-        this.particles = [];
-        if (this.onBehaviorChange) {
-          this.onBehaviorChange(this.currentBehaviorId, this.getCurrentBehaviorObj());
+        if (changed) {
+          this.particles = [];
+          if (this.onBehaviorChange) {
+            this.onBehaviorChange(this.currentBehaviorId, this.getCurrentBehaviorObj());
+          }
         }
       }
     }
@@ -2112,7 +2117,7 @@ class CartoonEngine {
         this.drawDrawableList(ctx, [{ type: 'heart', size: p.r * 1.8, fill: p.color }]);
         ctx.restore();
       } else if (p.type === 'note' || p.type === 'text') {
-        ctx.font = `bold ${Math.round(p.r * 3.2)}px "Segoe UI", sans-serif`;
+        ctx.font = `bold ${Math.round(p.r * 3.2)}px "Kanit", "Segoe UI", sans-serif`;
         ctx.fillText(p.type === 'note' ? '♪' : p.text || '✨', p.x, p.y);
       } else {
         ctx.beginPath();
@@ -2129,7 +2134,7 @@ class CartoonEngine {
     const label = `${bObj.icon || '✨'} ${text}`;
 
     ctx.save();
-    ctx.font = '600 11px "Segoe UI", Tahoma, sans-serif';
+    ctx.font = '600 11.5px "Kanit", "Segoe UI", Tahoma, sans-serif';
     const textW = ctx.measureText(label).width;
     const pillW = textW + 18;
     const pillH = 20;

@@ -134,6 +134,23 @@ const previewEngine = new CartoonEngine(previewCanvas, {
 });
 previewEngine.start();
 
+// Responsive canvas sizing for any screen/window width
+const previewStageEl = previewCanvas.parentElement;
+if (previewStageEl && typeof ResizeObserver !== 'undefined') {
+  const ro = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const w = Math.max(240, Math.round(entry.contentRect.width));
+      const h = Math.max(180, Math.round(entry.contentRect.height));
+      if (previewCanvas.width !== w || previewCanvas.height !== h) {
+        previewCanvas.width = w;
+        previewCanvas.height = h;
+        previewEngine.x = Math.min(Math.max(80, previewEngine.x), w - 80);
+      }
+    }
+  });
+  ro.observe(previewStageEl);
+}
+
 // Switch Top-Level View (Main Settings vs About & Release Notes)
 function switchTopView(viewName) {
   const isAbout = viewName === 'about';
@@ -424,6 +441,13 @@ function rebuildThemeSetDropdown(cfg) {
   characterOutfitGroup.style.display = currentId === 'farmer' ? 'flex' : 'none';
 }
 
+function updateActiveBehaviorChipUI(activeB) {
+  const chips = behaviorButtonsContainer.querySelectorAll('.behavior-chip');
+  chips.forEach((chip) => {
+    chip.classList.toggle('active', chip.dataset.behavior === activeB);
+  });
+}
+
 function rebuildBehaviorButtons(cfg) {
   const list = previewEngine.getActiveBehaviorsList();
   const activeB = runtimeState.forcedBehavior || cfg.idleBehavior || 'cycle';
@@ -431,10 +455,14 @@ function rebuildBehaviorButtons(cfg) {
   behaviorButtonsContainer.innerHTML = '';
 
   const cycleBtn = document.createElement('button');
+  cycleBtn.dataset.behavior = 'cycle';
   cycleBtn.className = `behavior-chip full-span ${activeB === 'cycle' ? 'active' : ''}`;
   cycleBtn.textContent = tr('🔄 สลับทุกท่าทางอัตโนมัติ', '🔄 Auto-Cycle All Behaviors');
   cycleBtn.addEventListener('click', async () => {
+    runtimeState.forcedBehavior = null;
+    configState.idleBehavior = 'cycle';
     previewEngine.setBehaviorMode('cycle');
+    updateActiveBehaviorChipUI('cycle');
     await window.companionAPI.setBehaviorNow('cycle');
     showToast(tr('🔄 เปิดโหมดสลับท่าทางอัตโนมัติ', '🔄 Auto-cycling behaviors'));
   });
@@ -442,11 +470,15 @@ function rebuildBehaviorButtons(cfg) {
 
   list.forEach((b, idx) => {
     const btn = document.createElement('button');
+    btn.dataset.behavior = b.id;
     const isLastOdd = idx === list.length - 1 && list.length % 2 === 1;
     btn.className = `behavior-chip ${isLastOdd ? 'full-span' : ''} ${activeB === b.id ? 'active' : ''}`;
     btn.textContent = `${b.icon || '✨'} ${previewEngine.formatBilingual(b.labelTh, b.labelEn)}`;
     btn.addEventListener('click', async () => {
+      runtimeState.forcedBehavior = b.id;
+      configState.idleBehavior = b.id;
       previewEngine.setBehaviorMode(b.id);
+      updateActiveBehaviorChipUI(b.id);
       await window.companionAPI.setBehaviorNow(b.id);
       showToast(`${b.icon || '✨'} ${previewEngine.formatBilingual(b.labelTh, b.labelEn)}`);
     });
@@ -598,9 +630,14 @@ window.companionAPI.onConfigUpdated((cfg) => {
 });
 
 window.companionAPI.onStateUpdated((st) => {
+  const prevForced = runtimeState.forcedBehavior;
   runtimeState = st;
   syncPomodoroDashboard();
-  rebuildBehaviorButtons(configState);
+  const activeB = runtimeState.forcedBehavior || configState.idleBehavior || 'cycle';
+  if (prevForced !== runtimeState.forcedBehavior) {
+    previewEngine.setBehaviorMode(activeB);
+  }
+  updateActiveBehaviorChipUI(activeB);
 });
 
 window.companionAPI.onSwitchViewTab((tab) => {
@@ -728,13 +765,17 @@ inputAlertMessage.addEventListener('change', () => {
 
 selectThemeSet.addEventListener('change', () => {
   const id = selectThemeSet.value;
+  runtimeState.forcedBehavior = null;
+  configState.activeThemeSet = id;
+  configState.idleBehavior = 'cycle';
   const all = previewEngine.getAllThemeSets();
   const chosen = all[id];
-  const partial = { activeThemeSet: id };
+  const partial = { activeThemeSet: id, idleBehavior: 'cycle' };
   if (chosen) {
     if (chosen.characterName) partial.characterName = chosen.characterName;
     if (chosen.alertMessageFocusEnd) partial.alertMessage = chosen.alertMessageFocusEnd;
   }
+  previewEngine.setConfig({ ...configState, ...partial });
   savePartial(
     partial,
     `🎨 ${tr('เปลี่ยนชุดธีมเป็น', 'Switched Theme Set to')}: ${chosen ? previewEngine.formatBilingual(chosen.nameTh, chosen.nameEn) : id}`

@@ -5,8 +5,8 @@
   "description": "Pomodoro Cartoon Companion — Animated Taskbar Timer & AI Theme Set Studio for Windows",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "settings": "electron . --open-settings",
+    "start": "electron . --log-level=3",
+    "settings": "electron . --open-settings --log-level=3",
     "build": "electron-packager . PomodoroCartoonCompanion --platform=win32 --arch=x64 --out=dist --overwrite --asar"
   },
   "keywords": [

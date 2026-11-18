@@ -3,6 +3,12 @@ const path = require('path');
 const fs = require('fs');
 const zlib = require('zlib');
 
+// Suppress Chromium DevTools unsupported Autofill CDP domain console noise
+if (app && app.commandLine) {
+  app.commandLine.appendSwitch('log-level', '3');
+  app.commandLine.appendSwitch('disable-features', 'AutofillServerCommunication');
+}
+
 function getConfigPath() {
   if (app.isPackaged) {
     return path.join(app.getPath('userData'), 'config.json');
@@ -484,11 +490,15 @@ function openSettingsWindow(initialTab = 'main') {
     return;
   }
 
+  const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
+  const winWidth = Math.min(1040, Math.max(380, Math.round(workAreaSize.width * 0.9)));
+  const winHeight = Math.min(820, Math.max(520, Math.round(workAreaSize.height * 0.9)));
+
   settingsWindow = new BrowserWindow({
-    width: 1020,
-    height: 790,
-    minWidth: 860,
-    minHeight: 650,
+    width: winWidth,
+    height: winHeight,
+    minWidth: 360,
+    minHeight: 460,
     title: 'Pomodoro Cartoon Companion',
     icon: createCompanionTrayIcon(),
     autoHideMenuBar: true,
@@ -917,9 +927,17 @@ function rebuildTrayMenu() {
 
 function updateConfig(partial) {
   const prevWakeTime = config.wakeTime;
+  const prevThemeSet = config.activeThemeSet;
   const mergedPomodoro = partial.pomodoro
     ? { ...config.pomodoro, ...partial.pomodoro }
     : config.pomodoro;
+
+  if (partial.activeThemeSet && partial.activeThemeSet !== prevThemeSet) {
+    runtimeState.forcedBehavior = null;
+    if (!partial.idleBehavior) {
+      partial.idleBehavior = 'cycle';
+    }
+  }
 
   config = {
     ...config,
@@ -941,8 +959,8 @@ function updateConfig(partial) {
   saveConfigToFile();
   applyOverlayBounds();
   updateOverlayVisibility();
-  broadcastConfig();
   broadcastState();
+  broadcastConfig();
 }
 
 function setupIPC() {
@@ -1100,8 +1118,8 @@ function setupIPC() {
     if (!overlayWindow.isVisible()) {
       overlayWindow.showInactive();
     }
-    broadcastConfig();
     broadcastState();
+    broadcastConfig();
     return runtimeState;
   });
 
