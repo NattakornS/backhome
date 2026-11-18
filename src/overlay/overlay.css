@@ -24,24 +24,24 @@ html, body {
   pointer-events: none;
 }
 
-/* Alert Banner / Speech Bubble when 16:00 hits */
+/* 1. Alert Banner / Speech Bubble when Pomodoro finishes or 16:00 hits */
 .alert-bubble {
   position: absolute;
-  top: 8px;
+  top: 6px;
   left: 50%;
   transform: translateX(-50%) scale(0.95);
-  width: min(390px, 94vw);
-  background: linear-gradient(145deg, rgba(22, 36, 27, 0.96), rgba(14, 24, 18, 0.98));
+  width: min(400px, 95vw);
+  background: linear-gradient(145deg, rgba(22, 36, 27, 0.97), rgba(14, 24, 18, 0.99));
   border: 2px solid #FFCA28;
   border-radius: 16px;
-  padding: 12px 14px;
+  padding: 11px 14px;
   color: #F1F8E9;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 202, 40, 0.35);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 202, 40, 0.35);
   pointer-events: auto;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-  z-index: 20;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  z-index: 30;
 }
 
 .alert-bubble.visible {
@@ -64,30 +64,29 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .time-badge {
   background: linear-gradient(90deg, #FF8F00, #FFCA28);
   color: #1B261E;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 11.5px;
   padding: 3px 9px;
   border-radius: 999px;
-  letter-spacing: 0.4px;
 }
 
 .farmer-name-tag {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #A5D6A7;
   font-weight: 600;
 }
 
 .alert-message {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #FFFDE7;
-  margin-bottom: 10px;
+  margin-bottom: 9px;
   line-height: 1.35;
 }
 
@@ -102,7 +101,7 @@ html, body {
   border: none;
   border-radius: 8px;
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.12s ease, filter 0.15s ease;
@@ -116,16 +115,11 @@ html, body {
   transform: translateY(-1px);
 }
 
-.btn:active {
-  transform: translateY(0);
-}
-
 .btn-dismiss {
   background: linear-gradient(135deg, #43A047, #2E7D32);
   color: #FFFFFF;
   flex: 1;
   justify-content: center;
-  box-shadow: 0 3px 10px rgba(67, 160, 71, 0.4);
 }
 
 .btn-snooze {
@@ -134,46 +128,63 @@ html, body {
   border: 1px solid rgba(255, 202, 40, 0.4);
 }
 
-/* Hover Quick Controls Bar (appears when hovering the farmer) */
-.hover-toolbar {
+/* 2. Combined Character Label + Action Menu (Hidden until hovering character) */
+.char-hover-menu {
   position: absolute;
-  bottom: 158px;
+  bottom: 145px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(4px);
   display: flex;
+  align-items: center;
   gap: 5px;
-  background: rgba(16, 26, 20, 0.9);
-  border: 1px solid rgba(129, 199, 132, 0.45);
-  padding: 4px 7px;
+  background: rgba(14, 23, 18, 0.94);
+  border: 1.2px solid rgba(129, 199, 132, 0.55);
+  padding: 4px 9px;
   border-radius: 999px;
   pointer-events: auto;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.18s ease;
-  z-index: 15;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 22;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
 }
 
-.hover-toolbar.visible {
+.char-hover-menu.visible {
   opacity: 1;
   visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.char-behavior-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #FFE082;
+  padding: 0 4px;
+}
+
+.menu-divider {
+  width: 1px;
+  height: 13px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 2px;
 }
 
 .tool-btn {
   background: transparent;
   border: none;
   color: #E8F5E9;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 4px 8px;
+  padding: 3px 7px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.15s;
   white-space: nowrap;
+  transition: background 0.15s;
 }
 
 .tool-btn:hover {
-  background: rgba(102, 187, 106, 0.25);
+  background: rgba(102, 187, 106, 0.28);
   color: #FFF;
 }
 
@@ -183,6 +194,90 @@ html, body {
 
 .tool-btn.drag-handle:active {
   cursor: grabbing;
+}
+
+/* 3. Lean Bottom-Right Pomodoro Corner Pill (Mode + Timer only; expands CTA on hover) */
+.pomodoro-corner {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(14, 23, 18, 0.92);
+  border: 1.5px solid rgba(129, 199, 132, 0.55);
+  padding: 4px 10px;
+  border-radius: 999px;
+  pointer-events: auto;
+  z-index: 25;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.pomodoro-corner.overtime {
+  border-color: #FF7043;
+  box-shadow: 0 4px 16px rgba(255, 112, 67, 0.45);
+}
+
+.hud-phase {
+  font-size: 11px;
+  font-weight: 700;
+  color: #A5D6A7;
+}
+
+.hud-timer {
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #FFFFFF;
+}
+
+.pomodoro-corner.overtime .hud-timer {
+  color: #FFAB91;
+}
+
+/* Call-to-action controls inside Pomodoro pill: hidden by default, shown on hover */
+.pomodoro-cta {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+  padding-left: 6px;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.pomodoro-corner.expanded .pomodoro-cta {
+  display: inline-flex;
+}
+
+.hud-cycle {
+  font-size: 10.5px;
+  color: #FFE082;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.hud-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #E8F5E9;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.hud-btn:hover:not(:disabled) {
+  background: rgba(76, 175, 80, 0.35);
+  border-color: #81C784;
+}
+
+.hud-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 #farmerCanvas {

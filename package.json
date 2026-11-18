@@ -1,18 +1,19 @@
 {
-  "name": "farmer-backhome-alert",
+  "name": "pomodoro-cartoon-companion",
+  "productName": "Pomodoro Cartoon Companion",
   "version": "1.0.0",
-  "description": "Cartoon Farmer Taskbar Companion & 16:00 Back-Home Alert App for Windows",
+  "description": "Pomodoro Cartoon Companion — Animated Taskbar Timer & AI Theme Set Studio for Windows",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "settings": "electron . --open-settings",
-    "build": "electron-packager . FarmerBackHomeAlert --platform=win32 --arch=x64 --out=dist --overwrite --asar"
+    "build": "electron-packager . PomodoroCartoonCompanion --platform=win32 --arch=x64 --out=dist --overwrite --asar"
   },
   "keywords": [
+    "pomodoro",
     "desktop-pet",
     "taskbar",
-    "farmer",
-    "alarm",
+    "cartoon",
     "electron"
   ],
   "author": "",

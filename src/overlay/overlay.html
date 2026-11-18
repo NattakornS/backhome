@@ -1,76 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <title>Farmer Taskbar Overlay</title>
+  <title>Pomodoro Cartoon Companion — Overlay</title>
   <link rel="stylesheet" href="overlay.css" />
 </head>
 <body>
   <div class="overlay-root" id="overlayRoot">
-    <!-- 16:00 Back-Home Alert Speech Bubble -->
+    <!-- 1. Pomodoro / 16:00 Alert Speech Bubble -->
     <div class="alert-bubble" id="alertBubble">
       <div class="alert-header">
-        <span class="time-badge" id="alertTimeBadge">⏰ 16:00 BACK HOME!</span>
-        <span class="farmer-name-tag" id="alertFarmerName">👨‍🌾 Uncle Somchai</span>
+        <span class="time-badge" id="alertTimeBadge">🍅 ครบเวลาโฟกัส!</span>
+        <span class="farmer-name-tag" id="alertFarmerName">👨‍🌾 ลุงสมชาย</span>
       </div>
       <div class="alert-message" id="alertMessageText">
-        16:00 Back Home Time! 🏡 เลิกงานแล้ว กลับบ้านกัน!
+        🍅 ครบเวลาแล้ว! พักสายตาสักนิดนะ
       </div>
       <div class="alert-actions">
-        <button class="btn btn-dismiss" id="btnDismiss" title="Dismiss alarm for today">
-          🏡 Back Home! (Dismiss)
+        <button class="btn btn-dismiss" id="btnNextPhase">
+          ☕ เริ่มเวลาพัก
         </button>
-        <button class="btn btn-snooze" id="btnSnoozeDefault" title="Snooze for default duration">
-          💤 Snooze 10m
+        <button class="btn btn-snooze" id="btnDismiss">
+          ✅ ปิดแจ้งเตือน
         </button>
-        <button class="btn btn-snooze" id="btnSnooze5" title="Snooze 5 minutes">
-          +5m
-        </button>
-        <button class="btn btn-snooze" id="btnSnooze15" title="Snooze 15 minutes">
-          +15m
+        <button class="btn btn-snooze" id="btnSnooze5">
+          💤 +5m
         </button>
       </div>
     </div>
 
-    <!-- Hover Mini Toolbar (Quick Actions + Drag Handle + Settings) -->
-    <div class="hover-toolbar" id="hoverToolbar">
-      <button class="tool-btn drag-handle" id="btnDragHandle" title="Drag to move farmer anywhere on screen">
-        ✋ Move
+    <!-- 2. Combined Character Label + Action Menu (Shown ONLY when hovering character) -->
+    <div class="char-hover-menu" id="charHoverMenu">
+      <span class="char-behavior-label" id="charBehaviorLabel">🚜 ขับรถไถฟาร์ม</span>
+      <span class="menu-divider"></span>
+      <button class="tool-btn" id="btnNextBehavior" title="Switch character behavior">
+        🎭 ท่าถัดไป
       </button>
-      <button class="tool-btn" id="btnNextBehavior" title="Switch to next farming behavior">
-        🎭 Next Action
+      <button class="tool-btn drag-handle" id="btnDragHandle" title="Drag to move on screen">
+        ✋ ย้าย
       </button>
-      <button class="tool-btn" id="btnTestAlert" title="Trigger 16:00 Alert Preview">
-        🔔 Alert
-      </button>
-      <button class="tool-btn" id="btnOpenSettings" title="Open Settings Control Panel">
-        ⚙️ Settings
+      <button class="tool-btn" id="btnOpenSettings" title="Open Settings">
+        ⚙️ ตั้งค่า
       </button>
     </div>
 
-    <!-- 2D Cartoon Farmer Canvas -->
-    <canvas id="farmerCanvas" width="460" height="310"></canvas>
+    <!-- 3. Lean Bottom-Right Pomodoro Corner Pill (Mode + Timer only; reveals CTA on hover) -->
+    <div class="pomodoro-corner" id="pomodoroCorner">
+      <span class="hud-phase" id="hudPhase">🍅 โฟกัส</span>
+      <span class="hud-timer" id="hudTimer">25:00</span>
+      <div class="pomodoro-cta" id="pomodoroCta">
+        <span class="hud-cycle" id="hudCycle">1/4</span>
+        <button class="hud-btn" id="btnHudStartPause" title="Start / Pause">▶️</button>
+        <button class="hud-btn" id="btnHudSkip" title="Skip Interval">⏭️</button>
+        <button class="hud-btn" id="btnHudReset" title="Reset Timer">🔄</button>
+      </div>
+    </div>
+
+    <!-- 2D Cartoon Canvas -->
+    <canvas id="farmerCanvas" width="460" height="335"></canvas>
   </div>
 
   <script src="farmer-engine.js"></script>
   <script>
     const canvas = document.getElementById('farmerCanvas');
     const alertBubble = document.getElementById('alertBubble');
-    const hoverToolbar = document.getElementById('hoverToolbar');
+    const charHoverMenu = document.getElementById('charHoverMenu');
+    const charBehaviorLabel = document.getElementById('charBehaviorLabel');
+    const btnNextBehavior = document.getElementById('btnNextBehavior');
+    const btnDragHandle = document.getElementById('btnDragHandle');
+    const btnOpenSettings = document.getElementById('btnOpenSettings');
+
+    const pomodoroCorner = document.getElementById('pomodoroCorner');
+    const hudPhase = document.getElementById('hudPhase');
+    const hudTimer = document.getElementById('hudTimer');
+    const hudCycle = document.getElementById('hudCycle');
+    const btnHudStartPause = document.getElementById('btnHudStartPause');
+    const btnHudSkip = document.getElementById('btnHudSkip');
+    const btnHudReset = document.getElementById('btnHudReset');
+
     const alertTimeBadge = document.getElementById('alertTimeBadge');
     const alertFarmerName = document.getElementById('alertFarmerName');
     const alertMessageText = document.getElementById('alertMessageText');
+    const btnNextPhase = document.getElementById('btnNextPhase');
     const btnDismiss = document.getElementById('btnDismiss');
-    const btnSnoozeDefault = document.getElementById('btnSnoozeDefault');
     const btnSnooze5 = document.getElementById('btnSnooze5');
-    const btnSnooze15 = document.getElementById('btnSnooze15');
-    const btnDragHandle = document.getElementById('btnDragHandle');
-    const btnNextBehavior = document.getElementById('btnNextBehavior');
-    const btnTestAlert = document.getElementById('btnTestAlert');
-    const btnOpenSettings = document.getElementById('btnOpenSettings');
 
-    let currentConfig = {};
-    let currentState = { isAlerting: false };
+    let currentConfig = { language: 'th' };
+    let currentState = { isAlerting: false, pomodoro: {} };
     let soundTimer = null;
     let isDraggingWindow = false;
     let dragStartScreen = { x: 0, y: 0 };
@@ -82,18 +98,46 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
+    function tr(th, en) {
+      return currentConfig.language === 'en' ? en : th;
+    }
+
+    function updateCharHoverLabel() {
+      charBehaviorLabel.textContent = engine.getCurrentBehaviorLabel();
+    }
+
     const engine = new FarmerEngine(canvas, {
-      isPreview: false
+      isPreview: false,
+      onBehaviorChange: () => updateCharHoverLabel()
     });
     engine.start();
 
-    // Cheerful Web Audio Chime (no external mp3 required)
-    function playBackHomeChime() {
+    // Keep combined hover menu centered horizontally over the walking cartoon
+    setInterval(() => {
+      if (charHoverMenu.classList.contains('visible')) {
+        updateCharHoverLabel();
+        const menuW = charHoverMenu.offsetWidth || 220;
+        const clampedX = Math.max(
+          menuW / 2 + 8,
+          Math.min(window.innerWidth - menuW / 2 - 8, engine.x)
+        );
+        charHoverMenu.style.left = `${clampedX}px`;
+      }
+    }, 60);
+
+    function formatMMSS(sec) {
+      const abs = Math.max(0, Math.floor(sec || 0));
+      const m = String(Math.floor(abs / 60)).padStart(2, '0');
+      const s = String(abs % 60).padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function playAlertChime() {
       if (currentConfig.soundEnabled === false) return;
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioCtx();
-        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+        const notes = [523.25, 659.25, 783.99, 1046.5];
         notes.forEach((freq, idx) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -107,36 +151,84 @@
           osc.start(ctx.currentTime + idx * 0.14);
           osc.stop(ctx.currentTime + idx * 0.14 + 0.45);
         });
-      } catch (e) {
-        console.warn('Audio chime skipped:', e);
-      }
+      } catch (e) {}
     }
 
     function applyConfigAndState() {
-      engine.setAlerting(currentState.isAlerting);
+      const p = currentState.pomodoro || {};
+      const pCfg = currentConfig.pomodoro || {};
+      const isOvertime = p.status === 'overtime';
+
+      engine.setAlerting(currentState.isAlerting, isOvertime);
       engine.setConfig(currentConfig);
 
       if (currentState.forcedBehavior) {
         engine.setBehaviorMode(currentState.forcedBehavior);
       }
 
-      alertTimeBadge.textContent = `⏰ ${currentConfig.wakeTime || '16:00'} BACK HOME!`;
+      updateCharHoverLabel();
+
+      // Update Lean Bottom-Right Pomodoro Corner Pill
+      pomodoroCorner.classList.toggle('overtime', isOvertime);
+      if (p.phase === 'focus') {
+        hudPhase.textContent = isOvertime
+          ? tr('🔥 ล่วงเวลา', '🔥 Overtime')
+          : tr('🍅 โฟกัส', '🍅 Focus');
+      } else if (p.phase === 'shortBreak') {
+        hudPhase.textContent = tr('☕ พักสั้น', '☕ Short Break');
+      } else {
+        hudPhase.textContent = tr('🌴 พักยาว', '🌴 Long Break');
+      }
+
+      hudTimer.textContent = isOvertime
+        ? `+${formatMMSS(p.overtimeSeconds)}`
+        : formatMMSS(p.remainingSeconds);
+
+      const totalCycles = Math.max(1, Number(pCfg.sessionsBeforeLongBreak) || 4);
+      hudCycle.textContent = `${p.currentSession || 1}/${totalCycles}`;
+
+      const locked = Boolean(p.strictLocked);
+      btnHudStartPause.disabled = locked;
+      btnHudSkip.disabled = locked;
+      btnHudReset.disabled = locked;
+
+      if (p.status === 'running') {
+        btnHudStartPause.textContent = locked ? '🔒' : tr('⏸️ พัก', '⏸️ Pause');
+      } else {
+        btnHudStartPause.textContent = tr('▶️ เริ่ม', '▶️ Start');
+      }
+      btnHudSkip.textContent = tr('⏭️ ข้าม', '⏭️ Skip');
+      btnHudReset.textContent = tr('🔄 รีเซ็ต', '🔄 Reset');
+
+      // Update Combined Character Hover Menu Buttons
+      btnNextBehavior.textContent = tr('🎭 ท่าถัดไป', '🎭 Next');
+      btnDragHandle.textContent = tr('✋ ย้าย', '✋ Move');
+      btnOpenSettings.textContent = tr('⚙️ ตั้งค่า', '⚙️ Settings');
+
+      // Update Alert Bubble
+      alertTimeBadge.textContent =
+        currentState.alertBannerTitle || tr('🍅 แจ้งเตือนโพโมโดโร', '🍅 Pomodoro Alert');
       alertFarmerName.textContent = `👨‍🌾 ${currentConfig.characterName || 'Uncle Somchai'}`;
       alertMessageText.textContent =
-        currentConfig.alertMessage || '16:00 Back Home Time! 🏡 เลิกงานแล้ว กลับบ้านกัน!';
+        currentState.alertBannerText ||
+        currentConfig.alertMessage ||
+        tr('ครบเวลาแล้ว! พักสายตาสักนิดนะ', 'Session Complete! Time for a break!');
 
-      const snoozeMins = Number(currentConfig.snoozeMinutes) || 10;
-      btnSnoozeDefault.textContent = `💤 Snooze ${snoozeMins}m`;
+      btnNextPhase.textContent =
+        p.phase === 'focus'
+          ? tr('☕ เริ่มเวลาพัก', '☕ Start Break')
+          : tr('▶️ เริ่มโฟกัส', '▶️ Start Focus');
+      btnDismiss.textContent = tr('✅ ปิดแจ้งเตือน', '✅ Dismiss');
 
       const wasAlerting = alertBubble.classList.contains('visible');
       if (currentState.isAlerting) {
         alertBubble.classList.add('visible');
         if (!wasAlerting) {
-          playBackHomeChime();
+          playAlertChime();
           if (soundTimer) clearInterval(soundTimer);
           soundTimer = setInterval(() => {
-            if (currentState.isAlerting) playBackHomeChime();
-          }, 8000);
+            if (currentState.isAlerting) playAlertChime();
+          }, 9000);
         }
       } else {
         alertBubble.classList.remove('visible');
@@ -147,7 +239,6 @@
       }
     }
 
-    // Initialize from main process
     Promise.all([window.farmerAPI.getConfig(), window.farmerAPI.getState()]).then(
       ([cfg, st]) => {
         currentConfig = cfg;
@@ -166,40 +257,43 @@
       applyConfigAndState();
     });
 
-    // Button handlers
-    btnDismiss.addEventListener('click', () => {
-      window.farmerAPI.dismissAlert();
+    // Pomodoro Corner CTA Controls
+    btnHudStartPause.addEventListener('click', () => {
+      window.farmerAPI.pomodoroStartPause();
     });
 
-    btnSnoozeDefault.addEventListener('click', () => {
-      window.farmerAPI.snoozeAlert(Number(currentConfig.snoozeMinutes) || 10);
+    btnHudSkip.addEventListener('click', () => {
+      window.farmerAPI.pomodoroSkip(true);
+    });
+
+    btnHudReset.addEventListener('click', () => {
+      window.farmerAPI.pomodoroReset(false);
+    });
+
+    // Alert Bubble Buttons
+    btnNextPhase.addEventListener('click', () => {
+      window.farmerAPI.pomodoroSkip(true);
+    });
+
+    btnDismiss.addEventListener('click', () => {
+      window.farmerAPI.dismissAlert();
     });
 
     btnSnooze5.addEventListener('click', () => {
       window.farmerAPI.snoozeAlert(5);
     });
 
-    btnSnooze15.addEventListener('click', () => {
-      window.farmerAPI.snoozeAlert(15);
-    });
-
-    const behaviorKeys = ['tractor', 'machete', 'water', 'plant', 'palm', 'fertilizer', 'fix'];
+    // Combined Character Hover Menu Buttons
     btnNextBehavior.addEventListener('click', () => {
-      const idx = behaviorKeys.indexOf(engine.currentBehavior);
-      const next = behaviorKeys[(idx + 1) % behaviorKeys.length];
-      engine.setBehaviorMode(next);
-      window.farmerAPI.setBehaviorNow(next);
-    });
-
-    btnTestAlert.addEventListener('click', () => {
-      window.farmerAPI.triggerTestAlert();
+      const nextId = engine.nextBehavior();
+      updateCharHoverLabel();
+      window.farmerAPI.setBehaviorNow(nextId);
     });
 
     btnOpenSettings.addEventListener('click', () => {
       window.farmerAPI.openSettings();
     });
 
-    // Drag-to-move overlay window across screen
     btnDragHandle.addEventListener('mousedown', (e) => {
       if (currentConfig.dragLocked) return;
       isDraggingWindow = true;
@@ -216,21 +310,40 @@
         return;
       }
 
-      // Hit testing: check if cursor is over the farmer, the alert bubble, or the hover toolbar
+      // 1. Check if hovering over Cartoon Character or its Combined Label+Action Menu
       const fb = engine.getFarmerBounds();
       const inFarmer =
-        e.clientX >= fb.x - 16 &&
-        e.clientX <= fb.x + fb.width + 16 &&
-        e.clientY >= fb.y - 24 &&
-        e.clientY <= fb.y + fb.height + 12;
+        e.clientX >= fb.x - 14 &&
+        e.clientX <= fb.x + fb.width + 14 &&
+        e.clientY >= fb.y - 20 &&
+        e.clientY <= fb.y + fb.height + 10;
 
-      const toolbarRect = hoverToolbar.getBoundingClientRect();
-      const inToolbar =
-        e.clientX >= toolbarRect.left - 12 &&
-        e.clientX <= toolbarRect.right + 12 &&
-        e.clientY >= toolbarRect.top - 12 &&
-        e.clientY <= toolbarRect.bottom + 24;
+      const menuRect = charHoverMenu.getBoundingClientRect();
+      const inCharMenu =
+        charHoverMenu.classList.contains('visible') &&
+        e.clientX >= menuRect.left - 12 &&
+        e.clientX <= menuRect.right + 12 &&
+        e.clientY >= menuRect.top - 12 &&
+        e.clientY <= menuRect.bottom + 24;
 
+      if (inFarmer || inCharMenu) {
+        updateCharHoverLabel();
+        charHoverMenu.classList.add('visible');
+      } else {
+        charHoverMenu.classList.remove('visible');
+      }
+
+      // 2. Check if hovering over Bottom-Right Pomodoro Corner Pill -> expand Call to Action
+      const pomoRect = pomodoroCorner.getBoundingClientRect();
+      const inPomoCorner =
+        e.clientX >= pomoRect.left - 10 &&
+        e.clientX <= pomoRect.right + 10 &&
+        e.clientY >= pomoRect.top - 10 &&
+        e.clientY <= pomoRect.bottom + 10;
+
+      pomodoroCorner.classList.toggle('expanded', inPomoCorner);
+
+      // 3. Check if hovering over Alert Bubble
       const bubbleRect = alertBubble.getBoundingClientRect();
       const inBubble =
         currentState.isAlerting &&
@@ -239,11 +352,9 @@
         e.clientY >= bubbleRect.top - 8 &&
         e.clientY <= bubbleRect.bottom + 8;
 
-      if (inFarmer || inToolbar || inBubble) {
-        hoverToolbar.classList.add('visible');
+      if (inFarmer || inCharMenu || inPomoCorner || inBubble) {
         window.farmerAPI.setIgnoreMouseEvents(false);
       } else {
-        hoverToolbar.classList.remove('visible');
         window.farmerAPI.setIgnoreMouseEvents(true);
       }
     });
