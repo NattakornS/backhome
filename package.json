@@ -1,0 +1,24 @@
+{
+  "name": "farmer-backhome-alert",
+  "version": "1.0.0",
+  "description": "Cartoon Farmer Taskbar Companion & 16:00 Back-Home Alert App for Windows",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "settings": "electron . --open-settings",
+    "build": "electron-packager . FarmerBackHomeAlert --platform=win32 --arch=x64 --out=dist --overwrite --asar"
+  },
+  "keywords": [
+    "desktop-pet",
+    "taskbar",
+    "farmer",
+    "alarm",
+    "electron"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron/packager": "^18.3.6",
+    "electron": "^33.2.0"
+  }
+}

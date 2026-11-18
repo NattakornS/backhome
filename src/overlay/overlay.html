@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farmer Taskbar Overlay</title>
+  <link rel="stylesheet" href="overlay.css" />
+</head>
+<body>
+  <div class="overlay-root" id="overlayRoot">
+    <!-- 16:00 Back-Home Alert Speech Bubble -->
+    <div class="alert-bubble" id="alertBubble">
+      <div class="alert-header">
+        <span class="time-badge" id="alertTimeBadge">⏰ 16:00 BACK HOME!</span>
+        <span class="farmer-name-tag" id="alertFarmerName">👨‍🌾 Uncle Somchai</span>
+      </div>
+      <div class="alert-message" id="alertMessageText">
+        16:00 Back Home Time! 🏡 เลิกงานแล้ว กลับบ้านกัน!
+      </div>
+      <div class="alert-actions">
+        <button class="btn btn-dismiss" id="btnDismiss" title="Dismiss alarm for today">
+          🏡 Back Home! (Dismiss)
+        </button>
+        <button class="btn btn-snooze" id="btnSnoozeDefault" title="Snooze for default duration">
+          💤 Snooze 10m
+        </button>
+        <button class="btn btn-snooze" id="btnSnooze5" title="Snooze 5 minutes">
+          +5m
+        </button>
+        <button class="btn btn-snooze" id="btnSnooze15" title="Snooze 15 minutes">
+          +15m
+        </button>
+      </div>
+    </div>
+
+    <!-- Hover Mini Toolbar (Quick Actions + Drag Handle + Settings) -->
+    <div class="hover-toolbar" id="hoverToolbar">
+      <button class="tool-btn drag-handle" id="btnDragHandle" title="Drag to move farmer anywhere on screen">
+        ✋ Move
+      </button>
+      <button class="tool-btn" id="btnNextBehavior" title="Switch to next farming behavior">
+        🎭 Next Action
+      </button>
+      <button class="tool-btn" id="btnTestAlert" title="Trigger 16:00 Alert Preview">
+        🔔 Alert
+      </button>
+      <button class="tool-btn" id="btnOpenSettings" title="Open Settings Control Panel">
+        ⚙️ Settings
+      </button>
+    </div>
+
+    <!-- 2D Cartoon Farmer Canvas -->
+    <canvas id="farmerCanvas" width="460" height="310"></canvas>
+  </div>
+
+  <script src="farmer-engine.js"></script>
+  <script>
+    const canvas = document.getElementById('farmerCanvas');
+    const alertBubble = document.getElementById('alertBubble');
+    const hoverToolbar = document.getElementById('hoverToolbar');
+    const alertTimeBadge = document.getElementById('alertTimeBadge');
+    const alertFarmerName = document.getElementById('alertFarmerName');
+    const alertMessageText = document.getElementById('alertMessageText');
+    const btnDismiss = document.getElementById('btnDismiss');
+    const btnSnoozeDefault = document.getElementById('btnSnoozeDefault');
+    const btnSnooze5 = document.getElementById('btnSnooze5');
+    const btnSnooze15 = document.getElementById('btnSnooze15');
+    const btnDragHandle = document.getElementById('btnDragHandle');
+    const btnNextBehavior = document.getElementById('btnNextBehavior');
+    const btnTestAlert = document.getElementById('btnTestAlert');
+    const btnOpenSettings = document.getElementById('btnOpenSettings');
+
+    let currentConfig = {};
+    let currentState = { isAlerting: false };
+    let soundTimer = null;
+    let isDraggingWindow = false;
+    let dragStartScreen = { x: 0, y: 0 };
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const engine = new FarmerEngine(canvas, {
+      isPreview: false
+    });
+    engine.start();
+
+    // Cheerful Web Audio Chime (no external mp3 required)
+    function playBackHomeChime() {
+      if (currentConfig.soundEnabled === false) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.14);
+          gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + idx * 0.14 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.14 + 0.42);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.14);
+          osc.stop(ctx.currentTime + idx * 0.14 + 0.45);
+        });
+      } catch (e) {
+        console.warn('Audio chime skipped:', e);
+      }
+    }
+
+    function applyConfigAndState() {
+      engine.setAlerting(currentState.isAlerting);
+      engine.setConfig(currentConfig);
+
+      if (currentState.forcedBehavior) {
+        engine.setBehaviorMode(currentState.forcedBehavior);
+      }
+
+      alertTimeBadge.textContent = `⏰ ${currentConfig.wakeTime || '16:00'} BACK HOME!`;
+      alertFarmerName.textContent = `👨‍🌾 ${currentConfig.characterName || 'Uncle Somchai'}`;
+      alertMessageText.textContent =
+        currentConfig.alertMessage || '16:00 Back Home Time! 🏡 เลิกงานแล้ว กลับบ้านกัน!';
+
+      const snoozeMins = Number(currentConfig.snoozeMinutes) || 10;
+      btnSnoozeDefault.textContent = `💤 Snooze ${snoozeMins}m`;
+
+      const wasAlerting = alertBubble.classList.contains('visible');
+      if (currentState.isAlerting) {
+        alertBubble.classList.add('visible');
+        if (!wasAlerting) {
+          playBackHomeChime();
+          if (soundTimer) clearInterval(soundTimer);
+          soundTimer = setInterval(() => {
+            if (currentState.isAlerting) playBackHomeChime();
+          }, 8000);
+        }
+      } else {
+        alertBubble.classList.remove('visible');
+        if (soundTimer) {
+          clearInterval(soundTimer);
+          soundTimer = null;
+        }
+      }
+    }
+
+    // Initialize from main process
+    Promise.all([window.farmerAPI.getConfig(), window.farmerAPI.getState()]).then(
+      ([cfg, st]) => {
+        currentConfig = cfg;
+        currentState = st;
+        applyConfigAndState();
+      }
+    );
+
+    window.farmerAPI.onConfigUpdated((cfg) => {
+      currentConfig = cfg;
+      applyConfigAndState();
+    });
+
+    window.farmerAPI.onStateUpdated((st) => {
+      currentState = st;
+      applyConfigAndState();
+    });
+
+    // Button handlers
+    btnDismiss.addEventListener('click', () => {
+      window.farmerAPI.dismissAlert();
+    });
+
+    btnSnoozeDefault.addEventListener('click', () => {
+      window.farmerAPI.snoozeAlert(Number(currentConfig.snoozeMinutes) || 10);
+    });
+
+    btnSnooze5.addEventListener('click', () => {
+      window.farmerAPI.snoozeAlert(5);
+    });
+
+    btnSnooze15.addEventListener('click', () => {
+      window.farmerAPI.snoozeAlert(15);
+    });
+
+    const behaviorKeys = ['tractor', 'machete', 'water', 'plant', 'palm', 'fertilizer', 'fix'];
+    btnNextBehavior.addEventListener('click', () => {
+      const idx = behaviorKeys.indexOf(engine.currentBehavior);
+      const next = behaviorKeys[(idx + 1) % behaviorKeys.length];
+      engine.setBehaviorMode(next);
+      window.farmerAPI.setBehaviorNow(next);
+    });
+
+    btnTestAlert.addEventListener('click', () => {
+      window.farmerAPI.triggerTestAlert();
+    });
+
+    btnOpenSettings.addEventListener('click', () => {
+      window.farmerAPI.openSettings();
+    });
+
+    // Drag-to-move overlay window across screen
+    btnDragHandle.addEventListener('mousedown', (e) => {
+      if (currentConfig.dragLocked) return;
+      isDraggingWindow = true;
+      dragStartScreen = { x: e.screenX, y: e.screenY };
+      window.farmerAPI.setIgnoreMouseEvents(false);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDraggingWindow) {
+        const dx = e.screenX - dragStartScreen.x;
+        const dy = e.screenY - dragStartScreen.y;
+        dragStartScreen = { x: e.screenX, y: e.screenY };
+        window.farmerAPI.moveOverlayBy(dx, dy);
+        return;
+      }
+
+      // Hit testing: check if cursor is over the farmer, the alert bubble, or the hover toolbar
+      const fb = engine.getFarmerBounds();
+      const inFarmer =
+        e.clientX >= fb.x - 16 &&
+        e.clientX <= fb.x + fb.width + 16 &&
+        e.clientY >= fb.y - 24 &&
+        e.clientY <= fb.y + fb.height + 12;
+
+      const toolbarRect = hoverToolbar.getBoundingClientRect();
+      const inToolbar =
+        e.clientX >= toolbarRect.left - 12 &&
+        e.clientX <= toolbarRect.right + 12 &&
+        e.clientY >= toolbarRect.top - 12 &&
+        e.clientY <= toolbarRect.bottom + 24;
+
+      const bubbleRect = alertBubble.getBoundingClientRect();
+      const inBubble =
+        currentState.isAlerting &&
+        e.clientX >= bubbleRect.left - 8 &&
+        e.clientX <= bubbleRect.right + 8 &&
+        e.clientY >= bubbleRect.top - 8 &&
+        e.clientY <= bubbleRect.bottom + 8;
+
+      if (inFarmer || inToolbar || inBubble) {
+        hoverToolbar.classList.add('visible');
+        window.farmerAPI.setIgnoreMouseEvents(false);
+      } else {
+        hoverToolbar.classList.remove('visible');
+        window.farmerAPI.setIgnoreMouseEvents(true);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDraggingWindow) {
+        isDraggingWindow = false;
+        window.farmerAPI.saveCurrentOverlayPosition();
+      }
+    });
+  </script>
+</body>
+</html>

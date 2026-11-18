@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farmer Back-Home Alert (16:00) — Settings & Control Panel</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="title-group">
+      <h1>👨‍🌾 Farmer Back-Home Alert & Taskbar Companion</h1>
+      <p>Configure your cartoon farmer character, 7 farming behaviors, screen position, 16:00 wake alarm, and snooze.</p>
+    </div>
+    <div class="header-actions">
+      <span class="status-pill" id="statusPill">⏰ Next Alert: 16:00</span>
+      <button class="btn-primary" id="btnTriggerAlertNow">🔔 Test 16:00 Alert Now</button>
+      <button class="btn-secondary" id="btnDismissNow">✅ Dismiss</button>
+    </div>
+  </header>
+
+  <main class="layout-grid">
+    <!-- Left Column: Live Cartoon Preview & 7 Farming Behaviors -->
+    <section>
+      <div class="card">
+        <h2>🎬 Live Cartoon Preview</h2>
+        <div class="preview-stage">
+          <canvas id="previewCanvas" width="310" height="220"></canvas>
+        </div>
+
+        <label style="font-size: 12px; color: #98B39E; font-weight: 600;">
+          Click a Farming Behavior to Switch Immediately:
+        </label>
+        <div class="behavior-grid" id="behaviorButtons">
+          <button class="behavior-chip full-span" data-behavior="cycle">
+            🔄 Auto-Cycle All 7 Behaviors
+          </button>
+          <button class="behavior-chip" data-behavior="tractor">
+            🚜 Drive Tractor
+          </button>
+          <button class="behavior-chip" data-behavior="machete">
+            🔪 Hold Machete
+          </button>
+          <button class="behavior-chip" data-behavior="water">
+            🚿 Pour Water
+          </button>
+          <button class="behavior-chip" data-behavior="plant">
+            🌱 Plant Tree
+          </button>
+          <button class="behavior-chip" data-behavior="palm">
+            🌴 Harvest Palm
+          </button>
+          <button class="behavior-chip" data-behavior="fertilizer">
+            🌾 Fertilizer
+          </button>
+          <button class="behavior-chip full-span" data-behavior="fix">
+            🔧 Fix the Things (Fence & Gear)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Wake Time, Snooze, Character & Screen Position Settings -->
+    <section>
+      <!-- 1. Wake Time (16:00) & Snooze -->
+      <div class="card">
+        <h2>⏰ Wake Time (Back-Home Alert) & Snooze</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="inputWakeTime">Time to Wake (24-Hour)</label>
+            <input type="time" id="inputWakeTime" value="16:00" />
+          </div>
+          <div class="form-group">
+            <label for="selectSnooze">Default Snooze Duration</label>
+            <select id="selectSnooze">
+              <option value="5">5 Minutes</option>
+              <option value="10" selected>10 Minutes</option>
+              <option value="15">15 Minutes</option>
+              <option value="20">20 Minutes</option>
+              <option value="30">30 Minutes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="inputAlertMessage">Alert Banner Message</label>
+          <input
+            type="text"
+            id="inputAlertMessage"
+            placeholder="16:00 Back Home Time! 🏡 เลิกงานแล้ว กลับบ้านกัน!"
+          />
+        </div>
+
+        <div class="form-row" style="margin-bottom: 0;">
+          <label class="checkbox-row">
+            <input type="checkbox" id="chkAlarmEnabled" checked />
+            Enable Daily Wake Time Alert
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chkSoundEnabled" checked />
+            Play Cheerful Chime on Alert
+          </label>
+        </div>
+      </div>
+
+      <!-- 2. Character Outfit & Animation Speed -->
+      <div class="card">
+        <h2>👕 Character Appearance & Speed</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="selectSkin">Character Outfit / Style</label>
+            <select id="selectSkin">
+              <option value="thai-kamar">Uncle Somchai — Thai Kamar & Straw Hat (ผ้าขาวม้า)</option>
+              <option value="classic-overalls">Sunny McFarm — Blue Overalls & Red Plaid</option>
+              <option value="modern-rancher">Ranger Khao — Field Vest & Green Cap</option>
+              <option value="golden-palm">Boss Palm — Sunglasses & Golden Polo (เถ้าแก่สวนปาล์ม)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="inputCharacterName">Character Display Name</label>
+            <input type="text" id="inputCharacterName" value="Uncle Somchai (ลุงสมชาย)" />
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom: 0;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="rangeScale">
+              <span>Character Size / Scale</span>
+              <span id="valScale">1.0x</span>
+            </label>
+            <input type="range" id="rangeScale" min="0.8" max="1.4" step="0.05" value="1.0" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="rangeSpeed">
+              <span>Walk & Action Speed</span>
+              <span id="valSpeed">1.0x</span>
+            </label>
+            <input type="range" id="rangeSpeed" min="0.5" max="2.0" step="0.1" value="1.0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Screen Position & Visibility Mode -->
+      <div class="card" style="margin-bottom: 0;">
+        <h2>📍 Screen Position & Taskbar Visibility</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="selectVisibilityMode">Taskbar Visibility Mode</label>
+            <select id="selectVisibilityMode">
+              <option value="both">Both — Walk on Taskbar All Day + Alert at 16:00</option>
+              <option value="alert-only">Alert Only — Stay Hidden Until 16:00 Wake Time</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="selectPositionPreset">Screen Position Preset</label>
+            <select id="selectPositionPreset">
+              <option value="bottom-right">Bottom-Right Corner (On Taskbar)</option>
+              <option value="bottom-center">Bottom-Center (On Taskbar)</option>
+              <option value="bottom-left">Bottom-Left Corner (On Taskbar)</option>
+              <option value="top-right">Top-Right Corner</option>
+              <option value="custom">Custom (Dragged Position)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-bottom: 4px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="rangeOffsetX">
+              <span>Fine-Tune Horizontal Offset (X)</span>
+              <span id="valOffsetX">0 px</span>
+            </label>
+            <input type="range" id="rangeOffsetX" min="-400" max="400" step="5" value="0" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="rangeOffsetY">
+              <span>Fine-Tune Vertical Offset (Y)</span>
+              <span id="valOffsetY">0 px</span>
+            </label>
+            <input type="range" id="rangeOffsetY" min="-300" max="100" step="5" value="0" />
+          </div>
+        </div>
+        <p style="font-size: 11.5px; color: #98B39E; margin-top: 6px;">
+          💡 Tip: You can also hover over the farmer on your taskbar and drag the <strong>✋ Move</strong> button to place him anywhere on your screen!
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toastMsg">Settings saved!</div>
+
+  <script src="../overlay/farmer-engine.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>
