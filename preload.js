@@ -1,9 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('farmerAPI', {
+contextBridge.exposeInMainWorld('companionAPI', {
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (partialConfig) => ipcRenderer.invoke('save-config', partialConfig),
   getState: () => ipcRenderer.invoke('get-state'),
+  getAppInfo: () => ipcRenderer.invoke('get-app-info'),
 
   // Theme Set & Shareable Bundle Import / Export
   saveCustomThemeSet: (themeSetObj) => ipcRenderer.invoke('save-custom-theme-set', themeSetObj),
@@ -21,7 +22,7 @@ contextBridge.exposeInMainWorld('farmerAPI', {
   dismissAlert: () => ipcRenderer.invoke('dismiss-alert'),
   snoozeAlert: (minutes) => ipcRenderer.invoke('snooze-alert', minutes),
   setBehaviorNow: (behavior) => ipcRenderer.invoke('set-behavior-now', behavior),
-  openSettings: () => ipcRenderer.invoke('open-settings'),
+  openSettings: (tab) => ipcRenderer.invoke('open-settings', tab),
   setIgnoreMouseEvents: (ignore) => ipcRenderer.send('set-ignore-mouse-events', ignore),
   moveOverlayBy: (dx, dy) => ipcRenderer.send('move-overlay-by', { dx, dy }),
   saveCurrentOverlayPosition: () => ipcRenderer.invoke('save-current-overlay-position'),
@@ -35,5 +36,10 @@ contextBridge.exposeInMainWorld('farmerAPI', {
     const listener = (_event, state) => callback(state);
     ipcRenderer.on('state-updated', listener);
     return () => ipcRenderer.removeListener('state-updated', listener);
+  },
+  onSwitchViewTab: (callback) => {
+    const listener = (_event, tab) => callback(tab);
+    ipcRenderer.on('switch-view-tab', listener);
+    return () => ipcRenderer.removeListener('switch-view-tab', listener);
   }
 });

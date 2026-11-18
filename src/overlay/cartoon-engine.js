@@ -508,7 +508,7 @@ const SKINS = {
   }
 };
 
-class FarmerEngine {
+class CartoonEngine {
   constructor(canvas, options = {}) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
@@ -668,7 +668,7 @@ class FarmerEngine {
     this._running = false;
   }
 
-  getFarmerBounds() {
+  getCharacterBounds() {
     const groundY = this.canvas.height - 14;
     return {
       x: this.x - 80,
@@ -2155,6 +2155,6 @@ class FarmerEngine {
   }
 }
 
-window.FarmerEngine = FarmerEngine;
-window.FARMER_SKINS = SKINS;
+window.CartoonEngine = CartoonEngine;
+window.CHARACTER_SKINS = SKINS;
 window.BUILTIN_THEME_SETS = BUILTIN_THEME_SETS;

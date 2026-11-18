@@ -232,7 +232,7 @@ function saveConfigToFile() {
   }
 }
 
-function createFarmerTrayIcon() {
+function createCompanionTrayIcon() {
   const width = 32;
   const height = 32;
   const rawData = Buffer.alloc(height * (1 + width * 4), 0);
@@ -473,11 +473,14 @@ function createOverlayWindow() {
   });
 }
 
-function openSettingsWindow() {
+function openSettingsWindow(initialTab = 'main') {
   if (settingsWindow && !settingsWindow.isDestroyed()) {
     if (settingsWindow.isMinimized()) settingsWindow.restore();
     settingsWindow.show();
     settingsWindow.focus();
+    if (initialTab) {
+      settingsWindow.webContents.send('switch-view-tab', initialTab);
+    }
     return;
   }
 
@@ -487,7 +490,7 @@ function openSettingsWindow() {
     minWidth: 860,
     minHeight: 650,
     title: 'Pomodoro Cartoon Companion',
-    icon: createFarmerTrayIcon(),
+    icon: createCompanionTrayIcon(),
     autoHideMenuBar: true,
     backgroundColor: '#0F1712',
     webPreferences: {
@@ -498,6 +501,12 @@ function openSettingsWindow() {
   });
 
   settingsWindow.loadFile(path.join(__dirname, 'src', 'settings', 'settings.html'));
+
+  settingsWindow.webContents.once('did-finish-load', () => {
+    if (initialTab && initialTab !== 'main') {
+      settingsWindow.webContents.send('switch-view-tab', initialTab);
+    }
+  });
 
   settingsWindow.on('closed', () => {
     settingsWindow = null;
@@ -882,7 +891,11 @@ function rebuildTrayMenu() {
     { type: 'separator' },
     {
       label: t('⚙️ ตั้งค่าโพโมโดโรและชุดธีม...', '⚙️ Open Settings & Theme Studio...'),
-      click: () => openSettingsWindow()
+      click: () => openSettingsWindow('main')
+    },
+    {
+      label: t('ℹ️ เกี่ยวกับ & บันทึกเวอร์ชัน (v1.2.0)...', 'ℹ️ About & Release Notes (v1.2.0)...'),
+      click: () => openSettingsWindow('about')
     },
     { type: 'separator' },
     {
@@ -935,6 +948,25 @@ function updateConfig(partial) {
 function setupIPC() {
   ipcMain.handle('get-config', () => config);
   ipcMain.handle('get-state', () => runtimeState);
+
+  ipcMain.handle('get-app-info', () => {
+    let releasesData = { appName: 'Pomodoro Cartoon Companion', currentVersion: '1.2.0', releases: [] };
+    try {
+      const relPath = path.join(__dirname, 'releases.json');
+      if (fs.existsSync(relPath)) {
+        releasesData = JSON.parse(fs.readFileSync(relPath, 'utf-8'));
+      }
+    } catch (e) {
+      console.warn('Could not read releases.json:', e);
+    }
+    return {
+      ...releasesData,
+      electronVersion: process.versions.electron,
+      nodeVersion: process.versions.node,
+      configPath: getConfigPath(),
+      themesDir: getThemeSetsDir()
+    };
+  });
 
   ipcMain.handle('save-config', (_event, partial) => {
     updateConfig(partial);
@@ -1073,8 +1105,8 @@ function setupIPC() {
     return runtimeState;
   });
 
-  ipcMain.handle('open-settings', () => {
-    openSettingsWindow();
+  ipcMain.handle('open-settings', (_event, tab) => {
+    openSettingsWindow(tab || 'main');
     return true;
   });
 
@@ -1121,7 +1153,7 @@ if (!gotTheLock) {
     loadConfig();
     setupIPC();
 
-    tray = new Tray(createFarmerTrayIcon());
+    tray = new Tray(createCompanionTrayIcon());
     tray.on('click', () => openSettingsWindow());
     tray.on('double-click', () => openSettingsWindow());
     rebuildTrayMenu();

@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
   <meta charset="UTF-8" />
   <title>Pomodoro Cartoon Companion — Overlay</title>
   <link rel="stylesheet" href="overlay.css" />
 </head>
-
 <body>
   <div class="overlay-root" id="overlayRoot">
     <!-- 1. Pomodoro / 16:00 Alert Speech Bubble -->
     <div class="alert-bubble" id="alertBubble">
       <div class="alert-header">
         <span class="time-badge" id="alertTimeBadge">🍅 ครบเวลาโฟกัส!</span>
-        <span class="farmer-name-tag" id="alertFarmerName">👨‍🌾 ลุงสมชาย</span>
+        <span class="character-name-tag" id="alertCharacterName">👨‍🌾 ลุงสมชาย</span>
       </div>
       <div class="alert-message" id="alertMessageText">
         🍅 ครบเวลาแล้ว! พักสายตาสักนิดนะ
@@ -59,12 +57,12 @@
     </div>
 
     <!-- 2D Cartoon Canvas -->
-    <canvas id="farmerCanvas" width="460" height="335"></canvas>
+    <canvas id="cartoonCanvas" width="460" height="335"></canvas>
   </div>
 
-  <script src="farmer-engine.js"></script>
+  <script src="cartoon-engine.js"></script>
   <script>
-    const canvas = document.getElementById('farmerCanvas');
+    const canvas = document.getElementById('cartoonCanvas');
     const alertBubble = document.getElementById('alertBubble');
     const charHoverMenu = document.getElementById('charHoverMenu');
     const charBehaviorLabel = document.getElementById('charBehaviorLabel');
@@ -81,7 +79,7 @@
     const btnHudReset = document.getElementById('btnHudReset');
 
     const alertTimeBadge = document.getElementById('alertTimeBadge');
-    const alertFarmerName = document.getElementById('alertFarmerName');
+    const alertCharacterName = document.getElementById('alertCharacterName');
     const alertMessageText = document.getElementById('alertMessageText');
     const btnNextPhase = document.getElementById('btnNextPhase');
     const btnDismiss = document.getElementById('btnDismiss');
@@ -108,7 +106,7 @@
       charBehaviorLabel.textContent = engine.getCurrentBehaviorLabel();
     }
 
-    const engine = new FarmerEngine(canvas, {
+    const engine = new CartoonEngine(canvas, {
       isPreview: false,
       onBehaviorChange: () => updateCharHoverLabel()
     });
@@ -153,7 +151,7 @@
           osc.start(ctx.currentTime + idx * 0.14);
           osc.stop(ctx.currentTime + idx * 0.14 + 0.45);
         });
-      } catch (e) { }
+      } catch (e) {}
     }
 
     function applyConfigAndState() {
@@ -210,7 +208,7 @@
       // Update Alert Bubble
       alertTimeBadge.textContent =
         currentState.alertBannerTitle || tr('🍅 แจ้งเตือนโพโมโดโร', '🍅 Pomodoro Alert');
-      alertFarmerName.textContent = `👨‍🌾 ${currentConfig.characterName || 'Uncle Somchai'}`;
+      alertCharacterName.textContent = `✨ ${currentConfig.characterName || 'Companion'}`;
       alertMessageText.textContent =
         currentState.alertBannerText ||
         currentConfig.alertMessage ||
@@ -241,7 +239,7 @@
       }
     }
 
-    Promise.all([window.farmerAPI.getConfig(), window.farmerAPI.getState()]).then(
+    Promise.all([window.companionAPI.getConfig(), window.companionAPI.getState()]).then(
       ([cfg, st]) => {
         currentConfig = cfg;
         currentState = st;
@@ -249,58 +247,58 @@
       }
     );
 
-    window.farmerAPI.onConfigUpdated((cfg) => {
+    window.companionAPI.onConfigUpdated((cfg) => {
       currentConfig = cfg;
       applyConfigAndState();
     });
 
-    window.farmerAPI.onStateUpdated((st) => {
+    window.companionAPI.onStateUpdated((st) => {
       currentState = st;
       applyConfigAndState();
     });
 
     // Pomodoro Corner CTA Controls
     btnHudStartPause.addEventListener('click', () => {
-      window.farmerAPI.pomodoroStartPause();
+      window.companionAPI.pomodoroStartPause();
     });
 
     btnHudSkip.addEventListener('click', () => {
-      window.farmerAPI.pomodoroSkip(true);
+      window.companionAPI.pomodoroSkip(true);
     });
 
     btnHudReset.addEventListener('click', () => {
-      window.farmerAPI.pomodoroReset(false);
+      window.companionAPI.pomodoroReset(false);
     });
 
     // Alert Bubble Buttons
     btnNextPhase.addEventListener('click', () => {
-      window.farmerAPI.pomodoroSkip(true);
+      window.companionAPI.pomodoroSkip(true);
     });
 
     btnDismiss.addEventListener('click', () => {
-      window.farmerAPI.dismissAlert();
+      window.companionAPI.dismissAlert();
     });
 
     btnSnooze5.addEventListener('click', () => {
-      window.farmerAPI.snoozeAlert(5);
+      window.companionAPI.snoozeAlert(5);
     });
 
     // Combined Character Hover Menu Buttons
     btnNextBehavior.addEventListener('click', () => {
       const nextId = engine.nextBehavior();
       updateCharHoverLabel();
-      window.farmerAPI.setBehaviorNow(nextId);
+      window.companionAPI.setBehaviorNow(nextId);
     });
 
     btnOpenSettings.addEventListener('click', () => {
-      window.farmerAPI.openSettings();
+      window.companionAPI.openSettings('main');
     });
 
     btnDragHandle.addEventListener('mousedown', (e) => {
       if (currentConfig.dragLocked) return;
       isDraggingWindow = true;
       dragStartScreen = { x: e.screenX, y: e.screenY };
-      window.farmerAPI.setIgnoreMouseEvents(false);
+      window.companionAPI.setIgnoreMouseEvents(false);
     });
 
     window.addEventListener('mousemove', (e) => {
@@ -308,17 +306,17 @@
         const dx = e.screenX - dragStartScreen.x;
         const dy = e.screenY - dragStartScreen.y;
         dragStartScreen = { x: e.screenX, y: e.screenY };
-        window.farmerAPI.moveOverlayBy(dx, dy);
+        window.companionAPI.moveOverlayBy(dx, dy);
         return;
       }
 
       // 1. Check if hovering over Cartoon Character or its Combined Label+Action Menu
-      const fb = engine.getFarmerBounds();
-      const inFarmer =
-        e.clientX >= fb.x - 14 &&
-        e.clientX <= fb.x + fb.width + 14 &&
-        e.clientY >= fb.y - 20 &&
-        e.clientY <= fb.y + fb.height + 10;
+      const cb = engine.getCharacterBounds();
+      const inCharacter =
+        e.clientX >= cb.x - 14 &&
+        e.clientX <= cb.x + cb.width + 14 &&
+        e.clientY >= cb.y - 20 &&
+        e.clientY <= cb.y + cb.height + 10;
 
       const menuRect = charHoverMenu.getBoundingClientRect();
       const inCharMenu =
@@ -328,7 +326,7 @@
         e.clientY >= menuRect.top - 12 &&
         e.clientY <= menuRect.bottom + 24;
 
-      if (inFarmer || inCharMenu) {
+      if (inCharacter || inCharMenu) {
         updateCharHoverLabel();
         charHoverMenu.classList.add('visible');
       } else {
@@ -354,20 +352,19 @@
         e.clientY >= bubbleRect.top - 8 &&
         e.clientY <= bubbleRect.bottom + 8;
 
-      if (inFarmer || inCharMenu || inPomoCorner || inBubble) {
-        window.farmerAPI.setIgnoreMouseEvents(false);
+      if (inCharacter || inCharMenu || inPomoCorner || inBubble) {
+        window.companionAPI.setIgnoreMouseEvents(false);
       } else {
-        window.farmerAPI.setIgnoreMouseEvents(true);
+        window.companionAPI.setIgnoreMouseEvents(true);
       }
     });
 
     window.addEventListener('mouseup', () => {
       if (isDraggingWindow) {
         isDraggingWindow = false;
-        window.farmerAPI.saveCurrentOverlayPosition();
+        window.companionAPI.saveCurrentOverlayPosition();
       }
     });
   </script>
 </body>
-
 </html>

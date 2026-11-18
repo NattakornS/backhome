@@ -5,6 +5,18 @@ const btnTriggerAlertNow = document.getElementById('btnTriggerAlertNow');
 const btnDismissNow = document.getElementById('btnDismissNow');
 const behaviorButtonsContainer = document.getElementById('behaviorButtonsContainer');
 
+// Top View Navigation (Settings vs About & Release Notes)
+const navBtnMain = document.getElementById('navBtnMain');
+const navBtnAbout = document.getElementById('navBtnAbout');
+const viewMain = document.getElementById('viewMain');
+const viewAbout = document.getElementById('viewAbout');
+const hdrVersionPill = document.getElementById('hdrVersionPill');
+const aboutVersionBadge = document.getElementById('aboutVersionBadge');
+const releaseNotesList = document.getElementById('releaseNotesList');
+const valConfigPath = document.getElementById('valConfigPath');
+const valThemesDir = document.getElementById('valThemesDir');
+const badgeElectronVer = document.getElementById('badgeElectronVer');
+
 // Pomodoro Dashboard elements
 const pomoDashboardCard = document.getElementById('pomoDashboardCard');
 const tabPhaseFocus = document.getElementById('tabPhaseFocus');
@@ -30,13 +42,12 @@ const chkOverflowMode = document.getElementById('chkOverflowMode');
 const chkStrictMode = document.getElementById('chkStrictMode');
 const inputAlertMessage = document.getElementById('inputAlertMessage');
 
-// Theme Set elements
+// Theme Set elements (Consolidated bottom row toolbar)
 const selectThemeSet = document.getElementById('selectThemeSet');
-const farmerOutfitGroup = document.getElementById('farmerOutfitGroup');
+const characterOutfitGroup = document.getElementById('characterOutfitGroup');
 const selectSkin = document.getElementById('selectSkin');
-const btnCopyAiPromptDirect = document.getElementById('btnCopyAiPromptDirect');
-const btnOpenImportModal = document.getElementById('btnOpenImportModal');
-const btnOpenThemeBuilder = document.getElementById('btnOpenThemeBuilder');
+const btnOpenThemeStudio = document.getElementById('btnOpenThemeStudio');
+const btnExportShare = document.getElementById('btnExportShare');
 const btnExportThemeSet = document.getElementById('btnExportThemeSet');
 const btnExportFullBundle = document.getElementById('btnExportFullBundle');
 const btnDeleteCustomTheme = document.getElementById('btnDeleteCustomTheme');
@@ -94,6 +105,7 @@ const genBFert = document.getElementById('genBFert');
 let activeModalTab = 'json';
 let configState = { language: 'th' };
 let runtimeState = { pomodoro: {} };
+let appInfoState = { currentVersion: '1.2.0', releases: [] };
 
 let toastTimeout = null;
 function showToast(text) {
@@ -117,10 +129,55 @@ function formatMMSS(sec) {
   return `${m}:${s}`;
 }
 
-const previewEngine = new FarmerEngine(previewCanvas, {
+const previewEngine = new CartoonEngine(previewCanvas, {
   isPreview: true
 });
 previewEngine.start();
+
+// Switch Top-Level View (Main Settings vs About & Release Notes)
+function switchTopView(viewName) {
+  const isAbout = viewName === 'about';
+  navBtnMain.classList.toggle('active', !isAbout);
+  navBtnAbout.classList.toggle('active', isAbout);
+  viewMain.style.display = isAbout ? 'none' : 'grid';
+  viewAbout.style.display = isAbout ? 'block' : 'none';
+}
+
+navBtnMain.addEventListener('click', () => switchTopView('main'));
+navBtnAbout.addEventListener('click', () => switchTopView('about'));
+
+function renderReleaseNotes() {
+  const ver = appInfoState.currentVersion || '1.2.0';
+  hdrVersionPill.textContent = `v${ver}`;
+  aboutVersionBadge.textContent = `v${ver}`;
+  if (appInfoState.electronVersion) {
+    badgeElectronVer.textContent = `Electron v${appInfoState.electronVersion} • Node v${appInfoState.nodeVersion || ''}`;
+  }
+  if (appInfoState.configPath) valConfigPath.textContent = appInfoState.configPath;
+  if (appInfoState.themesDir) valThemesDir.textContent = appInfoState.themesDir;
+
+  releaseNotesList.innerHTML = '';
+  const releases = Array.isArray(appInfoState.releases) ? appInfoState.releases : [];
+  releases.forEach((rel) => {
+    const card = document.createElement('div');
+    card.className = 'release-card';
+    const title = tr(rel.titleTh || rel.titleEn, rel.titleEn || rel.titleTh);
+    const items = configState.language === 'en' ? rel.changesEn || rel.changesTh || [] : rel.changesTh || rel.changesEn || [];
+    const lis = items.map((c) => `<li>${c}</li>`).join('');
+    card.innerHTML = `
+      <div class="release-header">
+        <div class="release-version">
+          <span>v${rel.version}</span>
+          ${rel.tag ? `<span class="release-tag">${rel.tag}</span>` : ''}
+        </div>
+        <span class="release-date">📅 ${rel.date || ''}</span>
+      </div>
+      <div class="release-title">${title}</div>
+      <ul class="release-list">${lis}</ul>
+    `;
+    releaseNotesList.appendChild(card);
+  });
+}
 
 function applyLanguageTranslations() {
   document.getElementById('hdrTitle').textContent = '🍅 Pomodoro Cartoon Companion';
@@ -128,6 +185,9 @@ function applyLanguageTranslations() {
     'จับเวลาโฟกัสงานด้วยตัวละครการ์ตูนบน Taskbar พร้อมสร้าง/นำเข้า/แชร์ชุดธีม (Theme Set) ด้วย Generative AI',
     'Focus timer with animated taskbar cartoon + AI-powered Theme Set (Character + Behavior Set) Studio'
   );
+  navBtnMain.textContent = tr('⚙️ ตั้งค่า & โพโมโดโร', '⚙️ Timer & Settings');
+  navBtnAbout.textContent = tr('ℹ️ เกี่ยวกับ & เวอร์ชัน', 'ℹ️ About & Release Notes');
+
   btnTriggerAlertNow.textContent = tr('🔔 ทดสอบแจ้งเตือน', '🔔 Test Alert');
   btnDismissNow.textContent = tr('✅ ปิดแจ้งเตือน', '✅ Dismiss');
 
@@ -187,9 +247,9 @@ function applyLanguageTranslations() {
     'เลือกชุดธีม',
     'Active Theme Set'
   );
-  document.getElementById('lblFarmerOutfit').textContent = tr(
-    'ชุดแต่งกายชาวสวน',
-    'Farmer Outfit Style'
+  document.getElementById('lblCharacterOutfit').textContent = tr(
+    'ชุดแต่งกายตัวละคร',
+    'Character Outfit Style'
   );
   document.getElementById('optSkinKamar').textContent = tr(
     'ลุงสมชาย — ผ้าขาวม้า & หมวกสาน',
@@ -208,14 +268,14 @@ function applyLanguageTranslations() {
     'Boss Palm — Sunglasses & Polo'
   );
 
-  btnCopyAiPromptDirect.textContent = tr(
-    '🤖 คัดลอกพรอมต์ AI สร้างชุดธีมใหม่',
-    '🤖 Copy AI Prompt for New Theme Set'
+  btnOpenThemeStudio.textContent = tr(
+    '🤖 สร้าง / นำเข้าชุดธีมด้วย AI',
+    '🤖 AI Theme Studio & Import'
   );
-  btnOpenImportModal.textContent = tr('📥 นำเข้าชุดธีม / ตั้งค่า', '📥 Import Theme Set / Bundle');
-  btnOpenThemeBuilder.textContent = tr('✨ สร้างชุดธีมเอง', '✨ Create Theme Set');
-  btnExportThemeSet.textContent = tr('📤 ส่งออกชุดธีม (.json)', '📤 Export Theme Set (.json)');
-  btnExportFullBundle.textContent = tr('📦 แชร์ตั้งค่า+ชุดธีม', '📦 Share Settings + Theme Set');
+  btnExportShare.textContent = tr(
+    '📤 ส่งออก / แชร์ชุดธีม (.json)',
+    '📤 Export / Share (.json)'
+  );
   btnDeleteCustomTheme.textContent = tr('🗑️ ลบชุดธีม', '🗑️ Delete Theme Set');
 
   document.getElementById('lblCharName').textContent = tr('ชื่อตัวละคร', 'Character Display Name');
@@ -270,15 +330,32 @@ function applyLanguageTranslations() {
     '🔊 Play Alert Sound Chime'
   );
 
+  // About & Release Notes Page Translations
+  document.getElementById('aboutHeroDesc').textContent = tr(
+    'แอปจับเวลาโพโมโดโรพร้อมเพื่อนคู่หูการ์ตูนแอนิเมชัน 60 FPS บน Windows Taskbar ที่เปิดให้คุณออกแบบตัวละคร ยานพาหนะ และท่าทางแอนิเมชันได้อย่างอิสระผ่านไฟล์ JSON และ Generative AI',
+    'A 60 FPS animated Windows Taskbar Pomodoro Focus Companion powered by a Universal Declarative 2D Drawable Scene Graph that lets you create and import any custom character, vehicle, and behavior with Generative AI.'
+  );
+  document.getElementById('hdrSystemPaths').textContent = tr(
+    '📂 ข้อมูลระบบและตำแหน่งไฟล์',
+    '📂 System & Storage Paths'
+  );
+  document.getElementById('lblPathConfig').textContent = tr('ไฟล์การตั้งค่า:', 'Config File:');
+  document.getElementById('lblPathThemes').textContent = tr('โฟลเดอร์ชุดธีม:', 'Themes Folder:');
+  document.getElementById('hdrReleaseNotes').textContent = tr(
+    '📜 ประวัติเวอร์ชันและบันทึกการอัปเดต',
+    '📜 Version Control & Release Notes'
+  );
+  renderReleaseNotes();
+
   // Modal translations
   document.getElementById('modalTitle').textContent = tr(
     '🎨 สตูดิโอชุดธีมตัวละครและท่าทาง',
-    '🎨 Theme Set Studio — AI Generate / Import / Create'
+    '🎨 Theme Set Studio — AI Generate / Import / Export'
   );
   btnCloseModal.textContent = tr('✖ ปิด', '✖ Close');
   tabBtnJson.textContent = tr(
-    '🤖 สร้างด้วย AI & นำเข้า JSON',
-    '🤖 AI Prompt & Import Theme Set JSON'
+    '🤖 สร้างด้วย AI & นำเข้า / ส่งออก JSON',
+    '🤖 AI Prompt & Import / Export JSON'
   );
   tabBtnVisual.textContent = tr(
     '✨ ปรับแต่งชุดธีมด้วยตัวเอง',
@@ -289,12 +366,20 @@ function applyLanguageTranslations() {
     '🤖 Copy AI Prompt for ChatGPT / Gemini / Claude'
   );
   btnBrowseJsonFile.textContent = tr(
-    '📂 เลือกไฟล์ .json จากคอมพิวเตอร์',
-    '📂 Choose .json File from Computer'
+    '📂 นำเข้าไฟล์ .json จากคอมพิวเตอร์',
+    '📂 Import .json File from Computer'
+  );
+  btnExportThemeSet.textContent = tr(
+    '📤 ส่งออกเฉพาะชุดธีม (.json)',
+    '📤 Export Theme Set (.json)'
+  );
+  btnExportFullBundle.textContent = tr(
+    '📦 ส่งออกชุดธีม + ตั้งค่าทั้งหมด (.json)',
+    '📦 Export Full Settings + Theme Set Bundle'
   );
   document.getElementById('lblModalJsonHint').textContent = tr(
-    '💡 กดปุ่มคัดลอกพรอมต์ด้านบนไปสั่ง Generative AI ให้ออกแบบตัวละครและท่าทางใหม่ จากนั้นนำโค้ด JSON ที่ได้มาวางด้านล่างแล้วกดบันทึก!',
-    '💡 Copy the AI prompt above and paste it into any AI chat to generate a new Character + Behavior Theme Set JSON, then paste it below and click Save!'
+    '💡 กดปุ่มคัดลอกพรอมต์ด้านบนไปสั่ง Generative AI ให้ออกแบบตัวละคร ยานพาหนะ และท่าทางใหม่ทั้งหมด จากนั้นนำโค้ด JSON ที่ได้มาวางด้านล่างแล้วกดบันทึก!',
+    '💡 Copy the AI prompt above and paste it into any AI chat to generate a new Character + Behavior Theme Set JSON with custom drawable objects, then paste it below and click Save!'
   );
   btnRandomizeTheme.textContent = tr('🎲 สุ่มชุดธีมใหม่', '🎲 Randomize Theme Set');
   btnSaveGeneratedTheme.textContent = tr(
@@ -336,7 +421,7 @@ function rebuildThemeSetDropdown(cfg) {
   selectThemeSet.value = currentId;
   const isCustom = Boolean(custom[currentId] && !builtin[currentId]);
   btnDeleteCustomTheme.style.display = isCustom ? 'inline-block' : 'none';
-  farmerOutfitGroup.style.display = currentId === 'farmer' ? 'flex' : 'none';
+  characterOutfitGroup.style.display = currentId === 'farmer' ? 'flex' : 'none';
 }
 
 function rebuildBehaviorButtons(cfg) {
@@ -350,7 +435,7 @@ function rebuildBehaviorButtons(cfg) {
   cycleBtn.textContent = tr('🔄 สลับทุกท่าทางอัตโนมัติ', '🔄 Auto-Cycle All Behaviors');
   cycleBtn.addEventListener('click', async () => {
     previewEngine.setBehaviorMode('cycle');
-    await window.farmerAPI.setBehaviorNow('cycle');
+    await window.companionAPI.setBehaviorNow('cycle');
     showToast(tr('🔄 เปิดโหมดสลับท่าทางอัตโนมัติ', '🔄 Auto-cycling behaviors'));
   });
   behaviorButtonsContainer.appendChild(cycleBtn);
@@ -362,7 +447,7 @@ function rebuildBehaviorButtons(cfg) {
     btn.textContent = `${b.icon || '✨'} ${previewEngine.formatBilingual(b.labelTh, b.labelEn)}`;
     btn.addEventListener('click', async () => {
       previewEngine.setBehaviorMode(b.id);
-      await window.farmerAPI.setBehaviorNow(b.id);
+      await window.companionAPI.setBehaviorNow(b.id);
       showToast(`${b.icon || '✨'} ${previewEngine.formatBilingual(b.labelTh, b.labelEn)}`);
     });
     behaviorButtonsContainer.appendChild(btn);
@@ -492,27 +577,34 @@ function syncUIFromConfig(cfg) {
 }
 
 async function savePartial(partial, toastLabel) {
-  const updated = await window.farmerAPI.saveConfig(partial);
+  const updated = await window.companionAPI.saveConfig(partial);
   syncUIFromConfig(updated);
   if (toastLabel) showToast(toastLabel);
 }
 
 // Initial load
-Promise.all([window.farmerAPI.getConfig(), window.farmerAPI.getState()]).then(
-  ([cfg, st]) => {
-    runtimeState = st;
-    syncUIFromConfig(cfg);
-  }
-);
-
-window.farmerAPI.onConfigUpdated((cfg) => {
+Promise.all([
+  window.companionAPI.getConfig(),
+  window.companionAPI.getState(),
+  window.companionAPI.getAppInfo()
+]).then(([cfg, st, appInfo]) => {
+  runtimeState = st;
+  if (appInfo) appInfoState = appInfo;
   syncUIFromConfig(cfg);
 });
 
-window.farmerAPI.onStateUpdated((st) => {
+window.companionAPI.onConfigUpdated((cfg) => {
+  syncUIFromConfig(cfg);
+});
+
+window.companionAPI.onStateUpdated((st) => {
   runtimeState = st;
   syncPomodoroDashboard();
   rebuildBehaviorButtons(configState);
+});
+
+window.companionAPI.onSwitchViewTab((tab) => {
+  switchTopView(tab === 'about' ? 'about' : 'main');
 });
 
 // Clean TH / EN Language Switcher
@@ -529,14 +621,14 @@ selectLanguage.addEventListener('change', () => {
 // ============================================================================
 
 btnPomoStartPause.addEventListener('click', async () => {
-  const res = await window.farmerAPI.pomodoroStartPause();
+  const res = await window.companionAPI.pomodoroStartPause();
   if (res && res.blockedByStrictMode) {
     showToast(tr('🔒 โหมดเข้มงวดล็อกอยู่! ต้องโฟกัสให้ครบเวลา', '🔒 Locked by Strict Mode!'));
   }
 });
 
 btnPomoSkip.addEventListener('click', async () => {
-  const res = await window.farmerAPI.pomodoroSkip(true);
+  const res = await window.companionAPI.pomodoroSkip(true);
   if (res && res.blockedByStrictMode) {
     showToast(tr('🔒 โหมดเข้มงวดล็อกการข้ามช่วงเวลา!', '🔒 Skip locked by Strict Mode!'));
   } else {
@@ -545,7 +637,7 @@ btnPomoSkip.addEventListener('click', async () => {
 });
 
 btnPomoReset.addEventListener('click', async () => {
-  const res = await window.farmerAPI.pomodoroReset(false);
+  const res = await window.companionAPI.pomodoroReset(false);
   if (res && res.blockedByStrictMode) {
     showToast(tr('🔒 โหมดเข้มงวดล็อกการรีเซ็ต!', '🔒 Reset locked by Strict Mode!'));
   } else {
@@ -554,7 +646,7 @@ btnPomoReset.addEventListener('click', async () => {
 });
 
 btnPomoResetAll.addEventListener('click', async () => {
-  const res = await window.farmerAPI.pomodoroReset(true);
+  const res = await window.companionAPI.pomodoroReset(true);
   if (res && res.blockedByStrictMode) {
     showToast(tr('🔒 โหมดเข้มงวดล็อกการรีเซ็ต!', '🔒 Reset locked by Strict Mode!'));
   } else {
@@ -565,7 +657,7 @@ btnPomoResetAll.addEventListener('click', async () => {
 [tabPhaseFocus, tabPhaseShort, tabPhaseLong].forEach((tab) => {
   tab.addEventListener('click', async () => {
     const phase = tab.dataset.phase;
-    const res = await window.farmerAPI.pomodoroSetPhase(phase);
+    const res = await window.companionAPI.pomodoroSetPhase(phase);
     if (res && res.blockedByStrictMode) {
       showToast(tr('🔒 โหมดเข้มงวดล็อกอยู่!', '🔒 Locked by Strict Mode!'));
     }
@@ -652,12 +744,12 @@ selectThemeSet.addEventListener('change', () => {
 btnDeleteCustomTheme.addEventListener('click', async () => {
   const id = selectThemeSet.value;
   if (!id || (window.BUILTIN_THEME_SETS && window.BUILTIN_THEME_SETS[id])) return;
-  const updated = await window.farmerAPI.deleteCustomThemeSet(id);
+  const updated = await window.companionAPI.deleteCustomThemeSet(id);
   syncUIFromConfig(updated);
   showToast(tr('🗑️ ลบชุดธีมเรียบร้อยแล้ว', '🗑️ Custom Theme Set deleted'));
 });
 
-btnExportThemeSet.addEventListener('click', () => {
+function downloadActiveThemeSetJson() {
   const activeTS = previewEngine.getActiveThemeSet();
   const jsonStr = JSON.stringify(activeTS, null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });
@@ -668,9 +760,9 @@ btnExportThemeSet.addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(url);
   showToast(tr(`📤 ส่งออกชุดธีม theme-set-${activeTS.id}.json แล้ว`, `📤 Exported theme-set-${activeTS.id}.json`));
-});
+}
 
-btnExportFullBundle.addEventListener('click', () => {
+function downloadFullShareBundleJson() {
   const activeTS = previewEngine.getActiveThemeSet();
   const bundle = {
     type: 'pomodoro-theme-bundle',
@@ -697,7 +789,11 @@ btnExportFullBundle.addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(url);
   showToast(tr('📦 ส่งออกไฟล์แชร์ตั้งค่า+ชุดธีมแล้ว!', '📦 Exported Full Settings + Theme Set Bundle!'));
-});
+}
+
+btnExportShare.addEventListener('click', downloadFullShareBundleJson);
+btnExportThemeSet.addEventListener('click', downloadActiveThemeSetJson);
+btnExportFullBundle.addEventListener('click', downloadFullShareBundleJson);
 
 function parseBiLabel(val, fallbackIcon) {
   const raw = String(val || '').trim();
@@ -981,14 +1077,10 @@ function copyAiPromptToClipboard() {
   );
 }
 
-btnCopyAiPromptDirect.addEventListener('click', () => {
-  copyAiPromptToClipboard();
-  openModal('json');
-});
-
 btnCopyAiPrompt.addEventListener('click', copyAiPromptToClipboard);
 
 function openModal(tab = 'json') {
+  jsonThemeEditor.value = JSON.stringify(previewEngine.getActiveThemeSet(), null, 2);
   themeModal.classList.add('open');
   switchModalTab(tab);
 }
@@ -1005,12 +1097,7 @@ function switchModalTab(tab) {
   }
 }
 
-btnOpenImportModal.addEventListener('click', () => {
-  jsonThemeEditor.value = JSON.stringify(previewEngine.getActiveThemeSet(), null, 2);
-  openModal('json');
-});
-
-btnOpenThemeBuilder.addEventListener('click', () => openModal('visual'));
+btnOpenThemeStudio.addEventListener('click', () => openModal('json'));
 btnCloseModal.addEventListener('click', () => themeModal.classList.remove('open'));
 tabBtnJson.addEventListener('click', () => switchModalTab('json'));
 tabBtnVisual.addEventListener('click', () => switchModalTab('visual'));
@@ -1097,7 +1184,7 @@ btnSaveGeneratedTheme.addEventListener('click', async () => {
       payload = buildThemeSetFromVisualBuilder();
     }
 
-    const updatedCfg = await window.farmerAPI.importSharedBundle(payload);
+    const updatedCfg = await window.companionAPI.importSharedBundle(payload);
     syncUIFromConfig(updatedCfg);
     themeModal.classList.remove('open');
     showToast(tr('🎉 บันทึกและเปิดใช้งานชุดธีมเรียบร้อยแล้ว!', '🎉 Saved & Activated Theme Set!'));
@@ -1108,12 +1195,12 @@ btnSaveGeneratedTheme.addEventListener('click', async () => {
 
 // Test Alert & Dismiss
 btnTriggerAlertNow.addEventListener('click', async () => {
-  await window.farmerAPI.triggerTestAlert();
+  await window.companionAPI.triggerTestAlert();
   showToast(tr('🔔 ทดสอบแจ้งเตือนบน Taskbar แล้ว!', '🔔 Triggered Cartoon Alert on Taskbar!'));
 });
 
 btnDismissNow.addEventListener('click', async () => {
-  await window.farmerAPI.dismissAlert();
+  await window.companionAPI.dismissAlert();
   showToast(tr('✅ ปิดการแจ้งเตือนแล้ว', '✅ Alert dismissed'));
 });
 

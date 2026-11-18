@@ -10,12 +10,19 @@
 <body>
   <header class="app-header">
     <div class="title-group">
-      <h1 id="hdrTitle">🍅 Pomodoro Cartoon Companion</h1>
+      <h1>
+        <span id="hdrTitle">🍅 Pomodoro Cartoon Companion</span>
+        <span class="version-pill" id="hdrVersionPill">v1.2.0</span>
+      </h1>
       <p id="hdrSubtitle">
         จับเวลาโฟกัสงานด้วยตัวละครการ์ตูนบน Taskbar พร้อมสร้าง/นำเข้า/แชร์ชุดธีม (Theme Set) ด้วย Generative AI
       </p>
     </div>
     <div class="header-actions">
+      <div class="nav-pills">
+        <button class="nav-pill-btn active" id="navBtnMain">⚙️ ตั้งค่า & โพโมโดโร</button>
+        <button class="nav-pill-btn" id="navBtnAbout">ℹ️ เกี่ยวกับ & เวอร์ชัน</button>
+      </div>
       <select class="lang-select" id="selectLanguage" title="Switch Language TH / EN">
         <option value="th">🇹🇭 ภาษาไทย (TH)</option>
         <option value="en">🇬🇧 English (EN)</option>
@@ -25,7 +32,8 @@
     </div>
   </header>
 
-  <main class="layout-grid">
+  <!-- VIEW 1: MAIN POMODORO & SETTINGS DASHBOARD -->
+  <main class="layout-grid" id="viewMain">
     <!-- Left Column: Pomodoro Live Timer Dashboard + Cartoon Preview -->
     <section>
       <!-- 1. Pomodoro Live Timer Dashboard -->
@@ -145,8 +153,8 @@
             <label for="selectThemeSet" id="lblSelectThemeSet">เลือกชุดธีม</label>
             <select id="selectThemeSet"></select>
           </div>
-          <div class="form-group" id="farmerOutfitGroup" style="margin-bottom: 6px;">
-            <label for="selectSkin" id="lblFarmerOutfit">ชุดแต่งกายชาวสวน</label>
+          <div class="form-group" id="characterOutfitGroup" style="margin-bottom: 6px;">
+            <label for="selectSkin" id="lblCharacterOutfit">ชุดแต่งกายตัวละคร</label>
             <select id="selectSkin">
               <option value="thai-kamar" id="optSkinKamar">ลุงสมชาย — ผ้าขาวม้า & หมวกสาน</option>
               <option value="classic-overalls" id="optSkinOveralls">Sunny McFarm — เอี๊ยมยีนส์</option>
@@ -154,28 +162,6 @@
               <option value="golden-palm" id="optSkinBoss">เถ้าแก่สวนปาล์ม — แว่นดำ</option>
             </select>
           </div>
-        </div>
-
-        <div class="theme-toolbar">
-          <button class="btn-primary" id="btnCopyAiPromptDirect">
-            🤖 คัดลอกพรอมต์ AI สร้างชุดธีมใหม่
-          </button>
-          <button class="btn-secondary" id="btnOpenImportModal">
-            📥 นำเข้าชุดธีม / ตั้งค่า
-          </button>
-          <button class="btn-secondary" id="btnOpenThemeBuilder">
-            ✨ สร้างชุดธีมเอง
-          </button>
-          <button class="btn-secondary" id="btnExportThemeSet">
-            📤 ส่งออกชุดธีม (.json)
-          </button>
-          <button class="btn-secondary" id="btnExportFullBundle">
-            📦 แชร์ตั้งค่า+ชุดธีม
-          </button>
-          <button class="btn-danger" id="btnDeleteCustomTheme" style="display: none;">
-            🗑️ ลบชุดธีม
-          </button>
-          <input type="file" id="fileImportInput" accept=".json" style="display: none;" />
         </div>
 
         <div class="form-row" style="margin-bottom: 0;">
@@ -193,6 +179,20 @@
               <input type="range" id="rangeSpeed" min="0.5" max="2.0" step="0.1" value="1.0" style="flex: 1;" />
             </div>
           </div>
+        </div>
+
+        <!-- Consolidated Bottom Row Toolbar -->
+        <div class="theme-toolbar">
+          <button class="btn-primary" id="btnOpenThemeStudio">
+            🤖 สร้าง / นำเข้าชุดธีมด้วย AI (Theme Studio & Import)
+          </button>
+          <button class="btn-secondary" id="btnExportShare">
+            📤 ส่งออก / แชร์ชุดธีม (.json)
+          </button>
+          <button class="btn-danger" id="btnDeleteCustomTheme" style="display: none;">
+            🗑️ ลบชุดธีม
+          </button>
+          <input type="file" id="fileImportInput" accept=".json" style="display: none;" />
         </div>
       </div>
 
@@ -254,7 +254,44 @@
     </section>
   </main>
 
-  <!-- Theme Set Studio Modal: AI Prompt, Import JSON, or Visual Theme Set Creator -->
+  <!-- VIEW 2: ABOUT & VERSION CONTROL / RELEASE NOTES PAGE -->
+  <section class="about-container" id="viewAbout" style="display: none;">
+    <div class="about-hero">
+      <div>
+        <h2 style="font-size: 22px; color: #FFF; margin-bottom: 4px;">
+          🍅 Pomodoro Cartoon Companion
+          <span class="version-pill" id="aboutVersionBadge">v1.2.0</span>
+        </h2>
+        <p id="aboutHeroDesc" style="font-size: 13px; color: #A5D6A7; max-width: 620px;">
+          แอปจับเวลาโพโมโดโรพร้อมเพื่อนคู่หูการ์ตูนแอนิเมชัน 60 FPS บน Windows Taskbar ที่เปิดให้คุณออกแบบตัวละคร
+          ยานพาหนะ และท่าทางแอนิเมชันได้อย่างอิสระผ่านไฟล์ JSON และ Generative AI
+        </p>
+        <div class="about-badges">
+          <span class="tech-badge">⚡ 60 FPS Universal 2D Drawable Engine</span>
+          <span class="tech-badge">🍅 Core Pomodoro Timer + Overflow & Strict Mode</span>
+          <span class="tech-badge">🤖 Generative AI Theme Set JSON</span>
+          <span class="tech-badge" id="badgeElectronVer">Electron</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="hdrSystemPaths">📂 ข้อมูลระบบและตำแหน่งไฟล์ (System & Storage Paths)</h2>
+      <div style="font-size: 12.5px; color: #E8F5E9; display: flex; flex-direction: column; gap: 6px;">
+        <div><strong id="lblPathConfig">ไฟล์การตั้งค่า (Config File):</strong> <code id="valConfigPath"
+            style="color: #FFE082;">config.json</code></div>
+        <div><strong id="lblPathThemes">โฟลเดอร์ชุดธีม (Themes Folder):</strong> <code id="valThemesDir"
+            style="color: #FFE082;">themes/</code></div>
+      </div>
+    </div>
+
+    <h2 id="hdrReleaseNotes" style="font-size: 16px; color: var(--accent-gold); margin: 16px 0 10px 4px;">
+      📜 ประวัติเวอร์ชันและบันทึกการอัปเดต (Version Control & Release Notes)
+    </h2>
+    <div id="releaseNotesList"></div>
+  </section>
+
+  <!-- Theme Set Studio Modal: AI Prompt, Import JSON, Visual Builder & Export Options -->
   <div class="modal-backdrop" id="themeModal">
     <div class="modal-panel">
       <div class="modal-header">
@@ -264,28 +301,34 @@
 
       <div class="modal-tabs">
         <button class="tab-btn active" id="tabBtnJson">
-          🤖 สร้างด้วย AI & นำเข้า JSON
+          🤖 สร้างด้วย AI & นำเข้า / ส่งออก JSON
         </button>
         <button class="tab-btn" id="tabBtnVisual">
           ✨ ปรับแต่งชุดธีมด้วยตัวเอง
         </button>
       </div>
 
-      <!-- Tab 1: AI Prompt & JSON Import/Edit -->
+      <!-- Tab 1: AI Prompt & JSON Import/Export -->
       <div class="modal-body" id="tabPaneJson">
         <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
           <button class="btn-primary" id="btnCopyAiPrompt">
             🤖 คัดลอกพรอมต์ไปวางใน ChatGPT / Gemini / Claude
           </button>
           <button class="btn-secondary" id="btnBrowseJsonFile">
-            📂 เลือกไฟล์ .json จากคอมพิวเตอร์
+            📂 นำเข้าไฟล์ .json จากคอมพิวเตอร์
+          </button>
+          <button class="btn-secondary" id="btnExportThemeSet">
+            📤 ส่งออกเฉพาะชุดธีม (.json)
+          </button>
+          <button class="btn-secondary" id="btnExportFullBundle">
+            📦 ส่งออกชุดธีม + ตั้งค่าทั้งหมด (.json)
           </button>
         </div>
         <p id="lblModalJsonHint" style="font-size: 12px; color: #A5D6A7; margin-bottom: 8px;">
-          💡 กดปุ่มคัดลอกพรอมต์ด้านบนไปสั่ง Generative AI ให้ออกแบบตัวละครและท่าทางใหม่ จากนั้นนำโค้ด JSON
-          ที่ได้มาวางด้านล่างแล้วกดบันทึก!
+          💡 กดปุ่มคัดลอกพรอมต์ด้านบนไปสั่ง Generative AI ให้ออกแบบตัวละคร ยานพาหนะ และท่าทางใหม่ทั้งหมด จากนั้นนำโค้ด
+          JSON ที่ได้มาวางด้านล่างแล้วกดบันทึก!
         </p>
-        <textarea id="jsonThemeEditor" rows="15"></textarea>
+        <textarea class="f-width" id="jsonThemeEditor" rows="15"></textarea>
       </div>
 
       <!-- Tab 2: Visual Theme Set Generator -->
@@ -388,7 +431,7 @@
 
   <div class="toast" id="toastMsg">บันทึกเรียบร้อย!</div>
 
-  <script src="../overlay/farmer-engine.js"></script>
+  <script src="../overlay/cartoon-engine.js"></script>
   <script src="settings.js"></script>
 </body>
 

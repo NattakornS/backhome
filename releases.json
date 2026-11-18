@@ -1,0 +1,67 @@
+{
+  "appName": "Pomodoro Cartoon Companion",
+  "currentVersion": "1.2.0",
+  "releases": [
+    {
+      "version": "1.2.0",
+      "date": "2026-11-18",
+      "tag": "Latest",
+      "titleTh": "ระบบจับเวลาโพโมโดโร & เอนจินวาดการ์ตูนอิสระ (Pomodoro Engine & Universal Drawable Scene Graph)",
+      "titleEn": "Core Pomodoro Timer Engine & Universal 2D Drawable Scene Graph",
+      "changesTh": [
+        "เพิ่มระบบจับเวลา Pomodoro Core Engine: ปรับเวลาโฟกัส (25 นาที), พักสั้น (5 นาที), พักยาว (15-30 นาที) และจำนวนรอบก่อนพักยาว",
+        "เพิ่มโหมดล่วงเวลา (Overflow / Overtime Mode) นับเวลาบวกต่อเมื่อครบ 00:00 เพื่อไม่ให้เสียสมาธิขณะอยู่ในสภาวะ Flow",
+        "เพิ่มโหมดเข้มงวด (Strict Mode) ล็อกการกดหยุดพัก ข้าม หรือปิดแอปจนกว่าจะครบเวลาโฟกัส",
+        "อัปเกรดเอนจิน cartoon-engine.js เป็น Universal Declarative 2D Drawable Scene Graph รองรับการสร้างรูปร่าง ยานพาหนะ อาวุธ พร็อพ และแอนิเมชันอิสระจาก JSON ด้วย Generative AI",
+        "ปรับดีไซน์ Taskbar Overlay ให้คลีน: แสดงป้าย Pomodoro ขนาดกะทัดรัดที่มุมขวาล่าง และซ่อนป้ายชื่อท่าทาง+เมนูคำสั่งไว้แสดงเฉพาะตอนเอาเมาส์ชี้ (Hover)",
+        "รีแฟกเตอร์โค้ดทั้งหมดจากโปรเจกต์ Farmer ต้นแบบ สู่ Pomodoro Cartoon Companion พร้อมหน้าเกี่ยวกับ (About) และบันทึกเวอร์ชัน (Release Notes)"
+      ],
+      "changesEn": [
+        "Added Core Pomodoro Timer Engine: customizable Focus (25m), Short Break (5m), Long Break (15-30m), and cycle automation.",
+        "Added Overflow / Overtime Mode to keep counting up past 00:00 so you never lose deep flow state momentum.",
+        "Added Strict Mode to lock pausing, skipping, resetting, or quitting during an active Focus session.",
+        "Upgraded cartoon-engine.js into a Universal Declarative 2D Drawable & Animation Scene Graph — generate any character, vehicle, prop, pose, and particle effect via AI JSON.",
+        "Redesigned lean bottom-right Pomodoro overlay pill (expands CTA on hover) and combined character behavior label + action menu (shown only on hover).",
+        "Refactored codebase from Farmer prototype to Pomodoro Cartoon Companion and added About & Release Notes page."
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-11-18",
+      "tag": "Feature",
+      "titleTh": "สตูดิโอชุดธีมตัวละครและท่าทาง (Multi-Theme Set Studio & AI JSON Import/Export)",
+      "titleEn": "Multi-Theme Set Studio & AI JSON Import/Export",
+      "changesTh": [
+        "เพิ่มระบบชุดธีม (Theme Set: ตัวละคร + ชุดท่าทาง) พร้อมธีมมาตรฐาน (ชาวสวนปาล์ม, เชฟสตรีทฟู้ด, พ่อมดนักปรุงยา, นักพัฒนาสายโฟกัส)",
+        "เพิ่มปุ่มคัดลอกพรอมต์สำหรับ Generative AI (ChatGPT / Gemini / Claude) เพื่อสร้างชุดธีมใหม่และนำเข้าไฟล์ .json",
+        "รองรับการส่งออกและแชร์ไฟล์ชุดธีม (.json) รวมถึงไฟล์รวมการตั้งค่าทั้งหมด (Share Bundle)",
+        "รองรับการสลับภาษาเมนู ภาษาไทย (TH) และ English (EN)"
+      ],
+      "changesEn": [
+        "Added Theme Set architecture (Character Style + Behavior Set) with built-in Theme Sets (Farmer, Street Chef, Cozy Wizard, Focus Coder).",
+        "Added 1-click AI Prompt generator for ChatGPT / Gemini / Claude to generate custom Theme Set JSON files.",
+        "Added JSON import, export, and full Settings + Theme Set Share Bundle export.",
+        "Added Thai (TH) and English (EN) language switching across all menus."
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-11-17",
+      "tag": "Initial",
+      "titleTh": "เปิดตัวแอปการ์ตูนแอนิเมชันบน Taskbar และระบบแจ้งเตือน 16:00 (Initial Release)",
+      "titleEn": "Initial Release — Taskbar Cartoon Companion & 16:00 Alert",
+      "changesTh": [
+        "หน้าต่างการ์ตูนแอนิเมชันโปร่งใส 60 FPS เดินบน Taskbar มุมขวาล่าง พร้อมระบบคลิกทะลุอัจฉริยะ (Smart Click-Through)",
+        "รองรับ 7 ท่าทางแอนิเมชันเริ่มต้น พร้อมเอฟเฟกต์พาร์ติเคิลและเสียงดนตรีแจ้งเตือน Web Audio",
+        "ระบบแจ้งเตือนเวลาเลิกงาน 16:00 พร้อมปุ่มเลื่อนเวลา (Snooze) และเมนูควบคุมผ่าน System Tray",
+        "รองรับการปรับตำแหน่งหน้าจอ ลากวางอิสระ (Drag & Drop) และปรับขนาด/ความเร็วตัวละคร"
+      ],
+      "changesEn": [
+        "Transparent 60 FPS always-on-top Windows taskbar overlay with smart mouse click-through.",
+        "7 animated cartoon behaviors with particle physics and synthesized Web Audio chime.",
+        "Daily 16:00 Back-Home alarm with Snooze controls and System Tray integration.",
+        "Screen position presets, drag-to-move anywhere on screen, and character size/speed controls."
+      ]
+    }
+  ]
+}
