@@ -1,0 +1,69 @@
+{
+  "id": "pirate-captain",
+  "name": "🏴‍☠️ Pirate Captain (กัปตันโจรสลัด)",
+  "characterName": "Captain Jack Kra-Pao (กัปตันแจ็ค)",
+  "alertMessage": "16:00 Drop Anchor! 🏴‍☠️ ได้เวลาเทียบท่า กลับบ้านกันพวกลูกเรือ!",
+  "hatStyle": "crown",
+  "vehicleStyle": "scooter",
+  "groundColor": "#26C6DA",
+  "skin": {
+    "name": "Captain Jack Kra-Pao",
+    "skinTone": "#E8B48A",
+    "cheek": "#E57373",
+    "hatMain": "#FFD54F",
+    "hatDark": "#F57F17",
+    "hatBand": "#B71C1C",
+    "shirt": "#B71C1C",
+    "shirtSleeve": "#8E0000",
+    "overalls": "#212121",
+    "kamarBelt": true,
+    "pants": "#1C2833",
+    "boots": "#3E2723",
+    "sunglasses": false,
+    "mustache": true
+  },
+  "vehicle": {
+    "bodyColor": "#5D4037",
+    "trimColor": "#FFD54F",
+    "wheelColor": "#212121",
+    "rimColor": "#FFB300",
+    "smokeColor": "#E0F7FA"
+  },
+  "behaviors": {
+    "tractor": {
+      "icon": "🚢",
+      "label": "Sailing Mini Galleon (แล่นเรือโจรสลัด)",
+      "particleColor": "#80DEEA"
+    },
+    "machete": {
+      "icon": "🗡️",
+      "label": "Swinging Cutlass Sword (ฟันดาบโจรสลัด)",
+      "particleColor": "#FFD54F"
+    },
+    "water": {
+      "icon": "🍺",
+      "label": "Pouring Island Rum (รินน้ำผลไม้เกาะมหาสมบัติ)",
+      "particleColor": "#FFB300"
+    },
+    "plant": {
+      "icon": "🗺️",
+      "label": "Burying Treasure Chest (ฝังหีบสมบัติ)",
+      "particleColor": "#FFE082"
+    },
+    "palm": {
+      "icon": "🌴",
+      "label": "Harvesting Island Coconuts (สอยมะพร้าวเกาะสวรรค์)",
+      "particleColor": "#66BB6A"
+    },
+    "fertilizer": {
+      "icon": "🪙",
+      "label": "Tossing Gold Doubloons (โปรยเหรียญทอง)",
+      "particleColor": "#FFD700"
+    },
+    "fix": {
+      "icon": "⚓",
+      "label": "Repairing Ship Helm (ซ่อมพังงาเรือ)",
+      "particleColor": "#FF8A65"
+    }
+  }
+}

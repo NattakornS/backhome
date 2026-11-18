@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Farmer Back-Home Alert (16:00) — Settings & Control Panel</title>
+  <title>Farmer Back-Home Alert (16:00) — Settings & Theme Studio</title>
   <link rel="stylesheet" href="settings.css" />
 </head>
 <body>
   <header class="app-header">
     <div class="title-group">
-      <h1>👨‍🌾 Farmer Back-Home Alert & Taskbar Companion</h1>
-      <p>Configure your cartoon farmer character, 7 farming behaviors, screen position, 16:00 wake alarm, and snooze.</p>
+      <h1>👨‍🌾 Cartoon Taskbar Companion & 16:00 Back-Home Alert</h1>
+      <p>Switch cartoon themes, generate or import your own custom themes (.json), and configure your 16:00 wake alarm.</p>
     </div>
     <div class="header-actions">
       <span class="status-pill" id="statusPill">⏰ Next Alert: 16:00</span>
@@ -19,49 +19,108 @@
   </header>
 
   <main class="layout-grid">
-    <!-- Left Column: Live Cartoon Preview & 7 Farming Behaviors -->
+    <!-- Left Column: Live Cartoon Preview & 7 Behaviors -->
     <section>
       <div class="card">
-        <h2>🎬 Live Cartoon Preview</h2>
+        <h2>
+          <span>🎬 Live Cartoon Preview</span>
+          <span id="previewThemeBadge" style="font-size: 11.5px; color: #A5D6A7; font-weight: 600;"></span>
+        </h2>
         <div class="preview-stage">
           <canvas id="previewCanvas" width="310" height="220"></canvas>
         </div>
 
         <label style="font-size: 12px; color: #98B39E; font-weight: 600;">
-          Click a Farming Behavior to Switch Immediately:
+          Click an Action Behavior to Switch Immediately:
         </label>
         <div class="behavior-grid" id="behaviorButtons">
           <button class="behavior-chip full-span" data-behavior="cycle">
-            🔄 Auto-Cycle All 7 Behaviors
+            🔄 Auto-Cycle All 7 Actions
           </button>
-          <button class="behavior-chip" data-behavior="tractor">
+          <button class="behavior-chip" data-behavior="tractor" id="chip-tractor">
             🚜 Drive Tractor
           </button>
-          <button class="behavior-chip" data-behavior="machete">
+          <button class="behavior-chip" data-behavior="machete" id="chip-machete">
             🔪 Hold Machete
           </button>
-          <button class="behavior-chip" data-behavior="water">
+          <button class="behavior-chip" data-behavior="water" id="chip-water">
             🚿 Pour Water
           </button>
-          <button class="behavior-chip" data-behavior="plant">
+          <button class="behavior-chip" data-behavior="plant" id="chip-plant">
             🌱 Plant Tree
           </button>
-          <button class="behavior-chip" data-behavior="palm">
+          <button class="behavior-chip" data-behavior="palm" id="chip-palm">
             🌴 Harvest Palm
           </button>
-          <button class="behavior-chip" data-behavior="fertilizer">
+          <button class="behavior-chip" data-behavior="fertilizer" id="chip-fertilizer">
             🌾 Fertilizer
           </button>
-          <button class="behavior-chip full-span" data-behavior="fix">
-            🔧 Fix the Things (Fence & Gear)
+          <button class="behavior-chip full-span" data-behavior="fix" id="chip-fix">
+            🔧 Fix the Things
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Right Column: Wake Time, Snooze, Character & Screen Position Settings -->
+    <!-- Right Column: Theme Manager, Wake Time, Character & Screen Position -->
     <section>
-      <!-- 1. Wake Time (16:00) & Snooze -->
+      <!-- 1. Cartoon Theme Selector & Custom Theme Generator/Importer -->
+      <div class="card">
+        <h2>
+          <span>🎨 Cartoon Animation Theme & Custom Theme Studio</span>
+        </h2>
+
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom: 6px;">
+            <label for="selectTheme">Active Cartoon Theme</label>
+            <select id="selectTheme"></select>
+          </div>
+          <div class="form-group" id="farmerOutfitGroup" style="margin-bottom: 6px;">
+            <label for="selectSkin">Farmer Outfit Preset</label>
+            <select id="selectSkin">
+              <option value="thai-kamar">Uncle Somchai — Thai Kamar & Straw Hat (ผ้าขาวม้า)</option>
+              <option value="classic-overalls">Sunny McFarm — Blue Overalls & Red Plaid</option>
+              <option value="modern-rancher">Ranger Khao — Field Vest & Green Cap</option>
+              <option value="golden-palm">Boss Palm — Sunglasses & Golden Polo (เถ้าแก่สวนปาล์ม)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="theme-toolbar">
+          <button class="btn-primary" id="btnOpenThemeBuilder">
+            ✨ Generate Own Theme
+          </button>
+          <button class="btn-secondary" id="btnOpenImportModal">
+            📥 Import Theme (.json)
+          </button>
+          <button class="btn-secondary" id="btnExportTheme">
+            📤 Export Active Theme (.json)
+          </button>
+          <button class="btn-danger" id="btnDeleteCustomTheme" style="display: none;">
+            🗑️ Delete Custom Theme
+          </button>
+          <input type="file" id="fileImportInput" accept=".json" style="display: none;" />
+        </div>
+
+        <div class="form-row" style="margin-bottom: 0;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="inputCharacterName">Character Display Name</label>
+            <input type="text" id="inputCharacterName" value="Uncle Somchai (ลุงสมชาย)" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="rangeScale">
+              <span>Size: <strong id="valScale">1.00x</strong></span>
+              <span>Speed: <strong id="valSpeed">1.0x</strong></span>
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <input type="range" id="rangeScale" min="0.8" max="1.4" step="0.05" value="1.0" style="flex: 1;" title="Character Scale" />
+              <input type="range" id="rangeSpeed" min="0.5" max="2.0" step="0.1" value="1.0" style="flex: 1;" title="Walk Speed" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Wake Time (16:00) & Snooze -->
       <div class="card">
         <h2>⏰ Wake Time (Back-Home Alert) & Snooze</h2>
         <div class="form-row">
@@ -102,43 +161,6 @@
         </div>
       </div>
 
-      <!-- 2. Character Outfit & Animation Speed -->
-      <div class="card">
-        <h2>👕 Character Appearance & Speed</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="selectSkin">Character Outfit / Style</label>
-            <select id="selectSkin">
-              <option value="thai-kamar">Uncle Somchai — Thai Kamar & Straw Hat (ผ้าขาวม้า)</option>
-              <option value="classic-overalls">Sunny McFarm — Blue Overalls & Red Plaid</option>
-              <option value="modern-rancher">Ranger Khao — Field Vest & Green Cap</option>
-              <option value="golden-palm">Boss Palm — Sunglasses & Golden Polo (เถ้าแก่สวนปาล์ม)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="inputCharacterName">Character Display Name</label>
-            <input type="text" id="inputCharacterName" value="Uncle Somchai (ลุงสมชาย)" />
-          </div>
-        </div>
-
-        <div class="form-row" style="margin-bottom: 0;">
-          <div class="form-group" style="margin-bottom: 0;">
-            <label for="rangeScale">
-              <span>Character Size / Scale</span>
-              <span id="valScale">1.0x</span>
-            </label>
-            <input type="range" id="rangeScale" min="0.8" max="1.4" step="0.05" value="1.0" />
-          </div>
-          <div class="form-group" style="margin-bottom: 0;">
-            <label for="rangeSpeed">
-              <span>Walk & Action Speed</span>
-              <span id="valSpeed">1.0x</span>
-            </label>
-            <input type="range" id="rangeSpeed" min="0.5" max="2.0" step="0.1" value="1.0" />
-          </div>
-        </div>
-      </div>
-
       <!-- 3. Screen Position & Visibility Mode -->
       <div class="card" style="margin-bottom: 0;">
         <h2>📍 Screen Position & Taskbar Visibility</h2>
@@ -165,25 +187,146 @@
         <div class="form-row" style="margin-bottom: 4px;">
           <div class="form-group" style="margin-bottom: 0;">
             <label for="rangeOffsetX">
-              <span>Fine-Tune Horizontal Offset (X)</span>
+              <span>Horizontal Offset (X)</span>
               <span id="valOffsetX">0 px</span>
             </label>
             <input type="range" id="rangeOffsetX" min="-400" max="400" step="5" value="0" />
           </div>
           <div class="form-group" style="margin-bottom: 0;">
             <label for="rangeOffsetY">
-              <span>Fine-Tune Vertical Offset (Y)</span>
+              <span>Vertical Offset (Y)</span>
               <span id="valOffsetY">0 px</span>
             </label>
             <input type="range" id="rangeOffsetY" min="-300" max="100" step="5" value="0" />
           </div>
         </div>
-        <p style="font-size: 11.5px; color: #98B39E; margin-top: 6px;">
-          💡 Tip: You can also hover over the farmer on your taskbar and drag the <strong>✋ Move</strong> button to place him anywhere on your screen!
-        </p>
       </div>
     </section>
   </main>
+
+  <!-- Theme Studio Modal: Generate Own Theme OR Import JSON -->
+  <div class="modal-backdrop" id="themeModal">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h3>🎨 Custom Cartoon Theme Studio — Generate or Import Theme</h3>
+        <button class="btn-secondary" id="btnCloseModal">✖ Close</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tabBtnVisual">✨ Visual Theme Generator</button>
+        <button class="tab-btn" id="tabBtnJson">📥 Import / Edit Theme JSON & AI Prompt</button>
+      </div>
+
+      <!-- Tab 1: Visual Generator -->
+      <div class="modal-body" id="tabPaneVisual">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Theme Display Name (with Emoji)</label>
+            <input type="text" id="genThemeName" value="🚀 Space Astronaut (นักบินอวกาศ)" />
+          </div>
+          <div class="form-group">
+            <label>Character Name</label>
+            <input type="text" id="genCharName" value="Captain Astro (กัปตันแอสโตร)" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hat / Headgear Style</label>
+            <select id="genHatStyle">
+              <option value="straw-hat">🌾 Woven Straw Hat (หมวกสานชาวสวน)</option>
+              <option value="chef-hat">🍜 Tall Chef Hat (หมวกเชฟ)</option>
+              <option value="wizard-hat">🧙‍♂️ Pointed Wizard Hat (หมวกพ่อมด)</option>
+              <option value="samurai-helm">⚡ Cyber Samurai Helmet (หมวกเกราะซามูไร)</option>
+              <option value="crown">👑 Royal Golden Crown (มงกุฎราชา)</option>
+              <option value="cap">🧢 Modern Field Cap (หมวกแก๊ป)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ride Vehicle Style (Action 1)</label>
+            <select id="genVehicleStyle">
+              <option value="tractor">🚜 Farm Tractor (รถไถ)</option>
+              <option value="scooter">🛵 Street Scooter / Cart (สกู๊ตเตอร์)</option>
+              <option value="magic-broom">🧹 Floating Magic Broom (ไม้กวาดบิน)</option>
+              <option value="hover-bike">🏍️ Neon Hover-Bike (โฮเวอร์ไบค์)</option>
+            </select>
+          </div>
+        </div>
+
+        <label style="font-size: 12px; color: #98B39E; font-weight: 600; display: block; margin-bottom: 6px;">
+          Color Palette (Click to pick colors or click 🎲 Randomize below):
+        </label>
+        <div class="color-grid">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Hat Color</label>
+            <input type="color" id="genColorHat" value="#FFD54F" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Shirt Color</label>
+            <input type="color" id="genColorShirt" value="#1E88E5" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Vest / Overalls</label>
+            <input type="color" id="genColorOveralls" value="#263238" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Vehicle Body</label>
+            <input type="color" id="genColorVehicle" value="#00ACC1" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Ground / Turf</label>
+            <input type="color" id="genColorGround" value="#00E5FF" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>16:00 Alert Message for This Theme</label>
+            <input type="text" id="genAlertMessage" value="16:00 Mission Complete! 🚀 ได้เวลากลับโลกแล้ว!" />
+          </div>
+          <div class="form-group">
+            <label>Optional Custom Sprite Image/GIF URL (Leave blank for 2D Vector Puppet)</label>
+            <input type="text" id="genSpriteUrl" placeholder="https://example.com/my-character.gif or leave empty" />
+          </div>
+        </div>
+
+        <label style="font-size: 12px; color: #98B39E; font-weight: 600; display: block; margin-bottom: 6px;">
+          Customize 7 Behavior Labels (Emoji + Action Name):
+        </label>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <input type="text" id="genBTractor" value="🛸 Riding Lunar Rover (ขับรถสำรวจดวงจันทร์)" />
+          <input type="text" id="genBMachete" value="⚔️ Swinging Laser Blade (ฟันเลเซอร์เบลด)" />
+        </div>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <input type="text" id="genBWater" value="🧪 Pouring Starlight Fuel (เติมเชื้อเพลิงดวงดาว)" />
+          <input type="text" id="genBPlant" value="🌱 Planting Bio-Dome Tree (ปลูกต้นไม้อวกาศ)" />
+        </div>
+        <div class="form-row" style="margin-bottom: 0;">
+          <input type="text" id="genBPalm" value="☄️ Harvesting Meteor Crystal (เก็บคริสตัลอุกกาบาต)" />
+          <input type="text" id="genBFert" value="✨ Scattering Stardust (โปรยละอองดาว)" />
+        </div>
+      </div>
+
+      <!-- Tab 2: Import / Edit Raw JSON & AI Prompt -->
+      <div class="modal-body" id="tabPaneJson" style="display: none;">
+        <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+          <button class="btn-secondary" id="btnBrowseJsonFile">📂 Choose .json File from Computer</button>
+          <button class="btn-secondary" id="btnCopyAiPrompt">🤖 Copy AI Prompt (Generate with ChatGPT / Gemini)</button>
+        </div>
+        <p style="font-size: 12px; color: #98B39E; margin-bottom: 8px;">
+          Paste or edit a Theme JSON object below, then click <strong>💾 Save & Apply Theme</strong>. Automatically saved to your <code>themes/</code> folder!
+        </p>
+        <textarea id="jsonThemeEditor" rows="14"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnRandomizeTheme">🎲 Randomize Colors & Style</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-primary" id="btnSaveGeneratedTheme">💾 Save & Apply Custom Theme</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toastMsg">Settings saved!</div>
 

@@ -10,6 +10,13 @@ function getConfigPath() {
   return path.join(__dirname, 'config.json');
 }
 
+function getThemesDir() {
+  if (app.isPackaged) {
+    return path.join(app.getPath('userData'), 'themes');
+  }
+  return path.join(__dirname, 'themes');
+}
+
 const DEFAULT_CONFIG = {
   wakeTime: '16:00',
   alarmEnabled: true,
@@ -23,6 +30,8 @@ const DEFAULT_CONFIG = {
   offsetY: 0,
   patrolWidth: 460,
   scale: 1.0,
+  activeTheme: 'farmer', // 'farmer' | 'chef' | 'wizard' | 'cyber' | custom theme id
+  customThemes: {},
   characterSkin: 'thai-kamar', // 'thai-kamar' | 'classic-overalls' | 'modern-rancher' | 'golden-palm'
   characterName: 'Uncle Somchai (ลุงสมชาย)',
   idleBehavior: 'cycle', // 'cycle' | 'tractor' | 'machete' | 'water' | 'plant' | 'palm' | 'fertilizer' | 'fix'
@@ -49,6 +58,30 @@ let runtimeState = {
   activeBehavior: 'tractor'
 };
 
+function loadThemesFromFolder() {
+  const dirs = [path.join(__dirname, 'themes')];
+  if (app.isPackaged) {
+    dirs.push(getThemesDir());
+  }
+  const loaded = {};
+  for (const dir of dirs) {
+    try {
+      if (!fs.existsSync(dir)) continue;
+      const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'));
+      for (const file of files) {
+        const raw = fs.readFileSync(path.join(dir, file), 'utf-8');
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.id && parsed.name) {
+          loaded[parsed.id] = parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed reading themes folder:', e);
+    }
+  }
+  return loaded;
+}
+
 function loadConfig() {
   try {
     const cfgPath = getConfigPath();
@@ -57,8 +90,14 @@ function loadConfig() {
       const parsed = JSON.parse(raw);
       config = { ...DEFAULT_CONFIG, ...parsed };
     } else {
-      saveConfigToFile();
+      config = { ...DEFAULT_CONFIG };
     }
+    const folderThemes = loadThemesFromFolder();
+    config.customThemes = {
+      ...folderThemes,
+      ...(config.customThemes || {})
+    };
+    saveConfigToFile();
   } catch (err) {
     console.error('Failed to load config.json, using defaults:', err);
     config = { ...DEFAULT_CONFIG };
@@ -542,6 +581,59 @@ function setupIPC() {
 
   ipcMain.handle('save-config', (_event, partial) => {
     updateConfig(partial);
+    return config;
+  });
+
+  ipcMain.handle('save-custom-theme', (_event, themeObj) => {
+    if (!themeObj || !themeObj.id || !themeObj.name) {
+      throw new Error('Theme must have an "id" and "name".');
+    }
+    const safeId = String(themeObj.id).replace(/[^a-zA-Z0-9_-]/g, '-').toLowerCase();
+    themeObj.id = safeId;
+
+    // Write to themes/ folder
+    try {
+      const themesDir = getThemesDir();
+      if (!fs.existsSync(themesDir)) {
+        fs.mkdirSync(themesDir, { recursive: true });
+      }
+      fs.writeFileSync(
+        path.join(themesDir, `${safeId}.json`),
+        JSON.stringify(themeObj, null, 2),
+        'utf-8'
+      );
+    } catch (e) {
+      console.warn('Could not write theme file to themes folder:', e);
+    }
+
+    const updatedCustomThemes = {
+      ...(config.customThemes || {}),
+      [safeId]: themeObj
+    };
+
+    updateConfig({
+      customThemes: updatedCustomThemes,
+      activeTheme: safeId,
+      characterName: themeObj.characterName || themeObj.name,
+      alertMessage: themeObj.alertMessage || config.alertMessage
+    });
+    return config;
+  });
+
+  ipcMain.handle('delete-custom-theme', (_event, themeId) => {
+    const updatedCustomThemes = { ...(config.customThemes || {}) };
+    delete updatedCustomThemes[themeId];
+    try {
+      const file = path.join(getThemesDir(), `${themeId}.json`);
+      if (fs.existsSync(file)) fs.unlinkSync(file);
+    } catch (e) {
+      console.warn('Could not delete theme file:', e);
+    }
+    const nextTheme = config.activeTheme === themeId ? 'farmer' : config.activeTheme;
+    updateConfig({
+      customThemes: updatedCustomThemes,
+      activeTheme: nextTheme
+    });
     return config;
   });
 

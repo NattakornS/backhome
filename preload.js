@@ -3,6 +3,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('farmerAPI', {
   getConfig: () => ipcRenderer.invoke('get-config'),
   saveConfig: (partialConfig) => ipcRenderer.invoke('save-config', partialConfig),
+  saveCustomTheme: (themeObj) => ipcRenderer.invoke('save-custom-theme', themeObj),
+  deleteCustomTheme: (themeId) => ipcRenderer.invoke('delete-custom-theme', themeId),
   getState: () => ipcRenderer.invoke('get-state'),
   triggerTestAlert: (behavior) => ipcRenderer.invoke('trigger-test-alert', behavior),
   dismissAlert: () => ipcRenderer.invoke('dismiss-alert'),
