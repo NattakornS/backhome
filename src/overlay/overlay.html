@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <title>Pomodoro Cartoon Companion — Overlay</title>
   <link rel="stylesheet" href="overlay.css" />
 </head>
+
 <body>
   <div class="overlay-root" id="overlayRoot">
     <!-- 1. Pomodoro / 16:00 Alert Speech Bubble -->
@@ -151,7 +153,7 @@
           osc.start(ctx.currentTime + idx * 0.14);
           osc.stop(ctx.currentTime + idx * 0.14 + 0.45);
         });
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function applyConfigAndState() {
@@ -367,4 +369,5 @@
     });
   </script>
 </body>
+
 </html>

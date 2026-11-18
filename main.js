@@ -349,40 +349,44 @@ function computeOverlayPosition(width, height) {
   const offsetX = Number(config.offsetX) || 0;
   const offsetY = Number(config.offsetY) || 0;
 
-  if (config.positionPreset === 'custom' && config.customX !== null && config.customY !== null) {
-    return {
-      x: Math.round(config.customX + offsetX),
-      y: Math.round(config.customY + offsetY)
-    };
-  }
-
-  let x = workArea.x + workArea.width - width - 12;
+  let x = workArea.x + workArea.width - width - 80;
   let y = workArea.y + workArea.height - height;
 
-  switch (config.positionPreset) {
-    case 'bottom-left':
-      x = workArea.x + 12;
-      y = workArea.y + workArea.height - height;
-      break;
-    case 'bottom-center':
-      x = workArea.x + Math.round((workArea.width - width) / 2);
-      y = workArea.y + workArea.height - height;
-      break;
-    case 'top-right':
-      x = workArea.x + workArea.width - width - 12;
-      y = workArea.y + 12;
-      break;
-    case 'bottom-right':
-    default:
-      x = workArea.x + workArea.width - width - 12;
-      y = workArea.y + workArea.height - height;
-      break;
+  if (config.positionPreset === 'custom' && config.customX !== null && config.customY !== null) {
+    x = config.customX;
+    y = config.customY;
+  } else {
+    switch (config.positionPreset) {
+      case 'bottom-left':
+        x = workArea.x + 24;
+        y = workArea.y + workArea.height - height;
+        break;
+      case 'bottom-center':
+        x = workArea.x + Math.round((workArea.width - width) / 2);
+        y = workArea.y + workArea.height - height;
+        break;
+      case 'top-right':
+        x = workArea.x + workArea.width - width - 80;
+        y = workArea.y + 16;
+        break;
+      case 'bottom-right':
+      default:
+        x = workArea.x + workArea.width - width - 80;
+        y = workArea.y + workArea.height - height;
+        break;
+    }
   }
 
-  return {
-    x: Math.round(x + offsetX),
-    y: Math.round(y + offsetY)
-  };
+  const finalX = Math.max(
+    workArea.x + 8,
+    Math.min(workArea.x + workArea.width - width - 24, Math.round(x + offsetX))
+  );
+  const finalY = Math.max(
+    workArea.y + 8,
+    Math.min(workArea.y + workArea.height - height, Math.round(y + offsetY))
+  );
+
+  return { x: finalX, y: finalY };
 }
 
 function applyOverlayBounds() {

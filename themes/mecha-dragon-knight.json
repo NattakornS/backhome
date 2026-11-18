@@ -1,0 +1,300 @@
+{
+  "id": "mecha-dragon-knight",
+  "nameTh": "🐉 อัศวินมังกรจักรกล",
+  "nameEn": "🐉 Mecha Dragon Knight",
+  "characterName": "ดราก้อนไนท์เรย์ (Dragon Knight Ray)",
+  "alertMessageFocusEnd": "🐉 พลังมังกรเต็มเปี่ยม! พักฟื้นเกราะพลังงานก่อนนะ (Dragon Core Charged! Time for a Break!)",
+  "character": {
+    "skinTone": "#F3C6A0",
+    "cheek": "#FF8A80",
+    "hatStyle": "none",
+    "shirt": "#1E293B",
+    "shirtSleeve": "#0F172A",
+    "overalls": "#B71C1C",
+    "pants": "#0F172A",
+    "boots": "#FFD54F",
+    "sunglasses": false,
+    "mustache": false,
+    "groundColor": "#FF5252",
+    "hatDrawables": [
+      { "type": "polygon", "points": [[-16, 4], [-14, -12], [0, -18], [14, -12], [16, 4]], "fill": "#263238", "stroke": "#FFD54F", "lineWidth": 1.5 },
+      { "type": "polygon", "points": [[-10, -10], [-24, -28], [-4, -14]], "fill": "#FF5252", "stroke": "#FFD54F", "lineWidth": 1.2 },
+      { "type": "polygon", "points": [[10, -10], [24, -28], [4, -14]], "fill": "#FF5252", "stroke": "#FFD54F", "lineWidth": 1.2 },
+      { "type": "circle", "x": 0, "y": -8, "r": 4, "fill": "#00E5FF", "anim": { "scaleAmp": 0.25, "scaleSpeed": 6 } }
+    ],
+    "torsoDrawables": [
+      {
+        "type": "group",
+        "x": -10,
+        "y": -48,
+        "anim": { "swingDeg": 18, "swingSpeed": 7, "pivotX": 0, "pivotY": 0 },
+        "children": [
+          { "type": "polygon", "points": [[0, 0], [-28, -18], [-22, 6], [-8, 12]], "fill": "#D32F2F", "stroke": "#FFD54F", "lineWidth": 1.2 }
+        ]
+      },
+      { "type": "star", "x": 0, "y": -44, "points": 4, "outerR": 6, "innerR": 2.5, "fill": "#00E5FF" }
+    ]
+  },
+  "behaviors": [
+    {
+      "id": "ride-dragon",
+      "icon": "🐉",
+      "labelTh": "ขี่มังกรไซเบอร์บินลาดตระเวน",
+      "labelEn": "Fly Cyber Dragon Mount",
+      "movementType": "hover",
+      "seatOffsetX": -6,
+      "seatOffsetY": -34,
+      "vehicleDrawables": [
+        { "type": "roundRect", "x": -38, "y": -38, "w": 76, "h": 22, "r": 10, "fill": "#B71C1C", "stroke": "#FFD54F", "lineWidth": 2 },
+        { "type": "polygon", "points": [[36, -38], [58, -48], [54, -24], [36, -20]], "fill": "#D32F2F", "stroke": "#FFD54F", "lineWidth": 1.5 },
+        { "type": "circle", "x": 48, "y": -38, "r": 3, "fill": "#00E5FF" },
+        {
+          "type": "polygon",
+          "points": [[-8, -34], [-34, -72], [12, -56]],
+          "fill": "rgba(0, 229, 255, 0.65)",
+          "stroke": "#00E5FF",
+          "lineWidth": 1.5,
+          "anim": { "swingDeg": 26, "swingSpeed": 9, "pivotX": -8, "pivotY": -34 }
+        },
+        {
+          "type": "polygon",
+          "points": [[-36, -28], [-64, -38], [-54, -18]],
+          "fill": "#FF9100",
+          "anim": { "scaleAmp": 0.25, "scaleSpeed": 14 }
+        }
+      ],
+      "particles": {
+        "spawnRate": 18,
+        "offsetX": -45,
+        "offsetY": -32,
+        "vxRange": [-55, -20],
+        "vyRange": [-25, 25],
+        "gravity": -10,
+        "size": 4.5,
+        "life": 0.6,
+        "shape": "star",
+        "colors": ["#FF9100", "#FFD54F", "#00E5FF"]
+      }
+    },
+    {
+      "id": "dragon-glaive",
+      "icon": "⚔️",
+      "labelTh": "ฟาดทวนมังกรเพลิง",
+      "labelEn": "Slash Dragon Flame Glaive",
+      "movementType": "walk",
+      "pose": {
+        "frontArmBaseDeg": -25,
+        "frontArmSwingDeg": 55,
+        "frontArmSwingSpeed": 8.5,
+        "legSwingDeg": 28
+      },
+      "toolDrawables": [
+        { "type": "line", "x1": -6, "y1": 8, "x2": 32, "y2": -22, "stroke": "#FFD54F", "lineWidth": 3.5 },
+        { "type": "polygon", "points": [[26, -18], [46, -34], [38, -8], [22, -10]], "fill": "#00E5FF", "stroke": "#FFFFFF", "lineWidth": 1.2 }
+      ],
+      "propDrawables": [
+        {
+          "type": "group",
+          "x": 0,
+          "y": 0,
+          "anim": { "moveYAmp": 4, "moveYSpeed": 6 },
+          "children": [
+            { "type": "circle", "x": 0, "y": -22, "r": 14, "fill": "#7E57C2", "stroke": "#EA80FC", "lineWidth": 2 },
+            { "type": "circle", "x": -5, "y": -25, "r": 2.5, "fill": "#FFF" },
+            { "type": "circle", "x": 5, "y": -25, "r": 2.5, "fill": "#FFF" }
+          ]
+        }
+      ],
+      "particles": {
+        "spawnRate": 22,
+        "offsetX": 42,
+        "offsetY": -28,
+        "vxRange": [20, 75],
+        "vyRange": [-70, -20],
+        "gravity": 180,
+        "size": 4,
+        "life": 0.55,
+        "shape": "star",
+        "colors": ["#00E5FF", "#FF5252", "#FFD54F"]
+      }
+    },
+    {
+      "id": "alchemy-chalice",
+      "icon": "🏆",
+      "labelTh": "รินน้ำอมฤตมังกร",
+      "labelEn": "Pour Dragon Elixir Chalice",
+      "movementType": "walk",
+      "pose": {
+        "frontArmBaseDeg": -40,
+        "frontArmSwingDeg": 10,
+        "frontArmSwingSpeed": 4
+      },
+      "toolDrawables": [
+        { "type": "polygon", "points": [[0, 0], [16, -6], [12, 10], [2, 8]], "fill": "#FFD54F", "stroke": "#F57F17", "lineWidth": 1.5 },
+        { "type": "circle", "x": 14, "y": 0, "r": 3.5, "fill": "#00E5FF" }
+      ],
+      "propDrawables": [
+        {
+          "type": "group",
+          "x": 0,
+          "y": 0,
+          "anim": { "scaleAmp": 0.15, "scaleSpeed": 4 },
+          "children": [
+            { "type": "polygon", "points": [[-12, 0], [0, -36], [12, 0]], "fill": "#00E5FF", "stroke": "#80D8FF", "lineWidth": 1.5 },
+            { "type": "star", "x": 0, "y": -42, "points": 5, "outerR": 7, "innerR": 3, "fill": "#FFD54F", "anim": { "rotateSpeed": 120 } }
+          ]
+        }
+      ],
+      "particles": {
+        "spawnRate": 30,
+        "offsetX": 46,
+        "offsetY": -42,
+        "vxRange": [15, 45],
+        "vyRange": [10, 40],
+        "gravity": 210,
+        "size": 3,
+        "life": 0.55,
+        "shape": "circle",
+        "colors": ["#00E5FF", "#80D8FF", "#EA80FC"]
+      }
+    },
+    {
+      "id": "summon-totem",
+      "icon": "⛩️",
+      "labelTh": "อัญเชิญเสาโทเท็มมังกร",
+      "labelEn": "Summon Dragon Totem Pillar",
+      "movementType": "work-pause",
+      "pose": {
+        "frontArmBaseDeg": -45,
+        "frontArmSwingDeg": 30,
+        "frontArmSwingSpeed": 6
+      },
+      "toolDrawables": [
+        { "type": "circle", "x": 10, "y": 0, "r": 7, "fill": "rgba(255, 213, 79, 0.4)", "stroke": "#FFD54F", "lineWidth": 2, "anim": { "scaleAmp": 0.3, "scaleSpeed": 8 } }
+      ],
+      "propDrawables": [
+        { "type": "roundRect", "x": -10, "y": -64, "w": 20, "h": 64, "r": 4, "fill": "#37474F", "stroke": "#FFD54F", "lineWidth": 1.5 },
+        { "type": "circle", "x": 0, "y": -76, "r": 10, "fill": "#FF5252", "stroke": "#FFD54F", "lineWidth": 2, "anim": { "moveYAmp": 5, "moveYSpeed": 5 } }
+      ],
+      "particles": {
+        "spawnRate": 20,
+        "offsetX": 48,
+        "offsetY": -55,
+        "vxRange": [-35, 35],
+        "vyRange": [-65, -20],
+        "gravity": -20,
+        "size": 4,
+        "life": 0.7,
+        "shape": "star",
+        "colors": ["#FFD54F", "#FF5252"]
+      }
+    },
+    {
+      "id": "meteor-harvest",
+      "icon": "☄️",
+      "labelTh": "สอยผลึกดาวตกจากฟากฟ้า",
+      "labelEn": "Harvest Falling Star Crystals",
+      "movementType": "work-pause",
+      "pose": {
+        "headTiltDeg": -20,
+        "frontArmBaseDeg": -65,
+        "frontArmSwingDeg": 18,
+        "frontArmSwingSpeed": 6
+      },
+      "toolDrawables": [
+        { "type": "line", "x1": -4, "y1": 10, "x2": 58, "y2": -45, "stroke": "#ECEFF1", "lineWidth": 3 },
+        { "type": "star", "x": 58, "y": -45, "points": 4, "outerR": 10, "innerR": 4, "fill": "#00E5FF", "anim": { "rotateSpeed": 180 } }
+      ],
+      "propDrawables": [
+        { "type": "line", "x1": 0, "y1": 0, "x2": 0, "y2": -105, "stroke": "#455A64", "lineWidth": 8 },
+        { "type": "circle", "x": 0, "y": -110, "r": 18, "fill": "#1A237E", "stroke": "#00E5FF", "lineWidth": 2 },
+        {
+          "type": "star",
+          "x": -10,
+          "y": -98,
+          "points": 5,
+          "outerR": 11,
+          "innerR": 5,
+          "fill": "#FFD54F",
+          "stroke": "#FF6D00",
+          "lineWidth": 1.5,
+          "anim": {
+            "fallLoop": { "duration": 2.4, "startAt": 1.1, "dropY": 88, "bounce": true }
+          }
+        }
+      ],
+      "particles": {
+        "spawnRate": 16,
+        "offsetX": 46,
+        "offsetY": -85,
+        "vxRange": [-40, 40],
+        "vyRange": [-30, 30],
+        "gravity": 90,
+        "size": 3.5,
+        "life": 0.65,
+        "shape": "star",
+        "colors": ["#FFD54F", "#00E5FF"]
+      }
+    },
+    {
+      "id": "dragon-music",
+      "icon": "🎸",
+      "labelTh": "บรรเลงพิณมังกรปล่อยคลื่นเสียง",
+      "labelEn": "Play Dragon Lute & Soundwaves",
+      "movementType": "walk",
+      "pose": {
+        "frontArmBaseDeg": -20,
+        "frontArmSwingDeg": 35,
+        "frontArmSwingSpeed": 10
+      },
+      "toolDrawables": [
+        { "type": "ellipse", "x": 8, "y": 4, "rx": 11, "ry": 8, "fill": "#D32F2F", "stroke": "#FFD54F", "lineWidth": 1.5 },
+        { "type": "rect", "x": 16, "y": -2, "w": 18, "h": 4, "r": 2, "fill": "#FFD54F" }
+      ],
+      "particles": {
+        "spawnRate": 16,
+        "offsetX": 28,
+        "offsetY": -56,
+        "vxRange": [15, 55],
+        "vyRange": [-65, -25],
+        "gravity": -15,
+        "size": 4.5,
+        "life": 0.85,
+        "shape": "note",
+        "colors": ["#FFD54F", "#00E5FF", "#FF80AB"]
+      }
+    },
+    {
+      "id": "forge-armor",
+      "icon": "🔨",
+      "labelTh": "ตีเกราะมังกรบนทั่งพลังงาน",
+      "labelEn": "Forge Dragon Armor on Anvil",
+      "movementType": "work-pause",
+      "pose": {
+        "frontArmBaseDeg": -25,
+        "frontArmSwingDeg": 45,
+        "frontArmSwingSpeed": 11
+      },
+      "toolDrawables": [
+        { "type": "rect", "x": 0, "y": -2, "w": 18, "h": 4, "r": 2, "fill": "#8D6E63" },
+        { "type": "roundRect", "x": 14, "y": -9, "w": 9, "h": 18, "r": 3, "fill": "#00E5FF", "stroke": "#FFF", "lineWidth": 1 }
+      ],
+      "propDrawables": [
+        { "type": "polygon", "points": [[-16, 0], [-10, -24], [10, -24], [16, 0]], "fill": "#263238", "stroke": "#90A4AE", "lineWidth": 1.5 },
+        { "type": "roundRect", "x": -18, "y": -30, "w": 36, "h": 8, "r": 3, "fill": "#455A64" }
+      ],
+      "particles": {
+        "spawnRate": 28,
+        "offsetX": 40,
+        "offsetY": -32,
+        "vxRange": [-70, 70],
+        "vyRange": [-85, -20],
+        "gravity": 220,
+        "size": 3.5,
+        "life": 0.45,
+        "shape": "star",
+        "colors": ["#FFD54F", "#FF6D00", "#00E5FF"]
+      }
+    }
+  ]
+}

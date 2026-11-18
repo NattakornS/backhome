@@ -828,24 +828,146 @@ function buildThemeSetFromVisualBuilder() {
 }
 
 function generateAiPromptText() {
-  const sampleThemeSet = buildThemeSetFromVisualBuilder();
-  return `You are a Creative Cartoon Theme Set Designer for my "Pomodoro Cartoon Companion" Windows app.
-Please generate a brand-new "Theme Set" JSON (which includes both Character Style AND a set of 7 Animated Behaviors with Thai & English labels, plus optional custom 2D vector shapes).
+  const declarativeExample = {
+    id: 'cyber-cat-dj',
+    nameTh: '🐱 เหมียวไซเบอร์ดีเจ',
+    nameEn: '🐱 Cyber Cat DJ',
+    characterName: 'ดีเจเหมียว (DJ Meow-77)',
+    alertMessageFocusEnd: '🎵 บีทโฟกัสจบเพลงแล้ว! พักฟังเพลงชิลๆ ก่อนนะ (Track Complete! Time for a break!)',
+    character: {
+      skinTone: '#FFE0B2',
+      cheek: '#FF80AB',
+      hatStyle: 'none',
+      shirt: '#1E293B',
+      shirtSleeve: '#0F172A',
+      overalls: '#7C4DFF',
+      pants: '#0F172A',
+      boots: '#00E5FF',
+      groundColor: '#00E5FF',
+      hatDrawables: [
+        { type: 'polygon', points: [[-14, 2], [-18, -14], [-4, -4]], fill: '#FF80AB', stroke: '#263238', lineWidth: 1.5 },
+        { type: 'polygon', points: [[14, 2], [18, -14], [4, -4]], fill: '#FF80AB', stroke: '#263238', lineWidth: 1.5 },
+        { type: 'roundRect', x: -17, y: 2, w: 6, h: 12, r: 3, fill: '#00E5FF' },
+        { type: 'roundRect', x: 11, y: 2, w: 6, h: 12, r: 3, fill: '#00E5FF' }
+      ],
+      torsoDrawables: [
+        {
+          type: 'curve',
+          x1: -12,
+          y1: -28,
+          cx: -28,
+          cy: -38,
+          x2: -24,
+          y2: -52,
+          stroke: '#FF80AB',
+          lineWidth: 4,
+          cap: 'round',
+          anim: { swingDeg: 22, swingSpeed: 6, pivotX: -12, pivotY: -28 }
+        }
+      ]
+    },
+    behaviors: [
+      {
+        id: 'ride-roomba',
+        icon: '🛸',
+        labelTh: 'ซิ่งหุ่นยนต์ดูดฝุ่นเทอร์โบ',
+        labelEn: 'Ride Turbo Roomba Hovercraft',
+        movementType: 'ride',
+        seatOffsetX: -6,
+        seatOffsetY: -28,
+        vehicleDrawables: [
+          { type: 'roundRect', x: -36, y: -22, w: 72, h: 16, r: 8, fill: '#263238', stroke: '#00E5FF', lineWidth: 2 },
+          { type: 'circle', x: 24, y: -14, r: 4, fill: '#FF007F', anim: { scaleAmp: 0.3, scaleSpeed: 10 } },
+          { type: 'star', x: -20, y: -10, points: 6, outerR: 9, innerR: 4, fill: '#00E5FF', anim: { rotateSpeed: 260 } },
+          { type: 'star', x: 20, y: -10, points: 6, outerR: 9, innerR: 4, fill: '#00E5FF', anim: { rotateSpeed: 260 } }
+        ],
+        particles: {
+          spawnRate: 18,
+          offsetX: -38,
+          offsetY: -16,
+          vxRange: [-50, -15],
+          vyRange: [-30, 10],
+          gravity: -15,
+          size: 4,
+          life: 0.6,
+          shape: 'note',
+          colors: ['#00E5FF', '#FF80AB', '#FFD54F']
+        }
+      },
+      {
+        id: 'dj-turntable',
+        icon: '🎧',
+        labelTh: 'สแครชแผ่นเสียงปล่อยคลื่นบีท',
+        labelEn: 'Scratch Vinyl on Neon Turntable',
+        movementType: 'work-pause',
+        pose: {
+          frontArmBaseDeg: -35,
+          frontArmSwingDeg: 35,
+          frontArmSwingSpeed: 10,
+          headSwingDeg: 10,
+          headSwingSpeed: 8
+        },
+        toolDrawables: [
+          { type: 'circle', x: 10, y: 2, r: 9, fill: '#111', stroke: '#00E5FF', lineWidth: 1.5, anim: { rotateSpeed: 300 } },
+          { type: 'circle', x: 10, y: 2, r: 3, fill: '#FF007F' }
+        ],
+        propDrawables: [
+          { type: 'roundRect', x: -22, y: -38, w: 44, h: 38, r: 6, fill: '#1E293B', stroke: '#7C4DFF', lineWidth: 2 },
+          { type: 'circle', x: -8, y: -20, r: 9, fill: '#00E5FF', anim: { scaleAmp: 0.2, scaleSpeed: 12 } },
+          { type: 'circle', x: 10, y: -20, r: 9, fill: '#FF007F', anim: { scaleAmp: 0.2, scaleSpeed: 12, scalePhase: 1.5 } }
+        ],
+        particles: {
+          spawnRate: 22,
+          offsetX: 44,
+          offsetY: -45,
+          vxRange: [-30, 50],
+          vyRange: [-80, -30],
+          gravity: -20,
+          size: 4.5,
+          life: 0.85,
+          shape: 'note',
+          colors: ['#00E5FF', '#FF007F', '#FFD54F']
+        }
+      }
+    ]
+  };
 
-Choose a fun, creative theme (or use the theme I specify below, e.g., Ninja Cat, Space Astronaut, Cozy Barista, Viking Warrior, Cyberpunk Hacker, Medieval Knight) and output ONLY valid JSON matching this schema:
+  return `You are a Creative 2D Vector Animator & Theme Set Designer for my "Pomodoro Cartoon Companion" Windows app.
+The app uses a Universal Declarative 2D Drawable & Animation Scene Graph Engine — NO objects or behaviors are fixed! You can draw and animate ANY character, hat, wings, tail, vehicle, handheld tool/instrument, scene prop, joint pose, and particle effect directly in a single JSON file.
 
-${JSON.stringify(sampleThemeSet, null, 2)}
+Please design a brand-new, creative Theme Set JSON (with 5 to 7 unique animated behaviors, Thai & English labels, custom drawables, and animations).
 
-Schema Rules:
-1. "hatStyle": choose one of ["straw-hat", "chef-hat", "wizard-hat", "samurai-helm", "headphones", "crown", "cap"].
-2. "vehicleStyle": choose one of ["tractor", "scooter", "magic-broom", "hover-bike"].
-3. In each behavior of "behaviors":
-   - "movementType": choose one of ["ride", "walk", "work-pause", "stationary"].
-   - "toolType": choose one of ["steering", "machete", "katana", "wand", "watering-can", "shovel", "sickle-pole", "sack-throw", "hammer"].
-   - "propType": choose one of ["none", "grass", "flowers", "sapling", "palm-tree", "fence-toolbox"].
-   - "particleType": choose one of ["smoke", "grass", "water", "fertilizer", "spark"].
-   - Optional: You can also add "customToolShapes": [{ "type": "rect"|"circle"|"ellipse", "x": 0, "y": 0, "w": 12, "h": 12, "r": 6, "fill": "#FF007F" }] or "customPropShapes": [...] to draw custom 2D vector tools or props!
-4. Return ONLY the raw JSON object so I can paste and import it directly into the app.`;
+### 1. Supported Drawable Shapes (in any *Drawables array):
+Every item in \`hatDrawables\`, \`headDrawables\`, \`torsoDrawables\`, \`armDrawables\`, \`legDrawables\`, \`bodyDrawables\` (set \`replaceDefaultBody: true\` for non-humanoid characters!), \`vehicleDrawables\`, \`toolDrawables\`, \`backHandDrawables\`, or \`propDrawables\` can be:
+- \`{ "type": "rect" | "roundRect", "x": 0, "y": 0, "w": 20, "h": 12, "r": 4, "fill": "#HEX", "stroke": "#HEX", "lineWidth": 1.5 }\`
+- \`{ "type": "circle", "x": 0, "y": 0, "r": 8, "fill": "#HEX", "stroke": "#HEX" }\`
+- \`{ "type": "ellipse", "x": 0, "y": 0, "rx": 12, "ry": 6, "rotDeg": 15, "fill": "#HEX" }\`
+- \`{ "type": "arc", "x": 0, "y": 0, "r": 12, "startDeg": 0, "endDeg": 180, "close": true, "fill": "#HEX" }\`
+- \`{ "type": "line", "x1": 0, "y1": 0, "x2": 25, "y2": -15, "stroke": "#HEX", "lineWidth": 3, "cap": "round" }\`
+- \`{ "type": "curve", "x1": 0, "y1": 0, "cx": 15, "cy": -20, "x2": 30, "y2": 0, "stroke": "#HEX", "lineWidth": 3 }\`
+- \`{ "type": "polygon", "points": [[0,0], [15,-20], [30,0]], "close": true, "fill": "#HEX", "stroke": "#HEX" }\`
+- \`{ "type": "star", "x": 0, "y": 0, "points": 5, "outerR": 10, "innerR": 4, "fill": "#HEX" }\`
+- \`{ "type": "heart", "x": 0, "y": 0, "size": 10, "fill": "#HEX" }\`
+- \`{ "type": "text", "x": 0, "y": 0, "text": "⚡", "font": "bold 14px sans-serif", "fill": "#HEX" }\`
+- \`{ "type": "group", "x": 0, "y": 0, "rotDeg": 0, "anim": {...}, "children": [ ... ] }\`
+
+### 2. Supported Per-Shape Animation (\`"anim"\` object on ANY drawable or group):
+- \`"rotateSpeed": 180\` (continuous 360° spin in deg/sec — great for wheels, propellers, magic circles, gears)
+- \`"swingDeg": 25, "swingSpeed": 8, "swingPhase": 0, "pivotX": 0, "pivotY": 0\` (sine-wave pendulum swing — great for wings, tails, blades, branches)
+- \`"moveXAmp": 6, "moveXSpeed": 4, "moveYAmp": 6, "moveYSpeed": 5\` (floating, hovering, shaking)
+- \`"scaleAmp": 0.25, "scaleSpeed": 6\` (pulsing, breathing, glowing)
+- \`"fallLoop": { "duration": 2.4, "startAt": 1.0, "dropY": 85, "bounce": true }\` (repeating falling & bouncing items!)
+- \`"blink": { "speed": 1.8, "threshold": 0.96 }\` (blinking eyes or flashing lights)
+
+### 3. Supported Per-Behavior Pose & Particles:
+- \`"movementType"\`: \`"walk" | "ride" | "hover" | "work-pause" | "stationary"\`
+- \`"pose"\`: \`{ "bobAmp": 3.5, "headTiltDeg": -10, "headSwingDeg": 8, "headSwingSpeed": 5, "frontArmBaseDeg": -30, "frontArmSwingDeg": 45, "frontArmSwingSpeed": 8, "legSwingDeg": 28 }\`
+- \`"particles"\`: \`{ "spawnRate": 20, "offsetX": 36, "offsetY": -36, "vxRange": [-30, 60], "vyRange": [-70, -20], "gravity": 160, "size": 4, "life": 0.7, "shape": "circle"|"rect"|"star"|"heart"|"note"|"text", "text": "✨", "colors": ["#00E5FF", "#FFD54F"] }\`
+
+### Working Example JSON Structure:
+${JSON.stringify(declarativeExample, null, 2)}
+
+Return ONLY the raw valid JSON object so I can paste and import it directly into Pomodoro Cartoon Companion!`;
 }
 
 function copyAiPromptToClipboard() {

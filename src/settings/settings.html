@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <title>Pomodoro Cartoon Companion</title>
   <link rel="stylesheet" href="settings.css" />
 </head>
+
 <body>
   <header class="app-header">
     <div class="title-group">
@@ -130,11 +132,7 @@
 
         <div class="form-group" style="margin-bottom: 0;">
           <label for="inputAlertMessage" id="lblAlertMsg">ข้อความแจ้งเตือนเมื่อครบเวลา</label>
-          <input
-            type="text"
-            id="inputAlertMessage"
-            placeholder="🍅 ครบเวลาโฟกัสแล้ว! พักสายตาสักนิดนะ"
-          />
+          <input type="text" id="inputAlertMessage" placeholder="🍅 ครบเวลาโฟกัสแล้ว! พักสายตาสักนิดนะ" />
         </div>
       </div>
 
@@ -284,7 +282,8 @@
           </button>
         </div>
         <p id="lblModalJsonHint" style="font-size: 12px; color: #A5D6A7; margin-bottom: 8px;">
-          💡 กดปุ่มคัดลอกพรอมต์ด้านบนไปสั่ง Generative AI ให้ออกแบบตัวละครและท่าทางใหม่ จากนั้นนำโค้ด JSON ที่ได้มาวางด้านล่างแล้วกดบันทึก!
+          💡 กดปุ่มคัดลอกพรอมต์ด้านบนไปสั่ง Generative AI ให้ออกแบบตัวละครและท่าทางใหม่ จากนั้นนำโค้ด JSON
+          ที่ได้มาวางด้านล่างแล้วกดบันทึก!
         </p>
         <textarea id="jsonThemeEditor" rows="15"></textarea>
       </div>
@@ -360,7 +359,8 @@
           </div>
         </div>
 
-        <label id="lblGenBehaviors" style="font-size: 12px; color: #98B39E; font-weight: 600; display: block; margin-bottom: 6px;">
+        <label id="lblGenBehaviors"
+          style="font-size: 12px; color: #98B39E; font-weight: 600; display: block; margin-bottom: 6px;">
           ตั้งชื่อท่าทางในชุดธีม (ไทย | อังกฤษ):
         </label>
         <div class="form-row" style="margin-bottom: 6px;">
@@ -391,4 +391,5 @@
   <script src="../overlay/farmer-engine.js"></script>
   <script src="settings.js"></script>
 </body>
+
 </html>

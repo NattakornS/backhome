@@ -747,6 +747,43 @@ class FarmerEngine {
   spawnParticles(dt, bObj) {
     const groundY = this.canvas.height - 14;
     const dir = this.direction;
+
+    // 1. Declarative custom particle emitter from JSON config (`bObj.particles`)
+    if (bObj.particles && typeof bObj.particles === 'object') {
+      const pe = bObj.particles;
+      const rate = Number(pe.spawnRate) || 18;
+      if (Math.random() < dt * rate) {
+        const vxMin = Array.isArray(pe.vxRange) ? pe.vxRange[0] : -30;
+        const vxMax = Array.isArray(pe.vxRange) ? pe.vxRange[1] : 50;
+        const vyMin = Array.isArray(pe.vyRange) ? pe.vyRange[0] : -70;
+        const vyMax = Array.isArray(pe.vyRange) ? pe.vyRange[1] : -20;
+        const colors =
+          Array.isArray(pe.colors) && pe.colors.length > 0
+            ? pe.colors
+            : [bObj.particleColor || '#FFD54F'];
+        const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+        const life = Number(pe.life) || 0.75;
+
+        this.particles.push({
+          type: pe.shape || 'circle',
+          text: pe.text || '✨',
+          x: this.x + dir * (Number(pe.offsetX) || 32) + (Math.random() - 0.5) * 12,
+          y: groundY + (Number(pe.offsetY) || -42) + (Math.random() - 0.5) * 10,
+          vx: dir * (vxMin + Math.random() * (vxMax - vxMin)),
+          vy: vyMin + Math.random() * (vyMax - vyMin),
+          gravity: pe.gravity !== undefined ? Number(pe.gravity) : 140,
+          groundY: pe.bounce !== false ? groundY : null,
+          r: (Number(pe.size) || 4) * (0.8 + Math.random() * 0.4),
+          angle: Math.random() * Math.PI,
+          life,
+          maxLife: life,
+          color: chosenColor
+        });
+      }
+      return;
+    }
+
+    // 2. Fallback preset particle emitter (`particleType`)
     const pType = bObj.particleType || 'spark';
     const pColor = bObj.particleColor || '#FFD54F';
 
@@ -815,20 +852,20 @@ class FarmerEngine {
           color: pColor
         });
       }
-    } else if (pType === 'spark') {
+    } else if (pType === 'spark' || pType === 'star' || pType === 'heart' || pType === 'note') {
       const hit = Math.sin(this.time * 9);
-      if (hit > 0.75 && Math.random() < dt * 26) {
+      if (hit > 0.65 && Math.random() < dt * 24) {
         this.particles.push({
-          type: 'spark',
+          type: pType,
           x: this.x + dir * 38,
-          y: groundY - 34,
-          vx: (Math.random() - 0.5) * 90,
-          vy: -50 - Math.random() * 65,
-          gravity: 210,
-          groundY,
-          r: 3,
-          life: 0.48,
-          maxLife: 0.48,
+          y: groundY - 38,
+          vx: (Math.random() - 0.5) * 85,
+          vy: -50 - Math.random() * 60,
+          gravity: pType === 'note' || pType === 'heart' ? -25 : 200,
+          groundY: pType === 'note' || pType === 'heart' ? null : groundY,
+          r: 4,
+          life: 0.65,
+          maxLife: 0.65,
           color: pColor
         });
       }
@@ -843,6 +880,7 @@ class FarmerEngine {
 
     const groundY = h - 14;
     const bObj = this.getCurrentBehaviorObj();
+    const skin = this.getActiveCharacterStyle();
 
     this.drawGroundStrip(ctx, w, groundY);
     this.drawBehaviorBackgroundProps(ctx, groundY, bObj);
@@ -851,8 +889,23 @@ class FarmerEngine {
     ctx.translate(this.x, groundY);
     ctx.scale(this.direction, 1);
 
-    if (bObj.movementType === 'ride' || bObj.id === 'tractor') {
-      this.drawVehicleWithCharacter(ctx);
+    // If character defines a 100% custom non-humanoid body (`replaceDefaultBody: true`), draw it!
+    if (skin.replaceDefaultBody && Array.isArray(skin.bodyDrawables)) {
+      const bob = Math.sin(this.time * 6) * 3;
+      ctx.save();
+      ctx.translate(0, -bob);
+      this.drawDrawableList(ctx, skin.bodyDrawables);
+      if (Array.isArray(bObj.toolDrawables)) {
+        this.drawDrawableList(ctx, bObj.toolDrawables);
+      }
+      ctx.restore();
+    } else if (
+      bObj.movementType === 'ride' ||
+      bObj.movementType === 'hover' ||
+      bObj.id === 'tractor' ||
+      Array.isArray(bObj.vehicleDrawables)
+    ) {
+      this.drawVehicleWithCharacter(ctx, bObj);
     } else {
       this.drawWalkingCharacter(ctx, bObj);
     }
@@ -864,39 +917,196 @@ class FarmerEngine {
     }
   }
 
-  // Helper to render AI-generated custom 2D vector shapes (`customShapes`)
-  drawCustomShapesArray(ctx, shapes) {
+  // ==========================================================================
+  // UNIVERSAL DECLARATIVE 2D DRAWABLE & ANIMATION SCENE GRAPH ENGINE
+  // Any shape or group in JSON can define geometry + `anim` keyframe/wave rules
+  // ==========================================================================
+  drawDrawableList(ctx, shapes) {
     if (!Array.isArray(shapes) || shapes.length === 0) return;
-    ctx.save();
+    const t = this.time;
+
     for (const s of shapes) {
       if (!s || !s.type) continue;
-      ctx.fillStyle = s.fill || '#FFD54F';
+
+      // Optional blink visibility check
+      if (s.anim && s.anim.blink) {
+        const bSpeed = Number(s.anim.blink.speed) || 1.8;
+        const bThresh = Number(s.anim.blink.threshold) || 0.96;
+        if (Math.sin(t * bSpeed) > bThresh) continue;
+      }
+
+      ctx.save();
+
+      // Apply local transform + declarative `anim`
+      let tx = Number(s.x) || 0;
+      let ty = Number(s.y) || 0;
+      let rotRad = ((Number(s.rotDeg) || 0) * Math.PI) / 180 + (Number(s.rot) || 0);
+      let sx = s.scaleX !== undefined ? Number(s.scaleX) : 1;
+      let sy = s.scaleY !== undefined ? Number(s.scaleY) : 1;
+
+      if (s.anim && typeof s.anim === 'object') {
+        const a = s.anim;
+        if (a.moveXAmp) {
+          tx += Math.sin(t * (Number(a.moveXSpeed) || 4) + (Number(a.moveXPhase) || 0)) * Number(a.moveXAmp);
+        }
+        if (a.moveYAmp) {
+          ty += Math.sin(t * (Number(a.moveYSpeed) || 4) + (Number(a.moveYPhase) || 0)) * Number(a.moveYAmp);
+        }
+        if (a.fallLoop) {
+          const dur = Math.max(0.5, Number(a.fallLoop.duration) || 2.5);
+          const startAt = Number(a.fallLoop.startAt) || 1.0;
+          const dropY = Number(a.fallLoop.dropY) || 85;
+          const cyc = (t * 1.3) % dur;
+          if (cyc > startAt) {
+            const fallT = Math.min(1, (cyc - startAt) / Math.max(0.2, (dur - startAt) * 0.5));
+            const bounce =
+              a.fallLoop.bounce !== false && fallT >= 1
+                ? Math.abs(Math.sin((cyc - startAt) * 9)) * 8
+                : 0;
+            ty += fallT * dropY - bounce;
+          }
+        }
+        if (a.rotateSpeed) {
+          rotRad += ((t * Number(a.rotateSpeed)) * Math.PI) / 180;
+        }
+        if (a.swingDeg) {
+          const deg =
+            Math.sin(t * (Number(a.swingSpeed) || 6) + (Number(a.swingPhase) || 0)) *
+            Number(a.swingDeg);
+          rotRad += (deg * Math.PI) / 180;
+        }
+        if (a.scaleAmp) {
+          const sc =
+            1 +
+            Math.sin(t * (Number(a.scaleSpeed) || 4) + (Number(a.scalePhase) || 0)) *
+            Number(a.scaleAmp);
+          sx *= sc;
+          sy *= sc;
+        }
+      }
+
+      const pivX = (s.anim && Number(s.anim.pivotX)) || 0;
+      const pivY = (s.anim && Number(s.anim.pivotY)) || 0;
+
+      ctx.translate(tx + pivX, ty + pivY);
+      if (rotRad !== 0) ctx.rotate(rotRad);
+      if (sx !== 1 || sy !== 1) ctx.scale(sx, sy);
+      ctx.translate(-pivX, -pivY);
+
+      if (s.alpha !== undefined) {
+        ctx.globalAlpha *= Math.max(0, Math.min(1, Number(s.alpha)));
+      }
+
+      ctx.fillStyle = s.fill || 'transparent';
       ctx.strokeStyle = s.stroke || 'transparent';
       ctx.lineWidth = Number(s.lineWidth) || 1.5;
+      if (s.cap) ctx.lineCap = s.cap;
 
-      if (s.type === 'rect') {
+      if (s.type === 'group') {
+        if (Array.isArray(s.children)) {
+          this.drawDrawableList(ctx, s.children);
+        }
+      } else if (s.type === 'rect' || s.type === 'roundRect') {
         ctx.beginPath();
-        ctx.roundRect(s.x || 0, s.y || 0, s.w || 10, s.h || 10, s.r || 0);
+        ctx.roundRect(0, 0, Number(s.w) || 10, Number(s.h) || 10, Number(s.r) || 0);
         if (s.fill) ctx.fill();
         if (s.stroke) ctx.stroke();
       } else if (s.type === 'circle') {
         ctx.beginPath();
-        ctx.arc(s.x || 0, s.y || 0, s.r || 6, 0, Math.PI * 2);
+        ctx.arc(0, 0, Math.max(0.5, Number(s.r) || 6), 0, Math.PI * 2);
         if (s.fill) ctx.fill();
         if (s.stroke) ctx.stroke();
       } else if (s.type === 'ellipse') {
         ctx.beginPath();
-        ctx.ellipse(s.x || 0, s.y || 0, s.rx || 8, s.ry || 4, s.rot || 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, Math.max(0.5, Number(s.rx) || 8), Math.max(0.5, Number(s.ry) || 4), 0, 0, Math.PI * 2);
+        if (s.fill) ctx.fill();
+        if (s.stroke) ctx.stroke();
+      } else if (s.type === 'arc') {
+        const startRad = ((Number(s.startDeg) || 0) * Math.PI) / 180;
+        const endRad = ((s.endDeg !== undefined ? Number(s.endDeg) : 180) * Math.PI) / 180;
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.max(0.5, Number(s.r) || 10), startRad, endRad);
+        if (s.close) ctx.closePath();
         if (s.fill) ctx.fill();
         if (s.stroke) ctx.stroke();
       } else if (s.type === 'line') {
         ctx.beginPath();
-        ctx.moveTo(s.x1 || 0, s.y1 || 0);
-        ctx.lineTo(s.x2 || 10, s.y2 || 10);
+        ctx.moveTo(Number(s.x1) || 0, Number(s.y1) || 0);
+        ctx.lineTo(Number(s.x2) || 10, Number(s.y2) || 10);
         ctx.stroke();
+      } else if (s.type === 'curve' || s.type === 'quadratic') {
+        ctx.beginPath();
+        ctx.moveTo(Number(s.x1) || 0, Number(s.y1) || 0);
+        ctx.quadraticCurveTo(
+          Number(s.cx) || 0,
+          Number(s.cy) || 0,
+          Number(s.x2) || 10,
+          Number(s.y2) || 10
+        );
+        if (s.close) ctx.closePath();
+        if (s.fill) ctx.fill();
+        if (s.stroke) ctx.stroke();
+      } else if (s.type === 'bezier') {
+        ctx.beginPath();
+        ctx.moveTo(Number(s.x1) || 0, Number(s.y1) || 0);
+        ctx.bezierCurveTo(
+          Number(s.cx1) || 0,
+          Number(s.cy1) || 0,
+          Number(s.cx2) || 0,
+          Number(s.cy2) || 0,
+          Number(s.x2) || 10,
+          Number(s.y2) || 10
+        );
+        if (s.close) ctx.closePath();
+        if (s.fill) ctx.fill();
+        if (s.stroke) ctx.stroke();
+      } else if (s.type === 'polygon' || s.type === 'path') {
+        if (Array.isArray(s.points) && s.points.length >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(Number(s.points[0][0]) || 0, Number(s.points[0][1]) || 0);
+          for (let i = 1; i < s.points.length; i++) {
+            ctx.lineTo(Number(s.points[i][0]) || 0, Number(s.points[i][1]) || 0);
+          }
+          if (s.close !== false) ctx.closePath();
+          if (s.fill) ctx.fill();
+          if (s.stroke) ctx.stroke();
+        }
+      } else if (s.type === 'star') {
+        const pts = Math.max(3, Number(s.points) || 5);
+        const outerR = Number(s.outerR) || 10;
+        const innerR = Number(s.innerR) || outerR * 0.45;
+        ctx.beginPath();
+        for (let i = 0; i < pts * 2; i++) {
+          const r = i % 2 === 0 ? outerR : innerR;
+          const a = (i * Math.PI) / pts - Math.PI / 2;
+          if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+          else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        ctx.closePath();
+        if (s.fill) ctx.fill();
+        if (s.stroke) ctx.stroke();
+      } else if (s.type === 'heart') {
+        const sz = Number(s.size) || 10;
+        ctx.beginPath();
+        ctx.moveTo(0, sz * 0.3);
+        ctx.bezierCurveTo(-sz, -sz * 0.4, -sz * 0.5, -sz, 0, -sz * 0.4);
+        ctx.bezierCurveTo(sz * 0.5, -sz, sz, -sz * 0.4, 0, sz * 0.3);
+        if (s.fill) ctx.fill();
+        if (s.stroke) ctx.stroke();
+      } else if (s.type === 'text') {
+        ctx.font = s.font || 'bold 12px "Segoe UI", sans-serif';
+        ctx.textAlign = s.align || 'center';
+        ctx.textBaseline = 'middle';
+        if (s.fill) ctx.fillText(String(s.text || ''), 0, 0);
       }
+
+      ctx.restore();
     }
-    ctx.restore();
+  }
+
+  // Backward-compatible alias
+  drawCustomShapesArray(ctx, shapes) {
+    this.drawDrawableList(ctx, shapes);
   }
 
   drawGroundStrip(ctx, w, groundY) {
@@ -911,19 +1121,26 @@ class FarmerEngine {
     ctx.ellipse(this.x, groundY + 2, 68, 9, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    const tuftCount = Math.floor(w / 55);
-    for (let i = 1; i < tuftCount; i++) {
-      const tx = i * 55 + Math.sin(i * 3) * 12;
-      const sway = Math.sin(this.time * 2.5 + i) * 2;
-      ctx.strokeStyle = turfColor;
-      ctx.lineWidth = 2.2;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(tx, groundY + 2);
-      ctx.quadraticCurveTo(tx - 4 + sway, groundY - 6, tx - 6 + sway, groundY - 9);
-      ctx.moveTo(tx, groundY + 2);
-      ctx.quadraticCurveTo(tx + 3 + sway, groundY - 7, tx + 5 + sway, groundY - 11);
-      ctx.stroke();
+    if (Array.isArray(charStyle.groundDrawables) && charStyle.groundDrawables.length > 0) {
+      ctx.save();
+      ctx.translate(this.x, groundY);
+      this.drawDrawableList(ctx, charStyle.groundDrawables);
+      ctx.restore();
+    } else {
+      const tuftCount = Math.floor(w / 55);
+      for (let i = 1; i < tuftCount; i++) {
+        const tx = i * 55 + Math.sin(i * 3) * 12;
+        const sway = Math.sin(this.time * 2.5 + i) * 2;
+        ctx.strokeStyle = turfColor;
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tx, groundY + 2);
+        ctx.quadraticCurveTo(tx - 4 + sway, groundY - 6, tx - 6 + sway, groundY - 9);
+        ctx.moveTo(tx, groundY + 2);
+        ctx.quadraticCurveTo(tx + 3 + sway, groundY - 7, tx + 5 + sway, groundY - 11);
+        ctx.stroke();
+      }
     }
     ctx.restore();
   }
@@ -932,18 +1149,29 @@ class FarmerEngine {
     const dir = this.direction;
     const charStyle = this.getActiveCharacterStyle();
     const accent = charStyle.groundColor || '#43A047';
-    const propType = bObj.propType || bObj.id;
 
     ctx.save();
 
-    // If behavior defines customPropShapes from Generative AI, render them!
-    if (Array.isArray(bObj.customPropShapes) && bObj.customPropShapes.length > 0) {
+    // 1. Declarative Scene / Prop Drawables (`propDrawables` or `customPropShapes` or `sceneDrawables`)
+    const customProps = bObj.propDrawables || bObj.customPropShapes || bObj.sceneDrawables;
+    if (Array.isArray(customProps) && customProps.length > 0) {
+      const offsetX = bObj.propOffsetX !== undefined ? Number(bObj.propOffsetX) : 52;
       ctx.save();
-      ctx.translate(this.x + dir * 48, groundY);
-      this.drawCustomShapesArray(ctx, bObj.customPropShapes);
+      ctx.translate(this.x + dir * offsetX, groundY);
+      if (bObj.flipPropWithDirection) {
+        ctx.scale(dir, 1);
+      }
+      this.drawDrawableList(ctx, customProps);
       ctx.restore();
+      if (!bObj.propType || bObj.propType === 'custom' || bObj.propType === 'none') {
+        ctx.restore();
+        return;
+      }
     }
 
+    const propType = bObj.propType || bObj.id;
+
+    // 2. Built-in fallback props
     if (propType === 'flowers' || bObj.id === 'water') {
       const plantX = this.x + dir * 64;
       const growScale = 0.85 + 0.2 * Math.sin(this.time * 4);
@@ -1110,12 +1338,23 @@ class FarmerEngine {
 
   drawWalkingCharacter(ctx, bObj) {
     const skin = this.getActiveCharacterStyle();
-    const walkCycle = this.time * 7.5;
+    const pose = bObj.pose || {};
+    const walkSpeed = Number(pose.legSwingSpeed) || 7.5;
+    const walkCycle = this.time * walkSpeed;
     const moveType = bObj.movementType || 'walk';
-    const isMoving = moveType === 'walk' || (moveType === 'work-pause' && (this.time % 4.0) < 1.1);
+    const isMoving =
+      moveType === 'walk' || (moveType === 'work-pause' && (this.time % 4.0) < 1.1);
 
-    const legSwing = isMoving ? Math.sin(walkCycle) * 0.48 : 0;
-    const bob = isMoving ? Math.abs(Math.sin(walkCycle)) * 3.5 : Math.sin(this.time * 3) * 1.5;
+    const legAmpRad =
+      pose.legSwingDeg !== undefined
+        ? (Number(pose.legSwingDeg) * Math.PI) / 180
+        : 0.48;
+    const legSwing = isMoving ? Math.sin(walkCycle) * legAmpRad : 0;
+
+    const bobAmp = pose.bobAmp !== undefined ? Number(pose.bobAmp) : 3.5;
+    const bob = isMoving
+      ? Math.abs(Math.sin(walkCycle)) * bobAmp
+      : Math.sin(this.time * 3) * 1.5;
 
     ctx.save();
     ctx.translate(0, -bob);
@@ -1127,10 +1366,23 @@ class FarmerEngine {
     this.drawLeg(ctx, skin, true);
     ctx.restore();
 
-    // 2. Back Arm
+    // 2. Back Arm + Optional Back Hand Drawables
     ctx.save();
     ctx.translate(-4, -52);
-    if (bObj.toolType === 'sack-throw' || bObj.id === 'fertilizer') {
+    if (Array.isArray(bObj.backHandDrawables) && bObj.backHandDrawables.length > 0) {
+      const backBase = ((Number(pose.backArmBaseDeg) || 15) * Math.PI) / 180;
+      const backSwing =
+        ((Number(pose.backArmSwingDeg) || 10) *
+          Math.sin(this.time * (Number(pose.backArmSwingSpeed) || 5)) *
+          Math.PI) /
+        180;
+      ctx.rotate(backBase + backSwing);
+      this.drawArm(ctx, skin, true);
+      ctx.save();
+      ctx.translate(0, 17);
+      this.drawDrawableList(ctx, bObj.backHandDrawables);
+      ctx.restore();
+    } else if (bObj.toolType === 'sack-throw' || bObj.id === 'fertilizer') {
       ctx.rotate(0.25);
       this.drawArm(ctx, skin, true);
       ctx.fillStyle = '#FFF8E1';
@@ -1150,7 +1402,12 @@ class FarmerEngine {
     ctx.restore();
 
     // 3. Torso
+    ctx.save();
+    if (pose.torsoTiltDeg) {
+      ctx.rotate((Number(pose.torsoTiltDeg) * Math.PI) / 180);
+    }
     this.drawTorso(ctx, skin);
+    ctx.restore();
 
     // 4. Front Leg
     ctx.save();
@@ -1162,12 +1419,21 @@ class FarmerEngine {
     // 5. Head & Hat
     ctx.save();
     ctx.translate(0, -60);
-    const headTilt =
-      bObj.toolType === 'sickle-pole'
-        ? -0.24
-        : bObj.toolType === 'shovel' || bObj.toolType === 'hammer'
-        ? 0.15
-        : Math.sin(this.time * 3) * 0.05;
+    let headTilt =
+      pose.headTiltDeg !== undefined
+        ? (Number(pose.headTiltDeg) * Math.PI) / 180
+        : bObj.toolType === 'sickle-pole'
+          ? -0.24
+          : bObj.toolType === 'shovel' || bObj.toolType === 'hammer'
+            ? 0.15
+            : Math.sin(this.time * 3) * 0.05;
+    if (pose.headSwingDeg) {
+      headTilt +=
+        (Math.sin(this.time * (Number(pose.headSwingSpeed) || 4)) *
+          Number(pose.headSwingDeg) *
+          Math.PI) /
+        180;
+    }
     ctx.rotate(headTilt);
     this.drawHeadAndHat(ctx, skin);
     ctx.restore();
@@ -1181,8 +1447,58 @@ class FarmerEngine {
     ctx.restore();
   }
 
-  drawVehicleWithCharacter(ctx) {
+  drawVehicleWithCharacter(ctx, bObj = {}) {
     const skin = this.getActiveCharacterStyle();
+    const customVehicle =
+      (Array.isArray(bObj.vehicleDrawables) && bObj.vehicleDrawables.length > 0 && bObj.vehicleDrawables) ||
+      (Array.isArray(skin.vehicleDrawables) && skin.vehicleDrawables.length > 0 && skin.vehicleDrawables) ||
+      null;
+
+    // 1. If JSON defines custom `vehicleDrawables`, render them with seated character!
+    if (customVehicle) {
+      const isHover = bObj.movementType === 'hover';
+      const bob = isHover
+        ? Math.sin(this.time * 5) * 6 - 8
+        : Math.sin(this.time * 16) * 1.8;
+
+      ctx.save();
+      ctx.translate(0, bob);
+
+      // Seated character riding the custom vehicle
+      const seatX = bObj.seatOffsetX !== undefined ? Number(bObj.seatOffsetX) : -8;
+      const seatY = bObj.seatOffsetY !== undefined ? Number(bObj.seatOffsetY) : -36;
+      ctx.save();
+      ctx.translate(seatX, seatY);
+      this.drawTorso(ctx, skin);
+      ctx.fillStyle = skin.pants || '#263238';
+      ctx.fillRect(0, -24, 15, 8);
+      ctx.fillStyle = skin.boots || '#3E2723';
+      ctx.fillRect(10, -18, 8, 11);
+      ctx.save();
+      ctx.translate(0, -60);
+      this.drawHeadAndHat(ctx, skin);
+      ctx.restore();
+      ctx.save();
+      ctx.translate(4, -48);
+      ctx.rotate(-0.45);
+      this.drawArm(ctx, skin, false);
+      if (Array.isArray(bObj.toolDrawables)) {
+        ctx.save();
+        ctx.translate(0, 17);
+        this.drawDrawableList(ctx, bObj.toolDrawables);
+        ctx.restore();
+      }
+      ctx.restore();
+      ctx.restore();
+
+      // Custom declarative vehicle drawables (can include spinning wheels, wings, thrusters via `anim`)
+      this.drawDrawableList(ctx, customVehicle);
+
+      ctx.restore();
+      return;
+    }
+
+    // 2. Built-in vehicle styles fallback
     const vStyle = skin.vehicleStyle || 'tractor';
     const chug = Math.sin(this.time * 18) * 1.8;
     const wheelRot = this.time * 7;
@@ -1339,6 +1655,11 @@ class FarmerEngine {
   }
 
   drawTorso(ctx, skin) {
+    if (skin.replaceTorso && Array.isArray(skin.torsoDrawables)) {
+      this.drawDrawableList(ctx, skin.torsoDrawables);
+      return;
+    }
+
     ctx.fillStyle = skin.shirt;
     ctx.beginPath();
     ctx.roundRect(-13, -58, 26, 35, 7);
@@ -1365,9 +1686,18 @@ class FarmerEngine {
       ctx.fillStyle = '#D32F2F';
       ctx.fillRect(7, -27, 5, 8);
     }
+
+    if (Array.isArray(skin.torsoDrawables) && skin.torsoDrawables.length > 0) {
+      this.drawDrawableList(ctx, skin.torsoDrawables);
+    }
   }
 
   drawLeg(ctx, skin, isBack) {
+    if (Array.isArray(skin.legDrawables) && skin.legDrawables.length > 0) {
+      this.drawDrawableList(ctx, skin.legDrawables);
+      return;
+    }
+
     ctx.fillStyle = isBack ? '#1F2D3A' : skin.pants;
     ctx.beginPath();
     ctx.roundRect(-5, 0, 10, 15, 4);
@@ -1380,6 +1710,11 @@ class FarmerEngine {
   }
 
   drawArm(ctx, skin, isBack) {
+    if (Array.isArray(skin.armDrawables) && skin.armDrawables.length > 0) {
+      this.drawDrawableList(ctx, skin.armDrawables);
+      return;
+    }
+
     ctx.fillStyle = isBack ? skin.shirtSleeve : skin.shirt;
     ctx.beginPath();
     ctx.roundRect(-4, 0, 8, 14, 4);
@@ -1392,6 +1727,11 @@ class FarmerEngine {
   }
 
   drawHeadAndHat(ctx, skin) {
+    if (skin.replaceHead && Array.isArray(skin.headDrawables)) {
+      this.drawDrawableList(ctx, skin.headDrawables);
+      return;
+    }
+
     const hatStyle = skin.hatStyle || 'straw-hat';
 
     ctx.fillStyle = skin.skinTone;
@@ -1461,10 +1801,19 @@ class FarmerEngine {
       ctx.stroke();
     }
 
+    if (Array.isArray(skin.headDrawables) && skin.headDrawables.length > 0) {
+      this.drawDrawableList(ctx, skin.headDrawables);
+    }
+
     ctx.save();
     ctx.translate(0, -27);
 
-    if (hatStyle === 'chef-hat') {
+    // 1. If JSON defines custom `hatDrawables`, draw them instead of fixed hat styles!
+    if (Array.isArray(skin.hatDrawables) && skin.hatDrawables.length > 0) {
+      this.drawDrawableList(ctx, skin.hatDrawables);
+    } else if (hatStyle === 'none') {
+      // No preset hat
+    } else if (hatStyle === 'chef-hat') {
       ctx.fillStyle = skin.hatMain || '#FFFFFF';
       ctx.strokeStyle = skin.hatDark || '#CFD8DC';
       ctx.lineWidth = 1.5;
@@ -1509,7 +1858,6 @@ class FarmerEngine {
       ctx.lineTo(12, -18);
       ctx.stroke();
     } else if (hatStyle === 'headphones') {
-      // Headset arc + glowing earcups
       ctx.strokeStyle = skin.hatDark || '#1E293B';
       ctx.lineWidth = 4;
       ctx.beginPath();
@@ -1566,28 +1914,41 @@ class FarmerEngine {
       ctx.stroke();
     }
 
-    // Optional AI customHeadShapes
     if (Array.isArray(skin.customHeadShapes) && skin.customHeadShapes.length > 0) {
-      this.drawCustomShapesArray(ctx, skin.customHeadShapes);
+      this.drawDrawableList(ctx, skin.customHeadShapes);
     }
 
     ctx.restore();
   }
 
   drawFrontArmWithTool(ctx, skin, bObj) {
-    const tType = bObj.toolType || bObj.id;
+    const pose = bObj.pose || {};
+    const customTool = bObj.toolDrawables || bObj.customToolShapes;
 
-    // If AI generated customToolShapes for this behavior, swing arm and draw them!
-    if (Array.isArray(bObj.customToolShapes) && bObj.customToolShapes.length > 0) {
-      const swing = Math.sin(this.time * 8) * 0.65 - 0.35;
-      ctx.rotate(swing);
+    // 1. Declarative Custom Tool Drawables + Configurable Arm Pose!
+    if (Array.isArray(customTool) && customTool.length > 0) {
+      const baseRad =
+        pose.frontArmBaseDeg !== undefined
+          ? (Number(pose.frontArmBaseDeg) * Math.PI) / 180
+          : -0.35;
+      const swingRad =
+        pose.frontArmSwingDeg !== undefined
+          ? (Number(pose.frontArmSwingDeg) * Math.PI) / 180
+          : 0.55;
+      const swingSpeed = Number(pose.frontArmSwingSpeed) || 7.5;
+      const armRot = baseRad + Math.sin(this.time * swingSpeed) * swingRad;
+
+      ctx.rotate(armRot);
       this.drawArm(ctx, skin, false);
       ctx.save();
       ctx.translate(0, 17);
-      this.drawCustomShapesArray(ctx, bObj.customToolShapes);
+      this.drawDrawableList(ctx, customTool);
       ctx.restore();
       return;
     }
+
+    // 2. Fallback preset tool types
+    const tType = bObj.toolType || bObj.id;
 
     if (tType === 'machete' || tType === 'katana') {
       const swing = Math.sin(this.time * 8) * 0.75 - 0.3;
@@ -1734,12 +2095,25 @@ class FarmerEngine {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r * (1.8 - alpha * 0.8), 0, Math.PI * 2);
         ctx.fill();
-      } else if (p.type === 'grass') {
+      } else if (p.type === 'grass' || p.type === 'rect') {
         ctx.save();
         ctx.translate(p.x, p.y);
-        ctx.rotate(p.angle + p.life * 5);
-        ctx.fillRect(-5, -1.5, 10, 3);
+        ctx.rotate((p.angle || 0) + p.life * 5);
+        ctx.fillRect(-p.r, -p.r * 0.4, p.r * 2, p.r * 0.8);
         ctx.restore();
+      } else if (p.type === 'star') {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        this.drawDrawableList(ctx, [{ type: 'star', outerR: p.r * 1.4, innerR: p.r * 0.6, fill: p.color }]);
+        ctx.restore();
+      } else if (p.type === 'heart') {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        this.drawDrawableList(ctx, [{ type: 'heart', size: p.r * 1.8, fill: p.color }]);
+        ctx.restore();
+      } else if (p.type === 'note' || p.type === 'text') {
+        ctx.font = `bold ${Math.round(p.r * 3.2)}px "Segoe UI", sans-serif`;
+        ctx.fillText(p.type === 'note' ? '♪' : p.text || '✨', p.x, p.y);
       } else {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -1766,8 +2140,8 @@ class FarmerEngine {
     ctx.strokeStyle = this.isAlerting
       ? '#FFCA28'
       : this.isOvertime
-      ? '#FF7043'
-      : 'rgba(129, 199, 132, 0.55)';
+        ? '#FF7043'
+        : 'rgba(129, 199, 132, 0.55)';
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.roundRect(px, py - pillH + 10, pillW, pillH, 10);

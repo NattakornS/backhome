@@ -199,8 +199,8 @@ html, body {
 /* 3. Lean Bottom-Right Pomodoro Corner Pill (Mode + Timer only; expands CTA on hover) */
 .pomodoro-corner {
   position: absolute;
-  right: 8px;
-  bottom: 6px;
+  right: 28px;
+  bottom: 8px;
   display: flex;
   align-items: center;
   gap: 6px;
