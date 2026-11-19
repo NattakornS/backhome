@@ -1,7 +1,7 @@
 {
   "name": "pomodoro-cartoon-companion",
   "productName": "Pomodoro Cartoon Companion",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Pomodoro Cartoon Companion — Animated Taskbar Timer & AI Theme Set Studio for Windows",
   "main": "main.js",
   "scripts": {

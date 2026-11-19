@@ -2,6 +2,10 @@
 
 All notable changes to **Pomodoro Cartoon Companion** are documented in this file.
 
+## [1.2.4] - 2026-11-19
+### Changed
+- Add program update
+
 ## [1.2.3] - 2026-11-19
 ### Changed
 - Add program update
