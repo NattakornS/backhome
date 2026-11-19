@@ -6,12 +6,12 @@ contextBridge.exposeInMainWorld('companionAPI', {
   getState: () => ipcRenderer.invoke('get-state'),
   getAppInfo: () => ipcRenderer.invoke('get-app-info'),
 
-  // Auto-Updater & Update Feed Controls
+  // Auto-Updater Controls (GitHub Releases)
   getUpdateState: () => ipcRenderer.invoke('get-update-state'),
   checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
   downloadUpdate: () => ipcRenderer.invoke('download-update'),
   installUpdateNow: () => ipcRenderer.invoke('install-update-now'),
-  openUpdatesFolder: () => ipcRenderer.invoke('open-updates-folder'),
+  openReleasesPage: () => ipcRenderer.invoke('open-releases-page'),
 
   // Theme Set & Shareable Bundle Import / Export
   saveCustomThemeSet: (themeSetObj) => ipcRenderer.invoke('save-custom-theme-set', themeSetObj),

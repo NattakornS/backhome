@@ -61,7 +61,6 @@ const DEFAULT_CONFIG = {
   walkSpeed: 1.0,
   soundEnabled: true,
   dragLocked: false,
-  updateFeedUrl: './updates',
   autoCheckUpdates: true
 };
 
@@ -85,13 +84,6 @@ function getCurrentAppVersion() {
     }
   } catch (e) {}
   return app.getVersion() || '1.2.0';
-}
-
-function getUpdatesDir() {
-  if (app.isPackaged) {
-    return path.join(path.dirname(process.execPath), 'updates');
-  }
-  return path.join(__dirname, 'updates');
 }
 
 // Runtime state including Pomodoro Core Timer Engine
@@ -1013,8 +1005,7 @@ function setupIPC() {
       electronVersion: process.versions.electron,
       nodeVersion: process.versions.node,
       configPath: getConfigPath(),
-      themesDir: getThemeSetsDir(),
-      updatesDir: getUpdatesDir()
+      themesDir: getThemeSetsDir()
     };
   });
 
@@ -1029,16 +1020,7 @@ function setupIPC() {
 
   ipcMain.handle('download-update', async () => {
     if (!updateManager) return { status: 'error', errorMessage: 'UpdateManager not initialized' };
-    return await updateManager.downloadAndApplyUpdate(() => {
-      // Reload theme sets if new themes were unpacked by update
-      const folderThemes = loadThemeSetsFromFolder();
-      config.customThemeSets = {
-        ...folderThemes,
-        ...(config.customThemeSets || {})
-      };
-      saveConfigToFile();
-      broadcastConfig();
-    });
+    return await updateManager.downloadUpdate();
   });
 
   ipcMain.handle('install-update-now', () => {
@@ -1048,17 +1030,11 @@ function setupIPC() {
     return true;
   });
 
-  ipcMain.handle('open-updates-folder', async () => {
-    const dir = updateManager
-      ? updateManager.resolveFeedDirectory(config.updateFeedUrl)
-      : getUpdatesDir();
-    if (!fs.existsSync(dir)) {
-      try {
-        fs.mkdirSync(dir, { recursive: true });
-      } catch (e) {}
+  ipcMain.handle('open-releases-page', () => {
+    if (updateManager) {
+      updateManager.openReleasesPage();
     }
-    await shell.openPath(dir);
-    return dir;
+    return true;
   });
 
   ipcMain.handle('save-config', (_event, partial) => {
@@ -1246,9 +1222,7 @@ if (!gotTheLock) {
     loadConfig();
 
     updateManager = new UpdateManager({
-      rootDir: app.isPackaged ? path.dirname(process.execPath) : __dirname,
       getCurrentVersion: getCurrentAppVersion,
-      getFeedSource: () => config.updateFeedUrl || './updates',
       onStatusChange: (updState) => {
         if (settingsWindow && !settingsWindow.isDestroyed()) {
           settingsWindow.webContents.send('update-state-changed', updState);

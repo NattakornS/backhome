@@ -15,14 +15,12 @@ const aboutVersionBadge = document.getElementById('aboutVersionBadge');
 const releaseNotesList = document.getElementById('releaseNotesList');
 const valConfigPath = document.getElementById('valConfigPath');
 const valThemesDir = document.getElementById('valThemesDir');
-const valUpdatesDir = document.getElementById('valUpdatesDir');
 const badgeElectronVer = document.getElementById('badgeElectronVer');
 
-// Updater UI elements
+// Updater UI elements (GitHub Releases)
 const updStatusBadge = document.getElementById('updStatusBadge');
-const inputUpdateFeedUrl = document.getElementById('inputUpdateFeedUrl');
 const btnCheckUpdates = document.getElementById('btnCheckUpdates');
-const btnOpenUpdatesDir = document.getElementById('btnOpenUpdatesDir');
+const btnOpenReleasesPage = document.getElementById('btnOpenReleasesPage');
 const chkAutoCheckUpdates = document.getElementById('chkAutoCheckUpdates');
 const updDetailsBox = document.getElementById('updDetailsBox');
 const updDetailsTitle = document.getElementById('updDetailsTitle');
@@ -188,7 +186,6 @@ function renderReleaseNotes() {
   }
   if (appInfoState.configPath) valConfigPath.textContent = appInfoState.configPath;
   if (appInfoState.themesDir) valThemesDir.textContent = appInfoState.themesDir;
-  if (appInfoState.updatesDir && valUpdatesDir) valUpdatesDir.textContent = appInfoState.updatesDir;
 
   releaseNotesList.innerHTML = '';
   const releases = Array.isArray(appInfoState.releases) ? appInfoState.releases : [];
@@ -366,7 +363,7 @@ function applyLanguageTranslations() {
 
   // About & Release Notes Page Translations
   document.getElementById('aboutHeroDesc').textContent = tr(
-    'แอปจับเวลาโพโมโดโรพร้อมเพื่อนคู่หูการ์ตูนแอนิเมชัน 60 FPS บน Windows Taskbar ที่เปิดให้คุณออกแบบตัวละคร ยานพาหนะ และท่าทางแอนิเมชันได้อย่างอิสระผ่านไฟล์ JSON และ Generative AI',
+    'แอปจับเวลาโพโมโดโรพร้อมเพื่อนคู่หูการ์ตูนแอนิเมชัน บน Windows Taskbar ที่เปิดให้คุณออกแบบตัวละคร ยานพาหนะ และท่าทางแอนิเมชันได้อย่างอิสระผ่านไฟล์ JSON และ Generative AI',
     'A 60 FPS animated Windows Taskbar Pomodoro Focus Companion powered by a Universal Declarative 2D Drawable Scene Graph that lets you create and import any custom character, vehicle, and behavior with Generative AI.'
   );
   document.getElementById('hdrSystemPaths').textContent = tr(
@@ -375,26 +372,19 @@ function applyLanguageTranslations() {
   );
   document.getElementById('lblPathConfig').textContent = tr('ไฟล์การตั้งค่า:', 'Config File:');
   document.getElementById('lblPathThemes').textContent = tr('โฟลเดอร์ชุดธีม:', 'Themes Folder:');
-  if (document.getElementById('lblPathUpdates')) {
-    document.getElementById('lblPathUpdates').textContent = tr('โฟลเดอร์ไฟล์อัปเดต:', 'Updates Folder:');
-  }
   if (document.getElementById('hdrUpdaterCard')) {
     document.getElementById('hdrUpdaterCard').textContent = tr(
-      '🔄 ระบบอัปเดตแอปอัตโนมัติ (Electron Updater)',
-      '🔄 Electron App Updater'
-    );
-    document.getElementById('lblUpdateFeedUrl').textContent = tr(
-      'แหล่งไฟล์อัปเดต (Local Folder / Network Share / HTTP URL)',
-      'Update Feed Source (Local Folder / Network Share / HTTP URL)'
+      '🔄 อัปเดตโปรแกรม (GitHub Releases)',
+      '🔄 App Update (GitHub Releases)'
     );
     btnCheckUpdates.textContent = tr('🔍 ตรวจสอบอัปเดต', '🔍 Check for Updates');
-    btnOpenUpdatesDir.textContent = tr('📂 เปิดโฟลเดอร์ updates/', '📂 Open updates/ Folder');
+    btnOpenReleasesPage.textContent = '🌐 GitHub Releases';
     document.getElementById('lblAutoCheckUpdates').textContent = tr(
       'ตรวจสอบอัปเดตอัตโนมัติเมื่อเปิดโปรแกรม',
       'Automatically check for updates on startup'
     );
-    btnDownloadUpdate.textContent = tr('⬇️ ดาวน์โหลดและติดตั้งอัปเดต', '⬇️ Download & Apply Update');
-    btnInstallUpdateNow.textContent = tr('🔄 รีสตาร์ทเพื่ออัปเดตทันที', '🔄 Restart & Install Update');
+    btnDownloadUpdate.textContent = tr('⬇️ ดาวน์โหลดอัปเดต', '⬇️ Download Update');
+    btnInstallUpdateNow.textContent = tr('🔄 รีสตาร์ทเพื่อติดตั้ง', '🔄 Restart & Install');
   }
   document.getElementById('hdrReleaseNotes').textContent = tr(
     '📜 ประวัติเวอร์ชันและบันทึกการอัปเดต',
@@ -643,7 +633,6 @@ function syncUIFromConfig(cfg) {
   inputWakeTime.value = cfg.wakeTime || '16:00';
   chkSoundEnabled.checked = cfg.soundEnabled !== false;
 
-  if (inputUpdateFeedUrl) inputUpdateFeedUrl.value = cfg.updateFeedUrl || './updates';
   if (chkAutoCheckUpdates) chkAutoCheckUpdates.checked = cfg.autoCheckUpdates !== false;
 
   syncPomodoroDashboard();
@@ -669,9 +658,11 @@ function renderUpdateState(upd) {
   } else if (st === 'available') {
     updStatusBadge.textContent = tr(`✨ มีเวอร์ชันใหม่ v${upd.availableVersion}!`, `✨ Update Available: v${upd.availableVersion}`);
     updDetailsBox.style.display = 'block';
-    updDetailsTitle.textContent = tr(upd.titleTh, upd.titleEn) || `v${upd.availableVersion}`;
-    const notes = configState.language === 'en' ? upd.notesEn || [] : upd.notesTh || [];
-    updDetailsNotes.innerHTML = notes.map((n) => `<li>${n}</li>`).join('');
+    updDetailsTitle.textContent = `v${upd.availableVersion}${upd.releaseDate ? ` (${upd.releaseDate})` : ''}`;
+    updDetailsNotes.textContent = upd.releaseNotes || tr('มีเวอร์ชันใหม่พร้อมให้ดาวน์โหลดบน GitHub Releases', 'A new version is available on GitHub Releases.');
+    btnDownloadUpdate.textContent = upd.isPackaged
+      ? tr('⬇️ ดาวน์โหลดอัปเดต', '⬇️ Download Update')
+      : tr('🌐 ดาวน์โหลดจาก GitHub Release', '🌐 Download from GitHub Release');
     btnDownloadUpdate.style.display = 'inline-block';
   } else if (st === 'downloading') {
     updStatusBadge.textContent = tr(`⬇️ กำลังดาวน์โหลด ${upd.progressPercent}%`, `⬇️ Downloading ${upd.progressPercent}%`);
@@ -679,7 +670,7 @@ function renderUpdateState(upd) {
     updProgressWrap.style.display = 'block';
     updProgressBar.style.width = `${upd.progressPercent || 0}%`;
   } else if (st === 'downloaded') {
-    updStatusBadge.textContent = tr(`🎉 อัปเดตเป็น v${upd.availableVersion} สำเร็จ!`, `🎉 Ready to Restart (v${upd.availableVersion})`);
+    updStatusBadge.textContent = tr(`🎉 ดาวน์โหลด v${upd.availableVersion} สำเร็จ!`, `🎉 Ready to Install (v${upd.availableVersion})`);
     updDetailsBox.style.display = 'block';
     updProgressWrap.style.display = 'block';
     updProgressBar.style.width = '100%';
@@ -760,15 +751,9 @@ if (btnInstallUpdateNow) {
   });
 }
 
-if (btnOpenUpdatesDir) {
-  btnOpenUpdatesDir.addEventListener('click', () => {
-    window.companionAPI.openUpdatesFolder();
-  });
-}
-
-if (inputUpdateFeedUrl) {
-  inputUpdateFeedUrl.addEventListener('change', () => {
-    savePartial({ updateFeedUrl: inputUpdateFeedUrl.value.trim() || './updates' });
+if (btnOpenReleasesPage) {
+  btnOpenReleasesPage.addEventListener('click', () => {
+    window.companionAPI.openReleasesPage();
   });
 }
 

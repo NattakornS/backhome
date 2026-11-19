@@ -2,6 +2,10 @@
 
 All notable changes to **Pomodoro Cartoon Companion** are documented in this file.
 
+## [1.2.1] - 2026-11-19
+### Changed
+- Add update app feature
+
 ## [1.2.0] - 2026-11-18
 ### Added
 - **Core Pomodoro Timer Engine**:
