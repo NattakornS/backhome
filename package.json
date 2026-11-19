@@ -45,7 +45,8 @@
       {
         "provider": "github",
         "owner": "NattakornS",
-        "repo": "backhome"
+        "repo": "backhome",
+        "releaseType": "release"
       }
     ]
   },
