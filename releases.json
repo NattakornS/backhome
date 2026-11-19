@@ -6,6 +6,19 @@
       "version": "1.2.3",
       "date": "2026-11-19",
       "tag": "Latest",
+      "titleTh": "อัปเดตเวอร์ชัน v1.2.3 — เพิ่มการอัพเดตโปรแกรม",
+      "titleEn": "Release v1.2.3 — Add program update",
+      "changesTh": [
+        "เพิ่มการอัพเดตโปรแกรม"
+      ],
+      "changesEn": [
+        "Add program update"
+      ]
+    },
+    {
+      "version": "1.2.3",
+      "date": "2026-11-19",
+      "tag": "Release",
       "titleTh": "อัปเดตเวอร์ชัน v1.2.3 — อัปเดตเวอร์ชันใหม่และปรับปรุงระบบ",
       "titleEn": "Release v1.2.3 — New release and improvements",
       "changesTh": [
