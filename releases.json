@@ -1,11 +1,24 @@
 {
   "appName": "Pomodoro Cartoon Companion",
-  "currentVersion": "1.2.2",
+  "currentVersion": "1.2.3",
   "releases": [
+    {
+      "version": "1.2.3",
+      "date": "2026-11-19",
+      "tag": "Latest",
+      "titleTh": "อัปเดตเวอร์ชัน v1.2.3 — อัปเดตเวอร์ชันใหม่และปรับปรุงระบบ",
+      "titleEn": "Release v1.2.3 — New release and improvements",
+      "changesTh": [
+        "อัปเดตเวอร์ชันใหม่และปรับปรุงระบบ"
+      ],
+      "changesEn": [
+        "New release and improvements"
+      ]
+    },
     {
       "version": "1.2.2",
       "date": "2026-11-19",
-      "tag": "Latest",
+      "tag": "Release",
       "titleTh": "อัปเดตเวอร์ชัน v1.2.2 — เพิ่มเมนู About",
       "titleEn": "Release v1.2.2 — Add about menu",
       "changesTh": [
