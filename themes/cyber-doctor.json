@@ -1,0 +1,516 @@
+{
+  "id": "cyber-doctor",
+  "nameTh": "🩺 หมอหุ่นยนต์ไซเบอร์อัจฉริยะ",
+  "nameEn": "🩺 Cyber Doctor",
+  "characterName": "หมอดีโบ (Dr. Robo)",
+  "alertMessageFocusEnd": "🩺 จบรอบโฟกัสแล้ว! พักผ่อนสายตาและตรวจสุขภาพใจกันเถอะ (Mission Complete!)",
+  "character": {
+    "skinTone": "#E2E8F0",
+    "cheek": "#38BDF8",
+    "hatStyle": "cap",
+    "hatMain": "#0284C7",
+    "hatDark": "#0369A1",
+    "hatBand": "#38BDF8",
+    "shirt": "#F8FAFC",
+    "shirtSleeve": "#E2E8F0",
+    "overalls": "#0284C7",
+    "kamarBelt": true,
+    "pants": "#0F172A",
+    "boots": "#0284C7",
+    "sunglasses": false,
+    "mustache": false,
+    "vehicleStyle": "tractor",
+    "vehicleBody": "#D32F2F",
+    "vehicleTrim": "#FFCA28",
+    "vehicleWheel": "#263238",
+    "vehicleRim": "#FBC02D",
+    "groundColor": "#38BDF8",
+    "hatDrawables": [
+      {
+        "type": "circle",
+        "x": 0,
+        "y": -22,
+        "r": 5,
+        "fill": "#EF4444",
+        "stroke": "#FFFFFF",
+        "lineWidth": 1.5
+      },
+      {
+        "type": "text",
+        "x": -3,
+        "y": -18,
+        "text": "+",
+        "font": "bold 12px sans-serif",
+        "fill": "#FFFFFF"
+      }
+    ],
+    "torsoDrawables": [
+      {
+        "type": "roundRect",
+        "x": -8,
+        "y": -24,
+        "w": 16,
+        "h": 12,
+        "r": 3,
+        "fill": "#FFFFFF",
+        "stroke": "#0284C7",
+        "lineWidth": 1.5
+      },
+      {
+        "type": "text",
+        "x": -4,
+        "y": -15,
+        "text": "✚",
+        "font": "bold 10px sans-serif",
+        "fill": "#EF4444"
+      }
+    ]
+  },
+  "behaviors": [
+    {
+      "id": "ride-ambulance",
+      "icon": "🚑",
+      "labelTh": "ขับรถพยาบาลฉุกเฉินความเร็วสูง",
+      "labelEn": "Drive Emergency Ambulance",
+      "movementType": "ride",
+      "seatOffsetX": -8,
+      "seatOffsetY": -26,
+      "vehicleDrawables": [
+        {
+          "type": "roundRect",
+          "x": -40,
+          "y": -22,
+          "w": 80,
+          "h": 20,
+          "r": 6,
+          "fill": "#F8FAFC",
+          "stroke": "#0284C7",
+          "lineWidth": 2
+        },
+        {
+          "type": "circle",
+          "x": -20,
+          "y": -25,
+          "r": 5,
+          "fill": "#EF4444",
+          "anim": {
+            "scaleAmp": 0.4,
+            "scaleSpeed": 12
+          }
+        },
+        {
+          "type": "circle",
+          "x": -26,
+          "y": -2,
+          "r": 7,
+          "fill": "#0F172A",
+          "stroke": "#38BDF8",
+          "lineWidth": 1.5,
+          "anim": {
+            "rotateSpeed": 360
+          }
+        },
+        {
+          "type": "circle",
+          "x": 26,
+          "y": -2,
+          "r": 7,
+          "fill": "#0F172A",
+          "stroke": "#38BDF8",
+          "lineWidth": 1.5,
+          "anim": {
+            "rotateSpeed": 360
+          }
+        }
+      ],
+      "particles": {
+        "spawnRate": 15,
+        "offsetX": -42,
+        "offsetY": -16,
+        "vxRange": [
+          -40,
+          -10
+        ],
+        "vyRange": [
+          -20,
+          10
+        ],
+        "gravity": -10,
+        "size": 4,
+        "life": 0.6,
+        "shape": "text",
+        "text": "💨",
+        "colors": [
+          "#38BDF8",
+          "#FFFFFF"
+        ]
+      }
+    },
+    {
+      "id": "stethoscope-check",
+      "icon": "🩺",
+      "labelTh": "ตรวจวัดชีพจรและฟังเสียงหัวใจ",
+      "labelEn": "Check Heartbeat & Pulse",
+      "movementType": "work-pause",
+      "pose": {
+        "frontArmBaseDeg": -25,
+        "frontArmSwingDeg": 20,
+        "frontArmSwingSpeed": 6,
+        "headTiltDeg": 8,
+        "headSwingDeg": 5,
+        "headSwingSpeed": 4
+      },
+      "toolDrawables": [
+        {
+          "type": "circle",
+          "x": 12,
+          "y": -4,
+          "r": 6,
+          "fill": "#0284C7",
+          "stroke": "#FFFFFF",
+          "lineWidth": 1.5,
+          "anim": {
+            "scaleAmp": 0.15,
+            "scaleSpeed": 8
+          }
+        }
+      ],
+      "propDrawables": [
+        {
+          "type": "circle",
+          "x": 18,
+          "y": -16,
+          "r": 10,
+          "fill": "transparent",
+          "stroke": "#EF4444",
+          "lineWidth": 2,
+          "anim": {
+            "scaleAmp": 0.25,
+            "scaleSpeed": 6
+          }
+        }
+      ],
+      "particles": {
+        "spawnRate": 20,
+        "offsetX": 22,
+        "offsetY": -22,
+        "vxRange": [
+          -10,
+          30
+        ],
+        "vyRange": [
+          -60,
+          -20
+        ],
+        "gravity": -10,
+        "size": 6,
+        "life": 0.8,
+        "shape": "heart",
+        "colors": [
+          "#EF4444",
+          "#F43F5E",
+          "#FB7185"
+        ]
+      }
+    },
+    {
+      "id": "dispense-meds",
+      "icon": "💊",
+      "labelTh": "จัดยาและวิตามินบำรุงพลัง",
+      "labelEn": "Dispense Healing Pills",
+      "movementType": "walk",
+      "pose": {
+        "frontArmBaseDeg": -40,
+        "frontArmSwingDeg": 30,
+        "frontArmSwingSpeed": 8,
+        "legSwingDeg": 22
+      },
+      "toolDrawables": [
+        {
+          "type": "roundRect",
+          "x": 8,
+          "y": -6,
+          "w": 12,
+          "h": 6,
+          "r": 3,
+          "fill": "#EF4444",
+          "stroke": "#FFFFFF",
+          "lineWidth": 1
+        }
+      ],
+      "particles": {
+        "spawnRate": 16,
+        "offsetX": 30,
+        "offsetY": -30,
+        "vxRange": [
+          10,
+          40
+        ],
+        "vyRange": [
+          -50,
+          -10
+        ],
+        "gravity": 80,
+        "size": 5,
+        "life": 0.7,
+        "shape": "star",
+        "colors": [
+          "#38BDF8",
+          "#34D399",
+          "#FBBF24"
+        ]
+      }
+    },
+    {
+      "id": "iv-drip",
+      "icon": "💉",
+      "labelTh": "ให้สารน้ำและเกลือแร่เสริมสมาธิ",
+      "labelEn": "Setup IV Energy Drip",
+      "movementType": "work-pause",
+      "pose": {
+        "frontArmBaseDeg": -50,
+        "frontArmSwingDeg": 15,
+        "frontArmSwingSpeed": 5
+      },
+      "propDrawables": [
+        {
+          "type": "line",
+          "x1": 20,
+          "y1": -50,
+          "x2": 20,
+          "y2": 10,
+          "stroke": "#94A3B8",
+          "lineWidth": 2
+        },
+        {
+          "type": "roundRect",
+          "x": 14,
+          "y": -38,
+          "w": 12,
+          "h": 16,
+          "r": 4,
+          "fill": "#38BDF8",
+          "stroke": "#FFFFFF",
+          "lineWidth": 1.5,
+          "anim": {
+            "scaleAmp": 0.1,
+            "scaleSpeed": 4
+          }
+        }
+      ],
+      "particles": {
+        "spawnRate": 22,
+        "offsetX": 20,
+        "offsetY": -18,
+        "vxRange": [
+          -5,
+          5
+        ],
+        "vyRange": [
+          20,
+          60
+        ],
+        "gravity": 120,
+        "size": 4,
+        "life": 0.5,
+        "shape": "circle",
+        "colors": [
+          "#38BDF8",
+          "#7DD3FC"
+        ]
+      }
+    },
+    {
+      "id": "research-cure",
+      "icon": "🔬",
+      "labelTh": "วิจัยเซรุ่มต้านความเหนื่อยล้า",
+      "labelEn": "Research Focus Antidote",
+      "movementType": "work-pause",
+      "pose": {
+        "frontArmBaseDeg": -20,
+        "frontArmSwingDeg": 25,
+        "frontArmSwingSpeed": 7,
+        "headTiltDeg": -12
+      },
+      "toolDrawables": [
+        {
+          "type": "polygon",
+          "points": [
+            [
+              8,
+              -4
+            ],
+            [
+              14,
+              10
+            ],
+            [
+              2,
+              10
+            ]
+          ],
+          "fill": "#34D399",
+          "stroke": "#FFFFFF",
+          "lineWidth": 1.5,
+          "anim": {
+            "scaleAmp": 0.2,
+            "scaleSpeed": 8
+          }
+        }
+      ],
+      "propDrawables": [
+        {
+          "type": "roundRect",
+          "x": -25,
+          "y": -32,
+          "w": 50,
+          "h": 32,
+          "r": 4,
+          "fill": "#1E293B",
+          "stroke": "#0284C7",
+          "lineWidth": 2
+        },
+        {
+          "type": "circle",
+          "x": 12,
+          "y": -16,
+          "r": 5,
+          "fill": "#FBBF24",
+          "anim": {
+            "rotateSpeed": 180
+          }
+        }
+      ],
+      "particles": {
+        "spawnRate": 18,
+        "offsetX": 35,
+        "offsetY": -40,
+        "vxRange": [
+          -20,
+          40
+        ],
+        "vyRange": [
+          -70,
+          -30
+        ],
+        "gravity": 40,
+        "size": 4.5,
+        "life": 0.8,
+        "shape": "spark",
+        "colors": [
+          "#34D399",
+          "#38BDF8",
+          "#FBBF24"
+        ]
+      }
+    },
+    {
+      "id": "bandage-care",
+      "icon": "🩹",
+      "labelTh": "ทำแผลและฟื้นฟูพลังจิตใจ",
+      "labelEn": "Apply First Aid & Care",
+      "movementType": "walk",
+      "pose": {
+        "frontArmBaseDeg": -35,
+        "frontArmSwingDeg": 35,
+        "frontArmSwingSpeed": 9,
+        "legSwingDeg": 26
+      },
+      "toolDrawables": [
+        {
+          "type": "roundRect",
+          "x": 6,
+          "y": -4,
+          "w": 14,
+          "h": 6,
+          "r": 2,
+          "fill": "#FDE68A",
+          "stroke": "#D97706",
+          "lineWidth": 1.5
+        }
+      ],
+      "particles": {
+        "spawnRate": 15,
+        "offsetX": 28,
+        "offsetY": -25,
+        "vxRange": [
+          -10,
+          30
+        ],
+        "vyRange": [
+          -40,
+          -10
+        ],
+        "gravity": 50,
+        "size": 5,
+        "life": 0.6,
+        "shape": "star",
+        "colors": [
+          "#FDE68A",
+          "#FBBF24",
+          "#FFFFFF"
+        ]
+      }
+    },
+    {
+      "id": "upgrade-tech",
+      "icon": "⚡",
+      "labelTh": "อัปเกรดระบบเครื่องมือแพทย์",
+      "labelEn": "Upgrade Medical Tech",
+      "movementType": "work-pause",
+      "pose": {
+        "frontArmBaseDeg": -45,
+        "frontArmSwingDeg": 28,
+        "frontArmSwingSpeed": 10
+      },
+      "toolDrawables": [
+        {
+          "type": "text",
+          "x": 10,
+          "y": 2,
+          "text": "🔧",
+          "font": "16px sans-serif",
+          "fill": "#38BDF8",
+          "anim": {
+            "rotateSpeed": 90
+          }
+        }
+      ],
+      "propDrawables": [
+        {
+          "type": "roundRect",
+          "x": -20,
+          "y": -28,
+          "w": 40,
+          "h": 28,
+          "r": 4,
+          "fill": "#0F172A",
+          "stroke": "#38BDF8",
+          "lineWidth": 1.5
+        }
+      ],
+      "particles": {
+        "spawnRate": 25,
+        "offsetX": 30,
+        "offsetY": -35,
+        "vxRange": [
+          -30,
+          30
+        ],
+        "vyRange": [
+          -80,
+          -30
+        ],
+        "gravity": 30,
+        "size": 4,
+        "life": 0.5,
+        "shape": "spark",
+        "colors": [
+          "#38BDF8",
+          "#F43F5E",
+          "#FBBF24"
+        ]
+      }
+    }
+  ]
+}

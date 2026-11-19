@@ -1,24 +1,69 @@
 {
-  "name": "farmer-backhome-alert",
-  "version": "1.0.0",
-  "description": "Cartoon Farmer Taskbar Companion & 16:00 Back-Home Alert App for Windows",
+  "name": "pomodoro-cartoon-companion",
+  "productName": "Pomodoro Cartoon Companion",
+  "version": "1.2.1",
+  "description": "Pomodoro Cartoon Companion — Animated Taskbar Timer & AI Theme Set Studio for Windows",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "settings": "electron . --open-settings",
-    "build": "electron-packager . FarmerBackHomeAlert --platform=win32 --arch=x64 --out=dist --overwrite --asar"
+    "start": "electron . --log-level=3",
+    "settings": "electron . --open-settings --log-level=3",
+    "build": "electron-builder --win --publish never",
+    "release": "electron-builder --win --publish always",
+    "publish-release": "node scripts/publish-release.js"
+  },
+  "build": {
+    "appId": "com.nattakorns.pomodoro-cartoon-companion",
+    "productName": "Pomodoro Cartoon Companion",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "releases.json",
+      "src/**/*",
+      "themes/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NattakornS",
+        "repo": "backhome"
+      }
+    ]
   },
   "keywords": [
+    "pomodoro",
     "desktop-pet",
     "taskbar",
-    "farmer",
-    "alarm",
+    "cartoon",
     "electron"
   ],
-  "author": "",
+  "author": "NattakornS",
   "license": "MIT",
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
   "devDependencies": {
     "@electron/packager": "^18.3.6",
-    "electron": "^33.2.0"
+    "electron": "^33.2.0",
+    "electron-builder": "^26.18.0"
   }
 }

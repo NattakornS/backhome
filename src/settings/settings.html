@@ -1,193 +1,489 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Farmer Back-Home Alert (16:00) — Settings & Control Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomodoro Cartoon Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="settings.css" />
 </head>
+
 <body>
   <header class="app-header">
     <div class="title-group">
-      <h1>👨‍🌾 Farmer Back-Home Alert & Taskbar Companion</h1>
-      <p>Configure your cartoon farmer character, 7 farming behaviors, screen position, 16:00 wake alarm, and snooze.</p>
+      <h1>
+        <span id="hdrTitle">🍅 Pomodoro Cartoon Companion</span>
+        <span class="version-pill" id="hdrVersionPill">v1.2.0</span>
+      </h1>
+      <p id="hdrSubtitle">
+        จับเวลาโฟกัสงานด้วยตัวละครการ์ตูนบน Taskbar พร้อมสร้าง/นำเข้า/แชร์ชุดธีม (Theme Set) ด้วย Generative AI
+      </p>
     </div>
     <div class="header-actions">
-      <span class="status-pill" id="statusPill">⏰ Next Alert: 16:00</span>
-      <button class="btn-primary" id="btnTriggerAlertNow">🔔 Test 16:00 Alert Now</button>
-      <button class="btn-secondary" id="btnDismissNow">✅ Dismiss</button>
+      <div class="nav-pills">
+        <button class="nav-pill-btn active" id="navBtnMain">⚙️ ตั้งค่า & โพโมโดโร</button>
+        <button class="nav-pill-btn" id="navBtnAbout">ℹ️ เกี่ยวกับ & เวอร์ชัน</button>
+      </div>
+      <select class="lang-select" id="selectLanguage" title="Switch Language TH / EN">
+        <option value="th">🇹🇭 ภาษาไทย (TH)</option>
+        <option value="en">🇬🇧 English (EN)</option>
+      </select>
+      <button class="btn-primary" id="btnTriggerAlertNow">🔔 ทดสอบแจ้งเตือน</button>
+      <button class="btn-secondary" id="btnDismissNow">✅ ปิดแจ้งเตือน</button>
     </div>
   </header>
 
-  <main class="layout-grid">
-    <!-- Left Column: Live Cartoon Preview & 7 Farming Behaviors -->
+  <!-- VIEW 1: MAIN POMODORO & SETTINGS DASHBOARD -->
+  <main class="layout-grid" id="viewMain">
+    <!-- Left Column: Pomodoro Live Timer Dashboard + Cartoon Preview -->
     <section>
-      <div class="card">
-        <h2>🎬 Live Cartoon Preview</h2>
-        <div class="preview-stage">
-          <canvas id="previewCanvas" width="310" height="220"></canvas>
+      <!-- 1. Pomodoro Live Timer Dashboard -->
+      <div class="card pomo-dashboard" id="pomoDashboardCard">
+        <div class="phase-tabs">
+          <button class="phase-tab active" data-phase="focus" id="tabPhaseFocus">
+            🍅 โฟกัส
+          </button>
+          <button class="phase-tab" data-phase="shortBreak" id="tabPhaseShort">
+            ☕ พักสั้น
+          </button>
+          <button class="phase-tab" data-phase="longBreak" id="tabPhaseLong">
+            🌴 พักยาว
+          </button>
         </div>
 
-        <label style="font-size: 12px; color: #98B39E; font-weight: 600;">
-          Click a Farming Behavior to Switch Immediately:
-        </label>
-        <div class="behavior-grid" id="behaviorButtons">
-          <button class="behavior-chip full-span" data-behavior="cycle">
-            🔄 Auto-Cycle All 7 Behaviors
+        <div class="big-timer" id="bigTimerDisplay">25:00</div>
+
+        <div class="cycle-row">
+          <span id="cycleLabelText">รอบโฟกัส: 1 / 4</span>
+          <div class="cycle-dots" id="cycleDotsContainer"></div>
+        </div>
+
+        <div class="pomo-controls">
+          <button class="btn-primary" id="btnPomoStartPause">
+            ▶️ เริ่มโฟกัส
           </button>
-          <button class="behavior-chip" data-behavior="tractor">
-            🚜 Drive Tractor
+          <button class="btn-secondary" id="btnPomoSkip">
+            ⏭️ ข้าม
           </button>
-          <button class="behavior-chip" data-behavior="machete">
-            🔪 Hold Machete
+          <button class="btn-secondary" id="btnPomoReset">
+            🔄 รีเซ็ต
           </button>
-          <button class="behavior-chip" data-behavior="water">
-            🚿 Pour Water
-          </button>
-          <button class="behavior-chip" data-behavior="plant">
-            🌱 Plant Tree
-          </button>
-          <button class="behavior-chip" data-behavior="palm">
-            🌴 Harvest Palm
-          </button>
-          <button class="behavior-chip" data-behavior="fertilizer">
-            🌾 Fertilizer
-          </button>
-          <button class="behavior-chip full-span" data-behavior="fix">
-            🔧 Fix the Things (Fence & Gear)
+          <button class="btn-secondary" id="btnPomoResetAll">
+            🔁 รีเซ็ตรอบ
           </button>
         </div>
+
+        <div class="strict-lock-banner" id="strictLockBanner">
+          🔒 โหมดเข้มงวดทำงานอยู่: ล็อกการหยุดพัก/ข้าม/รีเซ็ตจนกว่าจะครบเวลาโฟกัส!
+        </div>
+      </div>
+
+      <!-- 2. Live Cartoon Theme Set Preview -->
+      <div class="card" style="margin-bottom: 0;">
+        <h2>
+          <span id="lblLivePreview">🎬 ตัวอย่างแอนิเมชัน</span>
+          <span id="previewThemeBadge" style="font-size: 11px; color: #A5D6A7; font-weight: 600;"></span>
+        </h2>
+        <div class="preview-stage">
+          <canvas id="previewCanvas" width="335" height="205"></canvas>
+        </div>
+
+        <label id="lblBehaviorClick" style="font-size: 11.5px; color: #98B39E; font-weight: 600;">
+          คลิกเลือกท่าทางในชุดธีมนี้:
+        </label>
+        <div class="behavior-grid" id="behaviorButtonsContainer"></div>
       </div>
     </section>
 
-    <!-- Right Column: Wake Time, Snooze, Character & Screen Position Settings -->
+    <!-- Right Column: Core Timer Engine, Theme Set Studio, Screen Position -->
     <section>
-      <!-- 1. Wake Time (16:00) & Snooze -->
+      <!-- 1. Core Pomodoro Timer Engine Settings -->
       <div class="card">
-        <h2>⏰ Wake Time (Back-Home Alert) & Snooze</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="inputWakeTime">Time to Wake (24-Hour)</label>
-            <input type="time" id="inputWakeTime" value="16:00" />
+        <h2 id="hdrPomodoroEngine">⏱️ ตั้งค่าระบบจับเวลาโพโมโดโร</h2>
+
+        <div class="form-row-4">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="inputFocusMin" id="lblFocusMin">🍅 โฟกัส (นาที)</label>
+            <input type="number" id="inputFocusMin" min="1" max="180" value="25" />
           </div>
-          <div class="form-group">
-            <label for="selectSnooze">Default Snooze Duration</label>
-            <select id="selectSnooze">
-              <option value="5">5 Minutes</option>
-              <option value="10" selected>10 Minutes</option>
-              <option value="15">15 Minutes</option>
-              <option value="20">20 Minutes</option>
-              <option value="30">30 Minutes</option>
-            </select>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="inputShortBreakMin" id="lblShortBreakMin">☕ พักสั้น (นาที)</label>
+            <input type="number" id="inputShortBreakMin" min="1" max="60" value="5" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="inputLongBreakMin" id="lblLongBreakMin">🌴 พักยาว (นาที)</label>
+            <input type="number" id="inputLongBreakMin" min="1" max="90" value="15" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="inputSessionsBeforeLong" id="lblCyclesCount">🔁 รอบก่อนพักยาว</label>
+            <input type="number" id="inputSessionsBeforeLong" min="1" max="12" value="4" />
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="inputAlertMessage">Alert Banner Message</label>
-          <input
-            type="text"
-            id="inputAlertMessage"
-            placeholder="16:00 Back Home Time! 🏡 เลิกงานแล้ว กลับบ้านกัน!"
-          />
+        <div class="toggles-grid" style="margin-bottom: 10px;">
+          <label class="checkbox-row">
+            <input type="checkbox" id="chkAutoStartBreaks" />
+            <span id="lblAutoStartBreaks">☕ เริ่มเวลาพักอัตโนมัติ</span>
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chkAutoStartFocus" />
+            <span id="lblAutoStartFocus">▶️ เริ่มรอบโฟกัสถัดไปอัตโนมัติ</span>
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chkOverflowMode" checked />
+            <span id="lblOverflowMode">🔥 โหมดล่วงเวลา (นับบวกต่อไม่ขัดโฟลว์)</span>
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chkStrictMode" />
+            <span id="lblStrictMode">🔒 โหมดเข้มงวด (ล็อกปุ่มหยุดพักระหว่างโฟกัส)</span>
+          </label>
         </div>
 
-        <div class="form-row" style="margin-bottom: 0;">
-          <label class="checkbox-row">
-            <input type="checkbox" id="chkAlarmEnabled" checked />
-            Enable Daily Wake Time Alert
-          </label>
-          <label class="checkbox-row">
-            <input type="checkbox" id="chkSoundEnabled" checked />
-            Play Cheerful Chime on Alert
-          </label>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="inputAlertMessage" id="lblAlertMsg">ข้อความแจ้งเตือนเมื่อครบเวลา</label>
+          <input type="text" id="inputAlertMessage" placeholder="🍅 ครบเวลาโฟกัสแล้ว! พักสายตาสักนิดนะ" />
         </div>
       </div>
 
-      <!-- 2. Character Outfit & Animation Speed -->
+      <!-- 2. Cartoon Theme Set Manager (Character + Behavior Set) -->
       <div class="card">
-        <h2>👕 Character Appearance & Speed</h2>
+        <h2 id="hdrThemeSetCard">🎨 ชุดธีมตัวละครและท่าทาง (Theme Set)</h2>
+
         <div class="form-row">
-          <div class="form-group">
-            <label for="selectSkin">Character Outfit / Style</label>
+          <div class="form-group" style="margin-bottom: 6px;">
+            <label for="selectThemeSet" id="lblSelectThemeSet">เลือกชุดธีม</label>
+            <select id="selectThemeSet"></select>
+          </div>
+          <div class="form-group" id="characterOutfitGroup" style="margin-bottom: 6px;">
+            <label for="selectSkin" id="lblCharacterOutfit">ชุดแต่งกายตัวละคร</label>
             <select id="selectSkin">
-              <option value="thai-kamar">Uncle Somchai — Thai Kamar & Straw Hat (ผ้าขาวม้า)</option>
-              <option value="classic-overalls">Sunny McFarm — Blue Overalls & Red Plaid</option>
-              <option value="modern-rancher">Ranger Khao — Field Vest & Green Cap</option>
-              <option value="golden-palm">Boss Palm — Sunglasses & Golden Polo (เถ้าแก่สวนปาล์ม)</option>
+              <option value="thai-kamar" id="optSkinKamar">ลุงสมชาย — ผ้าขาวม้า & หมวกสาน</option>
+              <option value="classic-overalls" id="optSkinOveralls">Sunny McFarm — เอี๊ยมยีนส์</option>
+              <option value="modern-rancher" id="optSkinRancher">Ranger Khao — เสื้อกั๊กฟาร์ม</option>
+              <option value="golden-palm" id="optSkinBoss">เถ้าแก่สวนปาล์ม — แว่นดำ</option>
             </select>
-          </div>
-          <div class="form-group">
-            <label for="inputCharacterName">Character Display Name</label>
-            <input type="text" id="inputCharacterName" value="Uncle Somchai (ลุงสมชาย)" />
           </div>
         </div>
 
         <div class="form-row" style="margin-bottom: 0;">
           <div class="form-group" style="margin-bottom: 0;">
-            <label for="rangeScale">
-              <span>Character Size / Scale</span>
-              <span id="valScale">1.0x</span>
-            </label>
-            <input type="range" id="rangeScale" min="0.8" max="1.4" step="0.05" value="1.0" />
+            <label for="inputCharacterName" id="lblCharName">ชื่อตัวละคร</label>
+            <input type="text" id="inputCharacterName" value="ลุงสมชาย" />
           </div>
           <div class="form-group" style="margin-bottom: 0;">
-            <label for="rangeSpeed">
-              <span>Walk & Action Speed</span>
-              <span id="valSpeed">1.0x</span>
+            <label>
+              <span><span id="lblSizeText">ขนาด</span>: <strong id="valScale">1.00x</strong></span>
+              <span><span id="lblSpeedText">ความเร็ว</span>: <strong id="valSpeed">1.0x</strong></span>
             </label>
-            <input type="range" id="rangeSpeed" min="0.5" max="2.0" step="0.1" value="1.0" />
+            <div style="display: flex; gap: 8px;">
+              <input type="range" id="rangeScale" min="0.8" max="1.4" step="0.05" value="1.0" style="flex: 1;" />
+              <input type="range" id="rangeSpeed" min="0.5" max="2.0" step="0.1" value="1.0" style="flex: 1;" />
+            </div>
           </div>
+        </div>
+
+        <!-- Consolidated Bottom Row Toolbar -->
+        <div class="theme-toolbar">
+          <button class="btn-primary" id="btnOpenThemeStudio">
+            🤖 สร้าง / นำเข้าชุดธีมด้วย AI (Theme Studio & Import)
+          </button>
+          <button class="btn-secondary" id="btnExportShare">
+            📤 ส่งออก / แชร์ชุดธีม (.json)
+          </button>
+          <button class="btn-danger" id="btnDeleteCustomTheme" style="display: none;">
+            🗑️ ลบชุดธีม
+          </button>
+          <input type="file" id="fileImportInput" accept=".json" style="display: none;" />
         </div>
       </div>
 
-      <!-- 3. Screen Position & Visibility Mode -->
+      <!-- 3. Screen Position & 16:00 Back-Home Reminder -->
       <div class="card" style="margin-bottom: 0;">
-        <h2>📍 Screen Position & Taskbar Visibility</h2>
+        <h2 id="hdrPositionCard">📍 ตำแหน่งบนหน้าจอ & แจ้งเตือนกลับบ้าน</h2>
+
         <div class="form-row">
           <div class="form-group">
-            <label for="selectVisibilityMode">Taskbar Visibility Mode</label>
+            <label for="selectVisibilityMode" id="lblVisMode">การแสดงผลบน Taskbar</label>
             <select id="selectVisibilityMode">
-              <option value="both">Both — Walk on Taskbar All Day + Alert at 16:00</option>
-              <option value="alert-only">Alert Only — Stay Hidden Until 16:00 Wake Time</option>
+              <option value="both" id="optVisBoth">แสดงตลอดเวลา + แจ้งเตือน</option>
+              <option value="alert-only" id="optVisAlert">ซ่อนไว้ แสดงเฉพาะตอนแจ้งเตือน</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="selectPositionPreset">Screen Position Preset</label>
+            <label for="selectPositionPreset" id="lblPosPreset">ตำแหน่งบนหน้าจอ</label>
             <select id="selectPositionPreset">
-              <option value="bottom-right">Bottom-Right Corner (On Taskbar)</option>
-              <option value="bottom-center">Bottom-Center (On Taskbar)</option>
-              <option value="bottom-left">Bottom-Left Corner (On Taskbar)</option>
-              <option value="top-right">Top-Right Corner</option>
-              <option value="custom">Custom (Dragged Position)</option>
+              <option value="bottom-right" id="optPosBR">มุมขวาล่าง (บน Taskbar)</option>
+              <option value="bottom-center" id="optPosBC">กึ่งกลางด้านล่าง</option>
+              <option value="bottom-left" id="optPosBL">มุมซ้ายล่าง</option>
+              <option value="top-right" id="optPosTR">มุมขวาบน</option>
+              <option value="custom" id="optPosCustom">ตำแหน่งที่ลากวางเอง</option>
             </select>
           </div>
         </div>
 
-        <div class="form-row" style="margin-bottom: 4px;">
+        <div class="form-row" style="margin-bottom: 8px;">
           <div class="form-group" style="margin-bottom: 0;">
             <label for="rangeOffsetX">
-              <span>Fine-Tune Horizontal Offset (X)</span>
+              <span id="lblOffsetX">ระยะแนวนอน (Offset X)</span>
               <span id="valOffsetX">0 px</span>
             </label>
             <input type="range" id="rangeOffsetX" min="-400" max="400" step="5" value="0" />
           </div>
           <div class="form-group" style="margin-bottom: 0;">
             <label for="rangeOffsetY">
-              <span>Fine-Tune Vertical Offset (Y)</span>
+              <span id="lblOffsetY">ระยะแนวตั้ง (Offset Y)</span>
               <span id="valOffsetY">0 px</span>
             </label>
             <input type="range" id="rangeOffsetY" min="-300" max="100" step="5" value="0" />
           </div>
         </div>
-        <p style="font-size: 11.5px; color: #98B39E; margin-top: 6px;">
-          💡 Tip: You can also hover over the farmer on your taskbar and drag the <strong>✋ Move</strong> button to place him anywhere on your screen!
-        </p>
+
+        <div class="form-row" style="margin-bottom: 0; align-items: center;">
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <label class="checkbox-row">
+              <input type="checkbox" id="chkAlarmEnabled" checked />
+              <span id="lblDailyWake">🏡 เตือนกลับบ้าน:</span>
+            </label>
+            <input type="time" id="inputWakeTime" value="16:00" style="width: 115px;" />
+          </div>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chkSoundEnabled" checked />
+            <span id="lblSoundChime">🔊 เปิดเสียงดนตรีแจ้งเตือน</span>
+          </label>
+        </div>
       </div>
     </section>
   </main>
 
-  <div class="toast" id="toastMsg">Settings saved!</div>
+  <!-- VIEW 2: ABOUT & VERSION CONTROL / RELEASE NOTES PAGE -->
+  <section class="about-container" id="viewAbout" style="display: none;">
+    <div class="about-hero">
+      <div>
+        <h2 style="font-size: 22px; color: #FFF; margin-bottom: 4px;">
+          🍅 Pomodoro Cartoon Companion
+          <span class="version-pill" id="aboutVersionBadge">v1.2.0</span>
+        </h2>
+        <p id="aboutHeroDesc" style="font-size: 13px; color: #A5D6A7; max-width: 620px;">
+          แอปจับเวลาโพโมโดโรพร้อมเพื่อนคู่หูการ์ตูนแอนิเมชัน บน Windows Taskbar ที่เปิดให้คุณออกแบบตัวละคร
+          ยานพาหนะ และท่าทางแอนิเมชันได้อย่างอิสระผ่านไฟล์ JSON และ Generative AI
+        </p>
+        <div class="about-badges">
+          <span class="tech-badge">⚡ 60 FPS Universal 2D Drawable Engine</span>
+          <span class="tech-badge">🍅 Core Pomodoro Timer + Overflow & Strict Mode</span>
+          <span class="tech-badge">🤖 Generative AI Theme Set JSON</span>
+          <span class="tech-badge" id="badgeElectronVer">Electron</span>
+        </div>
+      </div>
+    </div>
 
-  <script src="../overlay/farmer-engine.js"></script>
+    <!-- Simple Electron Auto-Updater Card (GitHub Releases) -->
+    <div class="card" id="updaterCard">
+      <h2>
+        <span id="hdrUpdaterCard">🔄 อัปเดตโปรแกรม (App Update — GitHub Releases)</span>
+        <span class="version-pill" id="updStatusBadge">พร้อมตรวจสอบ</span>
+      </h2>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <label class="checkbox-row" style="margin-bottom: 0;">
+          <input type="checkbox" id="chkAutoCheckUpdates" checked />
+          <span id="lblAutoCheckUpdates">ตรวจสอบอัปเดตอัตโนมัติเมื่อเปิดโปรแกรม</span>
+        </label>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-primary" id="btnCheckUpdates">🔍 ตรวจสอบอัปเดต</button>
+          <button class="btn-secondary" id="btnOpenReleasesPage">🌐 GitHub Releases</button>
+        </div>
+      </div>
+
+      <!-- Progress Bar & Update Details -->
+      <div id="updDetailsBox"
+        style="margin-top: 12px; display: none; padding: 11px 13px; border-radius: 10px; background: #101913; border: 1px solid rgba(129, 199, 132, 0.3);">
+        <div id="updDetailsTitle"
+          style="font-weight: 700; color: var(--accent-gold); font-size: 13.5px; margin-bottom: 4px;"></div>
+        <div id="updDetailsNotes"
+          style="font-size: 12.5px; color: #E8F5E9; white-space: pre-line; margin-bottom: 10px;"></div>
+
+        <div id="updProgressWrap" style="display: none; margin-bottom: 10px;">
+          <div style="height: 8px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden;">
+            <div id="updProgressBar"
+              style="height: 100%; width: 0%; background: linear-gradient(90deg, #4CAF50, #FFCA28); transition: width 0.2s;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-primary" id="btnDownloadUpdate" style="display: none;">⬇️ ดาวน์โหลดอัปเดต</button>
+          <button class="btn-primary" id="btnInstallUpdateNow" style="display: none;">🔄 รีสตาร์ทเพื่อติดตั้ง</button>
+        </div>
+      </div>
+
+      <div id="updErrorBox"
+        style="margin-top: 10px; display: none; padding: 8px 12px; border-radius: 8px; background: rgba(211, 47, 47, 0.16); border: 1px solid rgba(211, 47, 47, 0.45); color: #FF8A80; font-size: 12px;">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="hdrSystemPaths">📂 ข้อมูลระบบและตำแหน่งไฟล์ (System & Storage Paths)</h2>
+      <div style="font-size: 12.5px; color: #E8F5E9; display: flex; flex-direction: column; gap: 6px;">
+        <div><strong id="lblPathConfig">ไฟล์การตั้งค่า (Config File):</strong> <code id="valConfigPath"
+            style="color: #FFE082;">config.json</code></div>
+        <div><strong id="lblPathThemes">โฟลเดอร์ชุดธีม (Themes Folder):</strong> <code id="valThemesDir"
+            style="color: #FFE082;">themes/</code></div>
+      </div>
+    </div>
+
+    <h2 id="hdrReleaseNotes" style="font-size: 16px; color: var(--accent-gold); margin: 16px 0 10px 4px;">
+      📜 ประวัติเวอร์ชันและบันทึกการอัปเดต (Version Control & Release Notes)
+    </h2>
+    <div id="releaseNotesList"></div>
+  </section>
+
+  <!-- Theme Set Studio Modal: AI Prompt, Import JSON, Visual Builder & Export Options -->
+  <div class="modal-backdrop" id="themeModal">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h3 id="modalTitle">🎨 สตูดิโอชุดธีมตัวละครและท่าทาง (Theme Set Studio)</h3>
+        <button class="btn-secondary" id="btnCloseModal">✖ ปิด</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tabBtnJson">
+          🤖 สร้างด้วย AI & นำเข้า / ส่งออก JSON
+        </button>
+        <button class="tab-btn" id="tabBtnVisual">
+          ✨ ปรับแต่งชุดธีมด้วยตัวเอง
+        </button>
+      </div>
+
+      <!-- Tab 1: AI Prompt & JSON Import/Export -->
+      <div class="modal-body" id="tabPaneJson">
+        <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+          <button class="btn-primary" id="btnCopyAiPrompt">
+            🤖 คัดลอกพรอมต์ไปวางใน ChatGPT / Gemini / Claude
+          </button>
+          <button class="btn-secondary" id="btnBrowseJsonFile">
+            📂 นำเข้าไฟล์ .json จากคอมพิวเตอร์
+          </button>
+          <button class="btn-secondary" id="btnExportThemeSet">
+            📤 ส่งออกเฉพาะชุดธีม (.json)
+          </button>
+          <button class="btn-secondary" id="btnExportFullBundle">
+            📦 ส่งออกชุดธีม + ตั้งค่าทั้งหมด (.json)
+          </button>
+        </div>
+        <p id="lblModalJsonHint" style="font-size: 12px; color: #A5D6A7; margin-bottom: 8px;">
+          💡 กดปุ่มคัดลอกพรอมต์ด้านบนไปสั่ง Generative AI ให้ออกแบบตัวละคร ยานพาหนะ และท่าทางใหม่ทั้งหมด จากนั้นนำโค้ด
+          JSON ที่ได้มาวางด้านล่างแล้วกดบันทึก!
+        </p>
+        <textarea class="f-width" id="jsonThemeEditor" rows="15"></textarea>
+      </div>
+
+      <!-- Tab 2: Visual Theme Set Generator -->
+      <div class="modal-body" id="tabPaneVisual" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label id="lblGenNameTh">ชื่อชุดธีม (ภาษาไทย)</label>
+            <input type="text" id="genThemeNameTh" value="🚀 นักบินอวกาศโฟกัส" />
+          </div>
+          <div class="form-group">
+            <label id="lblGenNameEn">ชื่อชุดธีม (English)</label>
+            <input type="text" id="genThemeNameEn" value="🚀 Space Explorer" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label id="lblGenChar">ชื่อตัวละคร</label>
+            <input type="text" id="genCharName" value="กัปตันแอสโตร" />
+          </div>
+          <div class="form-group">
+            <label id="lblGenAlert">ข้อความแจ้งเตือนเมื่อครบเวลาโฟกัส</label>
+            <input type="text" id="genAlertMessage" value="🍅 ภารกิจโฟกัสสำเร็จ! พักเติมออกซิเจนก่อนนะ" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label id="lblGenHat">สไตล์หมวก / ศีรษะ</label>
+            <select id="genHatStyle">
+              <option value="straw-hat">🌾 หมวกสานชาวสวน (Straw Hat)</option>
+              <option value="chef-hat">🍜 หมวกเชฟทรงสูง (Chef Toque)</option>
+              <option value="wizard-hat">🧙‍♂️ หมวกพ่อมด (Wizard Hat)</option>
+              <option value="samurai-helm">⚡ หมวกเกราะซามูไร (Samurai Helmet)</option>
+              <option value="headphones">🎧 หูฟังเกมมิ่ง/โค้ดเดอร์ (Headphones)</option>
+              <option value="crown">👑 มงกุฎทองคำ (Royal Crown)</option>
+              <option value="cap">🧢 หมวกแก๊ป (Modern Cap)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label id="lblGenVeh">สไตล์ยานพาหนะ</label>
+            <select id="genVehicleStyle">
+              <option value="tractor">🚜 รถไถฟาร์ม (Tractor)</option>
+              <option value="scooter">🛵 สกู๊ตเตอร์ / รถพ่วง (Scooter)</option>
+              <option value="magic-broom">🧹 ไม้กวาดเวทมนตร์บินได้ (Magic Broom)</option>
+              <option value="hover-bike">🏍️ โฮเวอร์ไบค์ไซเบอร์ (Neon Hover-Bike)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="color-grid">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label id="lblColHat">สีหมวก</label>
+            <input type="color" id="genColorHat" value="#FFD54F" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label id="lblColShirt">สีเสื้อ</label>
+            <input type="color" id="genColorShirt" value="#1E88E5" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label id="lblColVest">สีเอี๊ยม/เกราะ</label>
+            <input type="color" id="genColorOveralls" value="#263238" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label id="lblColVeh">สียานพาหนะ</label>
+            <input type="color" id="genColorVehicle" value="#00ACC1" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label id="lblColGrd">สีพื้นหญ้า</label>
+            <input type="color" id="genColorGround" value="#00E5FF" />
+          </div>
+        </div>
+
+        <label id="lblGenBehaviors"
+          style="font-size: 12px; color: #98B39E; font-weight: 600; display: block; margin-bottom: 6px;">
+          ตั้งชื่อท่าทางในชุดธีม (ไทย | อังกฤษ):
+        </label>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <input type="text" id="genBTractor" value="🛸 ขับรถสำรวจดวงจันทร์ | Ride Lunar Rover" />
+          <input type="text" id="genBMachete" value="⚔️ กวัดแกว่งดาบเลเซอร์ | Swing Laser Blade" />
+        </div>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <input type="text" id="genBWater" value="🧪 เติมเชื้อเพลิงดวงดาว | Pour Starlight Fuel" />
+          <input type="text" id="genBPlant" value="🌱 ปลูกต้นไม้ไบโอโดม | Plant Bio-Dome Tree" />
+        </div>
+        <div class="form-row" style="margin-bottom: 0;">
+          <input type="text" id="genBPalm" value="☄️ เก็บคริสตัลอวกาศ | Harvest Space Crystal" />
+          <input type="text" id="genBFert" value="✨ โปรยละอองดาว | Scatter Stardust" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnRandomizeTheme">🎲 สุ่มชุดธีมใหม่</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-primary" id="btnSaveGeneratedTheme">💾 บันทึกและใช้งานชุดธีม</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toastMsg">บันทึกเรียบร้อย!</div>
+
+  <script src="../overlay/cartoon-engine.js"></script>
   <script src="settings.js"></script>
 </body>
+
 </html>

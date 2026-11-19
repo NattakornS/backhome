@@ -1,0 +1,109 @@
+{
+  "id": "pirate-captain",
+  "nameTh": "🏴‍☠️ กัปตันโจรสลัดสายโฟกัส (Pirate Captain)",
+  "nameEn": "🏴‍☠️ Pirate Captain",
+  "characterName": "กัปตันแจ็ค (Captain Jack)",
+  "alertMessageFocusEnd": "🏴‍☠️ พบเกาะมหาสมบัติแล้ว! พักดื่มน้ำผลไม้ก่อนนะพวกลูกเรือ (Treasure Found! Take a break!)",
+  "character": {
+    "skinTone": "#E8B48A",
+    "cheek": "#E57373",
+    "hatStyle": "crown",
+    "hatMain": "#FFD54F",
+    "hatDark": "#F57F17",
+    "hatBand": "#B71C1C",
+    "shirt": "#B71C1C",
+    "shirtSleeve": "#8E0000",
+    "overalls": "#212121",
+    "kamarBelt": true,
+    "pants": "#1C2833",
+    "boots": "#3E2723",
+    "sunglasses": false,
+    "mustache": true,
+    "vehicleStyle": "scooter",
+    "vehicleBody": "#5D4037",
+    "vehicleTrim": "#FFD54F",
+    "vehicleWheel": "#212121",
+    "vehicleRim": "#FFB300",
+    "groundColor": "#26C6DA",
+    "customHeadShapes": []
+  },
+  "behaviors": [
+    {
+      "id": "tractor",
+      "icon": "🚢",
+      "labelTh": "แล่นเรือโจรสลัดมินิ",
+      "labelEn": "Sail Mini Galleon",
+      "movementType": "ride",
+      "toolType": "steering",
+      "propType": "none",
+      "particleType": "smoke",
+      "particleColor": "#80DEEA"
+    },
+    {
+      "id": "machete",
+      "icon": "🗡️",
+      "labelTh": "ฟันดาบโจรสลัดเคลียร์ทาง",
+      "labelEn": "Swing Cutlass Sword",
+      "movementType": "walk",
+      "toolType": "machete",
+      "propType": "grass",
+      "particleType": "spark",
+      "particleColor": "#FFD54F"
+    },
+    {
+      "id": "water",
+      "icon": "🍺",
+      "labelTh": "รินน้ำผลไม้เกาะมหาสมบัติ",
+      "labelEn": "Pour Island Punch",
+      "movementType": "walk",
+      "toolType": "watering-can",
+      "propType": "flowers",
+      "particleType": "water",
+      "particleColor": "#FFB300"
+    },
+    {
+      "id": "plant",
+      "icon": "🗺️",
+      "labelTh": "ขุดหลุมฝังหีบสมบัติ",
+      "labelEn": "Bury Treasure Chest",
+      "movementType": "work-pause",
+      "toolType": "shovel",
+      "propType": "sapling",
+      "particleType": "spark",
+      "particleColor": "#FFE082"
+    },
+    {
+      "id": "palm",
+      "icon": "🌴",
+      "labelTh": "สอยมะพร้าวเกาะสวรรค์",
+      "labelEn": "Harvest Island Coconuts",
+      "movementType": "work-pause",
+      "toolType": "sickle-pole",
+      "propType": "palm-tree",
+      "particleType": "spark",
+      "particleColor": "#66BB6A"
+    },
+    {
+      "id": "fertilizer",
+      "icon": "🪙",
+      "labelTh": "โปรยเหรียญทองฉลองชัย",
+      "labelEn": "Toss Gold Doubloons",
+      "movementType": "walk",
+      "toolType": "sack-throw",
+      "propType": "none",
+      "particleType": "fertilizer",
+      "particleColor": "#FFD700"
+    },
+    {
+      "id": "fix",
+      "icon": "⚓",
+      "labelTh": "ซ่อมพังงาเรือและสมอ",
+      "labelEn": "Repair Ship Helm",
+      "movementType": "work-pause",
+      "toolType": "hammer",
+      "propType": "fence-toolbox",
+      "particleType": "spark",
+      "particleColor": "#FF8A65"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "id": "cozy-chef-cat",
+  "nameTh": "🐱 เชฟแมวเหมียวคาเฟ่ (Cozy Chef Cat)",
+  "nameEn": "🐱 Cozy Chef Cat",
+  "characterName": "เชฟเมียว (Chef Meow)",
+  "alertMessageFocusEnd": "🍅 เวลาโฟกัสหมดแล้ว! พักกินขนมเลียเติมพลังกันเถอะ (Break Time!)",
+  "character": {
+    "skinTone": "#FFE0BD",
+    "cheek": "#FF8A80",
+    "hatStyle": "chef-hat",
+    "hatMain": "#FFFFFF",
+    "hatDark": "#E0E0E0",
+    "hatBand": "#FF7043",
+    "shirt": "#FFCCBC",
+    "shirtSleeve": "#FFCCBC",
+    "overalls": "#D84315",
+    "kamarBelt": true,
+    "pants": "#3E2723",
+    "boots": "#5D4037",
+    "sunglasses": false,
+    "mustache": false,
+    "vehicleStyle": "scooter",
+    "vehicleBody": "#FF7043",
+    "vehicleTrim": "#FFFFFF",
+    "vehicleWheel": "#212121",
+    "vehicleRim": "#FFCCBC",
+    "groundColor": "#D7CCC8",
+    "customHeadShapes": [
+      {
+        "type": "circle",
+        "x": -10,
+        "y": -18,
+        "r": 7,
+        "fill": "#FFE0BD"
+      },
+      {
+        "type": "circle",
+        "x": 10,
+        "y": -18,
+        "r": 7,
+        "fill": "#FFE0BD"
+      }
+    ]
+  },
+  "behaviors": [
+    {
+      "id": "tractor",
+      "icon": "🛵",
+      "labelTh": "ขับรถส่งเดลิเวอรีซุปอุ่นๆ",
+      "labelEn": "Ride Delivery Scooter",
+      "movementType": "ride",
+      "toolType": "steering",
+      "propType": "none",
+      "particleType": "smoke",
+      "particleColor": "#FFCCBC"
+    },
+    {
+      "id": "machete",
+      "icon": "🔪",
+      "labelTh": "หั่นผักสดทำสลัดสุขภาพ",
+      "labelEn": "Slice Fresh Veggies",
+      "movementType": "walk",
+      "toolType": "machete",
+      "propType": "grass",
+      "particleType": "grass",
+      "particleColor": "#81C784",
+      "customToolShapes": [
+        {
+          "type": "rect",
+          "x": 6,
+          "y": -4,
+          "w": 14,
+          "h": 4,
+          "r": 2,
+          "fill": "#B0BEC5"
+        }
+      ]
+    },
+    {
+      "id": "water",
+      "icon": "🫖",
+      "labelTh": "รดน้ำแปลงสมุนไพรสด",
+      "labelEn": "Water Herb Garden",
+      "movementType": "walk",
+      "toolType": "watering-can",
+      "propType": "flowers",
+      "particleType": "water",
+      "particleColor": "#4FC3F7"
+    },
+    {
+      "id": "plant",
+      "icon": "🌱",
+      "labelTh": "ปลูกต้นมิ้นต์แต่งหน้าเค้ก",
+      "labelEn": "Plant Mint Sprout",
+      "movementType": "work-pause",
+      "toolType": "shovel",
+      "propType": "sapling",
+      "particleType": "spark",
+      "particleColor": "#81C784"
+    },
+    {
+      "id": "palm",
+      "icon": "🌾",
+      "labelTh": "เกี่ยวแป้งสาลีทำขนมปัง",
+      "labelEn": "Harvest Wheat",
+      "movementType": "work-pause",
+      "toolType": "sickle-pole",
+      "propType": "palm-tree",
+      "particleType": "spark",
+      "particleColor": "#FFD54F"
+    },
+    {
+      "id": "fertilizer",
+      "icon": "✨",
+      "labelTh": "โปรยเกล็ดน้ำตาลแต่งหน้าโดนัท",
+      "labelEn": "Dust Sweet Glaze",
+      "movementType": "walk",
+      "toolType": "sack-throw",
+      "propType": "none",
+      "particleType": "fertilizer",
+      "particleColor": "#FFF59D"
+    },
+    {
+      "id": "fix",
+      "icon": "🔧",
+      "labelTh": "ซ่อมแซมเตาอบขนมปัง",
+      "labelEn": "Fix Oven and Kitchen Gear",
+      "movementType": "work-pause",
+      "toolType": "hammer",
+      "propType": "fence-toolbox",
+      "particleType": "spark",
+      "particleColor": "#FF8A65"
+    }
+  ]
+}
