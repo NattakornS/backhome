@@ -26,10 +26,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build & Publish Windows Installer + Auto-Update Artifacts (latest.yml)
+      - name: Build & Upload Windows Installer + latest.yml (Draft)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx electron-builder --win --publish always
+
+      - name: Publish GitHub Release (Make Live)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "${{ github.ref_name }}" --draft=false
 
       - name: Upload Build Artifacts to Actions Run
         uses: actions/upload-artifact@v4
