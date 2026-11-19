@@ -282,6 +282,60 @@
       </div>
     </div>
 
+    <!-- Electron Auto-Updater Card -->
+    <div class="card" id="updaterCard">
+      <h2>
+        <span id="hdrUpdaterCard">🔄 ระบบอัปเดตแอปอัตโนมัติ (Electron App Updater)</span>
+        <span class="version-pill" id="updStatusBadge">พร้อมตรวจสอบ (Ready)</span>
+      </h2>
+
+      <div class="form-row" style="align-items: end;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="inputUpdateFeedUrl" id="lblUpdateFeedUrl">
+            แหล่งไฟล์อัปเดต (Local Folder / Network Share / HTTP URL)
+          </label>
+          <input
+            type="text"
+            id="inputUpdateFeedUrl"
+            value="./updates"
+            placeholder="./updates หรือ https://your-server.com/updates"
+          />
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+          <button class="btn-primary" id="btnCheckUpdates">🔍 ตรวจสอบอัปเดต</button>
+          <button class="btn-secondary" id="btnOpenUpdatesDir">📂 เปิดโฟลเดอร์ updates/</button>
+        </div>
+      </div>
+
+      <label class="checkbox-row" style="margin-top: 10px;">
+        <input type="checkbox" id="chkAutoCheckUpdates" checked />
+        <span id="lblAutoCheckUpdates">ตรวจสอบอัปเดตอัตโนมัติเมื่อเปิดโปรแกรม</span>
+      </label>
+
+      <!-- Progress Bar & Update Details -->
+      <div id="updDetailsBox" style="margin-top: 12px; display: none; padding: 11px 13px; border-radius: 10px; background: #101913; border: 1px solid rgba(129, 199, 132, 0.3);">
+        <div id="updDetailsTitle" style="font-weight: 700; color: var(--accent-gold); font-size: 13.5px; margin-bottom: 4px;"></div>
+        <ul id="updDetailsNotes" class="release-list" style="margin-bottom: 10px;"></ul>
+
+        <div id="updProgressWrap" style="display: none; margin-bottom: 10px;">
+          <div style="height: 8px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden;">
+            <div id="updProgressBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #4CAF50, #FFCA28); transition: width 0.2s;"></div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-primary" id="btnDownloadUpdate" style="display: none;">⬇️ ดาวน์โหลดและติดตั้งอัปเดต</button>
+          <button class="btn-primary" id="btnInstallUpdateNow" style="display: none;">🔄 รีสตาร์ทเพื่ออัปเดตทันที</button>
+        </div>
+      </div>
+
+      <div id="updErrorBox" style="margin-top: 10px; display: none; padding: 8px 12px; border-radius: 8px; background: rgba(211, 47, 47, 0.16); border: 1px solid rgba(211, 47, 47, 0.45); color: #FF8A80; font-size: 12px;"></div>
+
+      <p id="lblUpdaterGuideHint" style="font-size: 11.5px; color: #98B39E; margin-top: 10px;">
+        💡 <strong>วิธีวางไฟล์อัปเดต:</strong> รัน <code>npm run make-update</code> หรือวางไฟล์ <code>latest.json</code> + <code>update-bundle-vX.Y.Z.json</code> (หรือ <code>latest.yml</code> + <code>.exe</code>) ไว้ในโฟลเดอร์ <code>updates/</code> หรือบนเว็บเซิร์ฟเวอร์
+      </p>
+    </div>
+
     <div class="card">
       <h2 id="hdrSystemPaths">📂 ข้อมูลระบบและตำแหน่งไฟล์ (System & Storage Paths)</h2>
       <div style="font-size: 12.5px; color: #E8F5E9; display: flex; flex-direction: column; gap: 6px;">
@@ -289,6 +343,8 @@
             style="color: #FFE082;">config.json</code></div>
         <div><strong id="lblPathThemes">โฟลเดอร์ชุดธีม (Themes Folder):</strong> <code id="valThemesDir"
             style="color: #FFE082;">themes/</code></div>
+        <div><strong id="lblPathUpdates">โฟลเดอร์ไฟล์อัปเดต (Updates Folder):</strong> <code id="valUpdatesDir"
+            style="color: #FFE082;">updates/</code></div>
       </div>
     </div>
 

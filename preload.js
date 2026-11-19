@@ -6,6 +6,13 @@ contextBridge.exposeInMainWorld('companionAPI', {
   getState: () => ipcRenderer.invoke('get-state'),
   getAppInfo: () => ipcRenderer.invoke('get-app-info'),
 
+  // Auto-Updater & Update Feed Controls
+  getUpdateState: () => ipcRenderer.invoke('get-update-state'),
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+  downloadUpdate: () => ipcRenderer.invoke('download-update'),
+  installUpdateNow: () => ipcRenderer.invoke('install-update-now'),
+  openUpdatesFolder: () => ipcRenderer.invoke('open-updates-folder'),
+
   // Theme Set & Shareable Bundle Import / Export
   saveCustomThemeSet: (themeSetObj) => ipcRenderer.invoke('save-custom-theme-set', themeSetObj),
   deleteCustomThemeSet: (themeSetId) => ipcRenderer.invoke('delete-custom-theme-set', themeSetId),
@@ -36,6 +43,11 @@ contextBridge.exposeInMainWorld('companionAPI', {
     const listener = (_event, state) => callback(state);
     ipcRenderer.on('state-updated', listener);
     return () => ipcRenderer.removeListener('state-updated', listener);
+  },
+  onUpdateStateChanged: (callback) => {
+    const listener = (_event, updateState) => callback(updateState);
+    ipcRenderer.on('update-state-changed', listener);
+    return () => ipcRenderer.removeListener('update-state-changed', listener);
   },
   onSwitchViewTab: (callback) => {
     const listener = (_event, tab) => callback(tab);

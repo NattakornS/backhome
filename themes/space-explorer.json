@@ -1,0 +1,109 @@
+{
+  "id": "space-explorer",
+  "nameTh": "🚀 นักบินอวกาศโฟกัส",
+  "nameEn": "🚀 Space Explorer",
+  "characterName": "กัปตันแอสโตร",
+  "alertMessageFocusEnd": "🍅 ภารกิจโฟกัสสำเร็จ! พักเติมออกซิเจนก่อนนะ",
+  "character": {
+    "skinTone": "#F3C6A0",
+    "cheek": "#F28B82",
+    "hatStyle": "straw-hat",
+    "hatMain": "#ffd54f",
+    "hatDark": "#263238",
+    "hatBand": "#00acc1",
+    "shirt": "#1e88e5",
+    "shirtSleeve": "#1e88e5",
+    "overalls": "#263238",
+    "kamarBelt": false,
+    "pants": "#1E293B",
+    "boots": "#3E2723",
+    "sunglasses": false,
+    "mustache": false,
+    "vehicleStyle": "tractor",
+    "vehicleBody": "#00acc1",
+    "vehicleTrim": "#ffd54f",
+    "vehicleWheel": "#212121",
+    "vehicleRim": "#00e5ff",
+    "groundColor": "#00e5ff",
+    "customHeadShapes": []
+  },
+  "behaviors": [
+    {
+      "id": "tractor",
+      "icon": "🛸",
+      "labelTh": "ขับรถสำรวจดวงจันทร์",
+      "labelEn": "Ride Lunar Rover",
+      "movementType": "ride",
+      "toolType": "steering",
+      "propType": "none",
+      "particleType": "smoke",
+      "particleColor": "#00e5ff"
+    },
+    {
+      "id": "machete",
+      "icon": "⚔️",
+      "labelTh": "กวัดแกว่งดาบเลเซอร์",
+      "labelEn": "Swing Laser Blade",
+      "movementType": "walk",
+      "toolType": "katana",
+      "propType": "grass",
+      "particleType": "spark",
+      "particleColor": "#ffd54f"
+    },
+    {
+      "id": "water",
+      "icon": "🧪",
+      "labelTh": "เติมเชื้อเพลิงดวงดาว",
+      "labelEn": "Pour Starlight Fuel",
+      "movementType": "walk",
+      "toolType": "watering-can",
+      "propType": "flowers",
+      "particleType": "water",
+      "particleColor": "#4FC3F7"
+    },
+    {
+      "id": "plant",
+      "icon": "🌱",
+      "labelTh": "ปลูกต้นไม้ไบโอโดม",
+      "labelEn": "Plant Bio-Dome Tree",
+      "movementType": "work-pause",
+      "toolType": "shovel",
+      "propType": "sapling",
+      "particleType": "spark",
+      "particleColor": "#81C784"
+    },
+    {
+      "id": "palm",
+      "icon": "☄️",
+      "labelTh": "เก็บคริสตัลอวกาศ",
+      "labelEn": "Harvest Space Crystal",
+      "movementType": "work-pause",
+      "toolType": "sickle-pole",
+      "propType": "palm-tree",
+      "particleType": "spark",
+      "particleColor": "#FFD54F"
+    },
+    {
+      "id": "fertilizer",
+      "icon": "✨",
+      "labelTh": "โปรยละอองดาว",
+      "labelEn": "Scatter Stardust",
+      "movementType": "walk",
+      "toolType": "sack-throw",
+      "propType": "none",
+      "particleType": "fertilizer",
+      "particleColor": "#ffd54f"
+    },
+    {
+      "id": "fix",
+      "icon": "🔧",
+      "labelTh": "ซ่อมและอัปเกรดอุปกรณ์",
+      "labelEn": "Upgrade & Repair Gear",
+      "movementType": "work-pause",
+      "toolType": "hammer",
+      "propType": "fence-toolbox",
+      "particleType": "spark",
+      "particleColor": "#FF8A65"
+    }
+  ]
+}

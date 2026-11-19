@@ -1,7 +1,8 @@
-const { app, BrowserWindow, Tray, Menu, ipcMain, screen, nativeImage } = require('electron');
+const { app, BrowserWindow, Tray, Menu, ipcMain, screen, nativeImage, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const zlib = require('zlib');
+const { UpdateManager } = require('./src/updater/update-manager');
 
 // Suppress Chromium DevTools unsupported Autofill CDP domain console noise
 if (app && app.commandLine) {
@@ -59,7 +60,9 @@ const DEFAULT_CONFIG = {
   cycleIntervalSec: 14,
   walkSpeed: 1.0,
   soundEnabled: true,
-  dragLocked: false
+  dragLocked: false,
+  updateFeedUrl: './updates',
+  autoCheckUpdates: true
 };
 
 function t(th, en) {
@@ -71,6 +74,25 @@ let overlayWindow = null;
 let settingsWindow = null;
 let tray = null;
 let schedulerTimer = null;
+let updateManager = null;
+
+function getCurrentAppVersion() {
+  try {
+    const relPath = path.join(__dirname, 'releases.json');
+    if (fs.existsSync(relPath)) {
+      const rel = JSON.parse(fs.readFileSync(relPath, 'utf-8'));
+      if (rel && rel.currentVersion) return rel.currentVersion;
+    }
+  } catch (e) {}
+  return app.getVersion() || '1.2.0';
+}
+
+function getUpdatesDir() {
+  if (app.isPackaged) {
+    return path.join(path.dirname(process.execPath), 'updates');
+  }
+  return path.join(__dirname, 'updates');
+}
 
 // Runtime state including Pomodoro Core Timer Engine
 let runtimeState = {
@@ -904,7 +926,16 @@ function rebuildTrayMenu() {
       click: () => openSettingsWindow('main')
     },
     {
-      label: t('ℹ️ เกี่ยวกับ & บันทึกเวอร์ชัน (v1.2.0)...', 'ℹ️ About & Release Notes (v1.2.0)...'),
+      label: t('🔄 ตรวจสอบอัปเดตแอป...', '🔄 Check for Updates...'),
+      click: () => {
+        openSettingsWindow('about');
+        if (updateManager) {
+          updateManager.checkForUpdates();
+        }
+      }
+    },
+    {
+      label: t(`ℹ️ เกี่ยวกับ & บันทึกเวอร์ชัน (v${getCurrentAppVersion()})...`, `ℹ️ About & Release Notes (v${getCurrentAppVersion()})...`),
       click: () => openSettingsWindow('about')
     },
     { type: 'separator' },
@@ -982,8 +1013,52 @@ function setupIPC() {
       electronVersion: process.versions.electron,
       nodeVersion: process.versions.node,
       configPath: getConfigPath(),
-      themesDir: getThemeSetsDir()
+      themesDir: getThemeSetsDir(),
+      updatesDir: getUpdatesDir()
     };
+  });
+
+  ipcMain.handle('get-update-state', () => {
+    return updateManager ? updateManager.getState() : { status: 'idle' };
+  });
+
+  ipcMain.handle('check-for-updates', async () => {
+    if (!updateManager) return { status: 'error', errorMessage: 'UpdateManager not initialized' };
+    return await updateManager.checkForUpdates();
+  });
+
+  ipcMain.handle('download-update', async () => {
+    if (!updateManager) return { status: 'error', errorMessage: 'UpdateManager not initialized' };
+    return await updateManager.downloadAndApplyUpdate(() => {
+      // Reload theme sets if new themes were unpacked by update
+      const folderThemes = loadThemeSetsFromFolder();
+      config.customThemeSets = {
+        ...folderThemes,
+        ...(config.customThemeSets || {})
+      };
+      saveConfigToFile();
+      broadcastConfig();
+    });
+  });
+
+  ipcMain.handle('install-update-now', () => {
+    if (updateManager) {
+      updateManager.quitAndInstall();
+    }
+    return true;
+  });
+
+  ipcMain.handle('open-updates-folder', async () => {
+    const dir = updateManager
+      ? updateManager.resolveFeedDirectory(config.updateFeedUrl)
+      : getUpdatesDir();
+    if (!fs.existsSync(dir)) {
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+      } catch (e) {}
+    }
+    await shell.openPath(dir);
+    return dir;
   });
 
   ipcMain.handle('save-config', (_event, partial) => {
@@ -1169,6 +1244,18 @@ if (!gotTheLock) {
 
   app.whenReady().then(() => {
     loadConfig();
+
+    updateManager = new UpdateManager({
+      rootDir: app.isPackaged ? path.dirname(process.execPath) : __dirname,
+      getCurrentVersion: getCurrentAppVersion,
+      getFeedSource: () => config.updateFeedUrl || './updates',
+      onStatusChange: (updState) => {
+        if (settingsWindow && !settingsWindow.isDestroyed()) {
+          settingsWindow.webContents.send('update-state-changed', updState);
+        }
+      }
+    });
+
     setupIPC();
 
     tray = new Tray(createCompanionTrayIcon());
@@ -1181,6 +1268,12 @@ if (!gotTheLock) {
 
     if (process.argv.includes('--open-settings')) {
       openSettingsWindow();
+    }
+
+    if (config.autoCheckUpdates) {
+      setTimeout(() => {
+        if (updateManager) updateManager.checkForUpdates();
+      }, 2500);
     }
 
     screen.on('display-metrics-changed', () => {

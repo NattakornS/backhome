@@ -1,0 +1,2428 @@
+{
+  "version": "1.3.0",
+  "date": "2026-11-19",
+  "themes": {
+    "cattle-rancher": {
+      "id": "cattle-rancher",
+      "nameTh": "🐮 คนเลี้ยงวัวทุ่งหญ้าเขียว",
+      "nameEn": "🐮 Pasture Cattle Rancher",
+      "characterName": "พี่กล้าฟาร์มวัว (Rancher Kla)",
+      "alertMessageFocusEnd": "🐄 จบเซสชันโฟกัสแล้ว! พักเติมพลังและพาฝูงวัวเล็มหญ้าชิลๆ กันเถอะ (Focus Session Done! Time for a break!)",
+      "character": {
+        "skinTone": "#E8B896",
+        "cheek": "#F48FB1",
+        "hatStyle": "straw-hat",
+        "hatMain": "#FBC02D",
+        "hatDark": "#F9A825",
+        "hatBand": "#8D6E63",
+        "shirt": "#4FC3F7",
+        "shirtSleeve": "#29B6F6",
+        "overalls": "#5D4037",
+        "kamarBelt": true,
+        "pants": "#3E2723",
+        "boots": "#4E342E",
+        "sunglasses": false,
+        "mustache": true,
+        "vehicleStyle": "tractor",
+        "vehicleBody": "#D32F2F",
+        "vehicleTrim": "#FFCA28",
+        "vehicleWheel": "#263238",
+        "vehicleRim": "#FBC02D",
+        "groundColor": "#66BB6A",
+        "hatDrawables": [
+          {
+            "type": "ellipse",
+            "x": 0,
+            "y": -6,
+            "rx": 24,
+            "ry": 6,
+            "fill": "#FDD835",
+            "stroke": "#8D6E63",
+            "lineWidth": 1.5
+          }
+        ],
+        "torsoDrawables": [
+          {
+            "type": "line",
+            "x1": -10,
+            "y1": -26,
+            "x2": 12,
+            "y2": -4,
+            "stroke": "#3E2723",
+            "lineWidth": 3,
+            "cap": "round"
+          }
+        ]
+      },
+      "behaviors": [
+        {
+          "id": "mow-brushcutter",
+          "icon": "🌿",
+          "labelTh": "สะพายเครื่องตัดหญ้าเล็มแปลงหญ้าวัว",
+          "labelEn": "Cut Pasture Grass with Brushcutter",
+          "movementType": "walk",
+          "pose": {
+            "bobAmp": 3.5,
+            "headTiltDeg": 8,
+            "headSwingDeg": 5,
+            "headSwingSpeed": 6,
+            "frontArmBaseDeg": -25,
+            "frontArmSwingDeg": 30,
+            "frontArmSwingSpeed": 11,
+            "legSwingDeg": 26
+          },
+          "toolDrawables": [
+            {
+              "type": "line",
+              "x1": -6,
+              "y1": -2,
+              "x2": 26,
+              "y2": 12,
+              "stroke": "#90A4AE",
+              "lineWidth": 3.5,
+              "cap": "round",
+              "anim": {
+                "swingDeg": 16,
+                "swingSpeed": 11,
+                "pivotX": -6,
+                "pivotY": -2
+              }
+            },
+            {
+              "type": "circle",
+              "x": 27,
+              "y": 13,
+              "r": 7,
+              "fill": "#CFD8DC",
+              "stroke": "#37474F",
+              "lineWidth": 1.5,
+              "anim": {
+                "rotateSpeed": 720
+              }
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  18,
+                  0
+                ],
+                [
+                  23,
+                  -12
+                ],
+                [
+                  28,
+                  0
+                ]
+              ],
+              "fill": "#4CAF50",
+              "anim": {
+                "swingDeg": 12,
+                "swingSpeed": 8,
+                "pivotX": 23,
+                "pivotY": 0
+              }
+            },
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  30,
+                  0
+                ],
+                [
+                  35,
+                  -10
+                ],
+                [
+                  40,
+                  0
+                ]
+              ],
+              "fill": "#81C784",
+              "anim": {
+                "swingDeg": -12,
+                "swingSpeed": 8,
+                "pivotX": 35,
+                "pivotY": 0
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 24,
+            "offsetX": 28,
+            "offsetY": 6,
+            "vxRange": [
+              10,
+              55
+            ],
+            "vyRange": [
+              -65,
+              -15
+            ],
+            "gravity": 170,
+            "size": 4.5,
+            "life": 0.65,
+            "shape": "rect",
+            "colors": [
+              "#4CAF50",
+              "#8BC34A",
+              "#AED581"
+            ]
+          }
+        },
+        {
+          "id": "ride-sidecar-hay",
+          "icon": "🛵",
+          "labelTh": "ขี่มอเตอร์ไซค์พ่วงข้างขนกองหญ้าสด",
+          "labelEn": "Ride Sidecar Bike Hauling Fresh Grass",
+          "movementType": "ride",
+          "seatOffsetX": -10,
+          "seatOffsetY": -26,
+          "pose": {
+            "bobAmp": 2.5,
+            "headTiltDeg": -4,
+            "frontArmBaseDeg": -35,
+            "frontArmSwingDeg": 8,
+            "frontArmSwingSpeed": 6
+          },
+          "vehicleDrawables": [
+            {
+              "type": "roundRect",
+              "x": -34,
+              "y": -20,
+              "w": 54,
+              "h": 14,
+              "r": 5,
+              "fill": "#E53935",
+              "stroke": "#263238",
+              "lineWidth": 2
+            },
+            {
+              "type": "roundRect",
+              "x": -32,
+              "y": -32,
+              "w": 24,
+              "h": 13,
+              "r": 3,
+              "fill": "#8BC34A",
+              "stroke": "#558B2F",
+              "lineWidth": 1.5,
+              "anim": {
+                "moveYAmp": 1.5,
+                "moveYSpeed": 8
+              }
+            },
+            {
+              "type": "circle",
+              "x": -22,
+              "y": -25,
+              "r": 5,
+              "fill": "#AED581",
+              "anim": {
+                "scaleAmp": 0.15,
+                "scaleSpeed": 7
+              }
+            },
+            {
+              "type": "circle",
+              "x": 14,
+              "y": -25,
+              "r": 5,
+              "fill": "#AED581",
+              "anim": {
+                "scaleAmp": 0.15,
+                "scaleSpeed": 7,
+                "scalePhase": 1.2
+              }
+            },
+            {
+              "type": "circle",
+              "x": -20,
+              "y": -3,
+              "r": 7,
+              "fill": "#212121",
+              "stroke": "#B0BEC5",
+              "lineWidth": 1.5,
+              "anim": {
+                "rotateSpeed": 380
+              }
+            },
+            {
+              "type": "circle",
+              "x": 16,
+              "y": -3,
+              "r": 7,
+              "fill": "#212121",
+              "stroke": "#B0BEC5",
+              "lineWidth": 1.5,
+              "anim": {
+                "rotateSpeed": 380
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 14,
+            "offsetX": -24,
+            "offsetY": -28,
+            "vxRange": [
+              -45,
+              -10
+            ],
+            "vyRange": [
+              -45,
+              -10
+            ],
+            "gravity": 120,
+            "size": 4,
+            "life": 0.75,
+            "shape": "rect",
+            "colors": [
+              "#8BC34A",
+              "#C5E1A5",
+              "#FFF59D"
+            ]
+          }
+        },
+        {
+          "id": "bathe-cow",
+          "icon": "🚿",
+          "labelTh": "ฉีดน้ำอาบน้ำให้วัวเย็นสบาย",
+          "labelEn": "Bathe & Rinse Cow with Water Hose",
+          "movementType": "work-pause",
+          "pose": {
+            "bobAmp": 2,
+            "headTiltDeg": -5,
+            "frontArmBaseDeg": -35,
+            "frontArmSwingDeg": 22,
+            "frontArmSwingSpeed": 7
+          },
+          "toolDrawables": [
+            {
+              "type": "curve",
+              "x1": -6,
+              "y1": 0,
+              "cx": 6,
+              "cy": -10,
+              "x2": 18,
+              "y2": -4,
+              "stroke": "#0288D1",
+              "lineWidth": 4,
+              "cap": "round"
+            },
+            {
+              "type": "roundRect",
+              "x": 16,
+              "y": -8,
+              "w": 8,
+              "h": 7,
+              "r": 2,
+              "fill": "#FFB300"
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "group",
+              "x": 44,
+              "y": 0,
+              "anim": {
+                "bobAmp": 2.5,
+                "bobSpeed": 5
+              },
+              "children": [
+                {
+                  "type": "ellipse",
+                  "x": 0,
+                  "y": -16,
+                  "rx": 18,
+                  "ry": 11,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1.5
+                },
+                {
+                  "type": "circle",
+                  "x": -5,
+                  "y": -18,
+                  "r": 5,
+                  "fill": "#37474F"
+                },
+                {
+                  "type": "circle",
+                  "x": 6,
+                  "y": -13,
+                  "r": 4,
+                  "fill": "#37474F"
+                },
+                {
+                  "type": "circle",
+                  "x": -17,
+                  "y": -23,
+                  "r": 8,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1.5
+                },
+                {
+                  "type": "polygon",
+                  "points": [
+                    [
+                      -20,
+                      -30
+                    ],
+                    [
+                      -23,
+                      -36
+                    ],
+                    [
+                      -17,
+                      -31
+                    ]
+                  ],
+                  "fill": "#FFE082",
+                  "stroke": "#5D4037",
+                  "lineWidth": 1
+                },
+                {
+                  "type": "polygon",
+                  "points": [
+                    [
+                      -13,
+                      -30
+                    ],
+                    [
+                      -11,
+                      -36
+                    ],
+                    [
+                      -10,
+                      -30
+                    ]
+                  ],
+                  "fill": "#FFE082",
+                  "stroke": "#5D4037",
+                  "lineWidth": 1
+                },
+                {
+                  "type": "rect",
+                  "x": -11,
+                  "y": -6,
+                  "w": 4,
+                  "h": 6,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1
+                },
+                {
+                  "type": "rect",
+                  "x": 8,
+                  "y": -6,
+                  "w": 4,
+                  "h": 6,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1
+                },
+                {
+                  "type": "curve",
+                  "x1": 18,
+                  "y1": -18,
+                  "cx": 25,
+                  "cy": -22,
+                  "x2": 24,
+                  "y2": -10,
+                  "stroke": "#37474F",
+                  "lineWidth": 2.5,
+                  "cap": "round",
+                  "anim": {
+                    "swingDeg": 24,
+                    "swingSpeed": 9,
+                    "pivotX": 18,
+                    "pivotY": -18
+                  }
+                }
+              ]
+            }
+          ],
+          "particles": {
+            "spawnRate": 26,
+            "offsetX": 25,
+            "offsetY": -6,
+            "vxRange": [
+              15,
+              50
+            ],
+            "vyRange": [
+              -35,
+              10
+            ],
+            "gravity": 150,
+            "size": 4,
+            "life": 0.6,
+            "shape": "circle",
+            "colors": [
+              "#29B6F6",
+              "#81D4FA",
+              "#E1F5FE"
+            ]
+          }
+        },
+        {
+          "id": "lead-cow-walk",
+          "icon": "🐄",
+          "labelTh": "เดินจูงวัวชมทุ่งหญ้าตอนเช้า",
+          "labelEn": "Lead Cow on Morning Pasture Walk",
+          "movementType": "walk",
+          "pose": {
+            "bobAmp": 3,
+            "headTiltDeg": -4,
+            "headSwingDeg": 6,
+            "headSwingSpeed": 5,
+            "frontArmBaseDeg": -22,
+            "frontArmSwingDeg": 16,
+            "frontArmSwingSpeed": 7,
+            "legSwingDeg": 24
+          },
+          "propDrawables": [
+            {
+              "type": "line",
+              "x1": 8,
+              "y1": -12,
+              "x2": 32,
+              "y2": -22,
+              "stroke": "#8D6E63",
+              "lineWidth": 2
+            },
+            {
+              "type": "group",
+              "x": 46,
+              "y": 0,
+              "anim": {
+                "bobAmp": 3,
+                "bobSpeed": 7
+              },
+              "children": [
+                {
+                  "type": "ellipse",
+                  "x": 0,
+                  "y": -16,
+                  "rx": 18,
+                  "ry": 11,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1.5
+                },
+                {
+                  "type": "circle",
+                  "x": -3,
+                  "y": -17,
+                  "r": 5,
+                  "fill": "#37474F"
+                },
+                {
+                  "type": "circle",
+                  "x": 8,
+                  "y": -14,
+                  "r": 4,
+                  "fill": "#37474F"
+                },
+                {
+                  "type": "circle",
+                  "x": -16,
+                  "y": -23,
+                  "r": 8,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1.5
+                },
+                {
+                  "type": "polygon",
+                  "points": [
+                    [
+                      -19,
+                      -30
+                    ],
+                    [
+                      -22,
+                      -36
+                    ],
+                    [
+                      -16,
+                      -31
+                    ]
+                  ],
+                  "fill": "#FFE082",
+                  "stroke": "#5D4037",
+                  "lineWidth": 1
+                },
+                {
+                  "type": "polygon",
+                  "points": [
+                    [
+                      -12,
+                      -30
+                    ],
+                    [
+                      -10,
+                      -36
+                    ],
+                    [
+                      -9,
+                      -30
+                    ]
+                  ],
+                  "fill": "#FFE082",
+                  "stroke": "#5D4037",
+                  "lineWidth": 1
+                },
+                {
+                  "type": "rect",
+                  "x": -11,
+                  "y": -6,
+                  "w": 4,
+                  "h": 6,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1,
+                  "anim": {
+                    "swingDeg": 24,
+                    "swingSpeed": 7,
+                    "pivotX": -9,
+                    "pivotY": -6
+                  }
+                },
+                {
+                  "type": "rect",
+                  "x": 8,
+                  "y": -6,
+                  "w": 4,
+                  "h": 6,
+                  "fill": "#FAFAFA",
+                  "stroke": "#37474F",
+                  "lineWidth": 1,
+                  "anim": {
+                    "swingDeg": -24,
+                    "swingSpeed": 7,
+                    "pivotX": 10,
+                    "pivotY": -6
+                  }
+                },
+                {
+                  "type": "curve",
+                  "x1": 18,
+                  "y1": -18,
+                  "cx": 25,
+                  "cy": -22,
+                  "x2": 24,
+                  "y2": -10,
+                  "stroke": "#37474F",
+                  "lineWidth": 2.5,
+                  "cap": "round",
+                  "anim": {
+                    "swingDeg": 28,
+                    "swingSpeed": 8,
+                    "pivotX": 18,
+                    "pivotY": -18
+                  }
+                }
+              ]
+            }
+          ],
+          "particles": {
+            "spawnRate": 12,
+            "offsetX": 46,
+            "offsetY": -28,
+            "vxRange": [
+              -15,
+              25
+            ],
+            "vyRange": [
+              -55,
+              -20
+            ],
+            "gravity": -10,
+            "size": 5,
+            "life": 0.8,
+            "shape": "heart",
+            "colors": [
+              "#FF80AB",
+              "#FFD54F",
+              "#A5D6A7"
+            ]
+          }
+        },
+        {
+          "id": "feed-hay-fork",
+          "icon": "🌾",
+          "labelTh": "ใช้ส้อมโกยฟางป้อนมื้อเย็นให้วัว",
+          "labelEn": "Pitch Fresh Hay for Evening Meal",
+          "movementType": "work-pause",
+          "pose": {
+            "bobAmp": 3,
+            "headTiltDeg": 6,
+            "frontArmBaseDeg": -45,
+            "frontArmSwingDeg": 35,
+            "frontArmSwingSpeed": 8
+          },
+          "toolDrawables": [
+            {
+              "type": "line",
+              "x1": -4,
+              "y1": 8,
+              "x2": 20,
+              "y2": -14,
+              "stroke": "#8D6E63",
+              "lineWidth": 3,
+              "cap": "round"
+            },
+            {
+              "type": "line",
+              "x1": 16,
+              "y1": -10,
+              "x2": 26,
+              "y2": -20,
+              "stroke": "#CFD8DC",
+              "lineWidth": 2
+            },
+            {
+              "type": "line",
+              "x1": 20,
+              "y1": -14,
+              "x2": 30,
+              "y2": -16,
+              "stroke": "#CFD8DC",
+              "lineWidth": 2
+            },
+            {
+              "type": "line",
+              "x1": 18,
+              "y1": -18,
+              "x2": 24,
+              "y2": -26,
+              "stroke": "#CFD8DC",
+              "lineWidth": 2
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "ellipse",
+              "x": 36,
+              "y": -4,
+              "rx": 14,
+              "ry": 6,
+              "fill": "#FDD835",
+              "stroke": "#F9A825",
+              "lineWidth": 1.5,
+              "anim": {
+                "scaleAmp": 0.1,
+                "scaleSpeed": 5
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 18,
+            "offsetX": 26,
+            "offsetY": -18,
+            "vxRange": [
+              5,
+              45
+            ],
+            "vyRange": [
+              -50,
+              -10
+            ],
+            "gravity": 140,
+            "size": 4,
+            "life": 0.75,
+            "shape": "star",
+            "colors": [
+              "#FDD835",
+              "#FFF176",
+              "#A5D6A7"
+            ]
+          }
+        }
+      ]
+    },
+    "cozy-chef-cat": {
+      "id": "cozy-chef-cat",
+      "nameTh": "🐱 เชฟแมวเหมียวคาเฟ่ (Cozy Chef Cat)",
+      "nameEn": "🐱 Cozy Chef Cat",
+      "characterName": "เชฟเมียว (Chef Meow)",
+      "alertMessageFocusEnd": "🍅 เวลาโฟกัสหมดแล้ว! พักกินขนมเลียเติมพลังกันเถอะ (Break Time!)",
+      "character": {
+        "skinTone": "#FFE0BD",
+        "cheek": "#FF8A80",
+        "hatStyle": "chef-hat",
+        "hatMain": "#FFFFFF",
+        "hatDark": "#E0E0E0",
+        "hatBand": "#FF7043",
+        "shirt": "#FFCCBC",
+        "shirtSleeve": "#FFCCBC",
+        "overalls": "#D84315",
+        "kamarBelt": true,
+        "pants": "#3E2723",
+        "boots": "#5D4037",
+        "sunglasses": false,
+        "mustache": false,
+        "vehicleStyle": "scooter",
+        "vehicleBody": "#FF7043",
+        "vehicleTrim": "#FFFFFF",
+        "vehicleWheel": "#212121",
+        "vehicleRim": "#FFCCBC",
+        "groundColor": "#D7CCC8",
+        "customHeadShapes": [
+          {
+            "type": "circle",
+            "x": -10,
+            "y": -18,
+            "r": 7,
+            "fill": "#FFE0BD"
+          },
+          {
+            "type": "circle",
+            "x": 10,
+            "y": -18,
+            "r": 7,
+            "fill": "#FFE0BD"
+          }
+        ]
+      },
+      "behaviors": [
+        {
+          "id": "tractor",
+          "icon": "🛵",
+          "labelTh": "ขับรถส่งเดลิเวอรีซุปอุ่นๆ",
+          "labelEn": "Ride Delivery Scooter",
+          "movementType": "ride",
+          "toolType": "steering",
+          "propType": "none",
+          "particleType": "smoke",
+          "particleColor": "#FFCCBC"
+        },
+        {
+          "id": "machete",
+          "icon": "🔪",
+          "labelTh": "หั่นผักสดทำสลัดสุขภาพ",
+          "labelEn": "Slice Fresh Veggies",
+          "movementType": "walk",
+          "toolType": "machete",
+          "propType": "grass",
+          "particleType": "grass",
+          "particleColor": "#81C784",
+          "customToolShapes": [
+            {
+              "type": "rect",
+              "x": 6,
+              "y": -4,
+              "w": 14,
+              "h": 4,
+              "r": 2,
+              "fill": "#B0BEC5"
+            }
+          ]
+        },
+        {
+          "id": "water",
+          "icon": "🫖",
+          "labelTh": "รดน้ำแปลงสมุนไพรสด",
+          "labelEn": "Water Herb Garden",
+          "movementType": "walk",
+          "toolType": "watering-can",
+          "propType": "flowers",
+          "particleType": "water",
+          "particleColor": "#4FC3F7"
+        },
+        {
+          "id": "plant",
+          "icon": "🌱",
+          "labelTh": "ปลูกต้นมิ้นต์แต่งหน้าเค้ก",
+          "labelEn": "Plant Mint Sprout",
+          "movementType": "work-pause",
+          "toolType": "shovel",
+          "propType": "sapling",
+          "particleType": "spark",
+          "particleColor": "#81C784"
+        },
+        {
+          "id": "palm",
+          "icon": "🌾",
+          "labelTh": "เกี่ยวแป้งสาลีทำขนมปัง",
+          "labelEn": "Harvest Wheat",
+          "movementType": "work-pause",
+          "toolType": "sickle-pole",
+          "propType": "palm-tree",
+          "particleType": "spark",
+          "particleColor": "#FFD54F"
+        },
+        {
+          "id": "fertilizer",
+          "icon": "✨",
+          "labelTh": "โปรยเกล็ดน้ำตาลแต่งหน้าโดนัท",
+          "labelEn": "Dust Sweet Glaze",
+          "movementType": "walk",
+          "toolType": "sack-throw",
+          "propType": "none",
+          "particleType": "fertilizer",
+          "particleColor": "#FFF59D"
+        },
+        {
+          "id": "fix",
+          "icon": "🔧",
+          "labelTh": "ซ่อมแซมเตาอบขนมปัง",
+          "labelEn": "Fix Oven and Kitchen Gear",
+          "movementType": "work-pause",
+          "toolType": "hammer",
+          "propType": "fence-toolbox",
+          "particleType": "spark",
+          "particleColor": "#FF8A65"
+        }
+      ]
+    },
+    "cyber-doctor": {
+      "id": "cyber-doctor",
+      "nameTh": "🩺 หมอหุ่นยนต์ไซเบอร์อัจฉริยะ",
+      "nameEn": "🩺 Cyber Doctor",
+      "characterName": "หมอดีโบ (Dr. Robo)",
+      "alertMessageFocusEnd": "🩺 จบรอบโฟกัสแล้ว! พักผ่อนสายตาและตรวจสุขภาพใจกันเถอะ (Mission Complete!)",
+      "character": {
+        "skinTone": "#E2E8F0",
+        "cheek": "#38BDF8",
+        "hatStyle": "cap",
+        "hatMain": "#0284C7",
+        "hatDark": "#0369A1",
+        "hatBand": "#38BDF8",
+        "shirt": "#F8FAFC",
+        "shirtSleeve": "#E2E8F0",
+        "overalls": "#0284C7",
+        "kamarBelt": true,
+        "pants": "#0F172A",
+        "boots": "#0284C7",
+        "sunglasses": false,
+        "mustache": false,
+        "vehicleStyle": "tractor",
+        "vehicleBody": "#D32F2F",
+        "vehicleTrim": "#FFCA28",
+        "vehicleWheel": "#263238",
+        "vehicleRim": "#FBC02D",
+        "groundColor": "#38BDF8",
+        "hatDrawables": [
+          {
+            "type": "circle",
+            "x": 0,
+            "y": -22,
+            "r": 5,
+            "fill": "#EF4444",
+            "stroke": "#FFFFFF",
+            "lineWidth": 1.5
+          },
+          {
+            "type": "text",
+            "x": -3,
+            "y": -18,
+            "text": "+",
+            "font": "bold 12px sans-serif",
+            "fill": "#FFFFFF"
+          }
+        ],
+        "torsoDrawables": [
+          {
+            "type": "roundRect",
+            "x": -8,
+            "y": -24,
+            "w": 16,
+            "h": 12,
+            "r": 3,
+            "fill": "#FFFFFF",
+            "stroke": "#0284C7",
+            "lineWidth": 1.5
+          },
+          {
+            "type": "text",
+            "x": -4,
+            "y": -15,
+            "text": "✚",
+            "font": "bold 10px sans-serif",
+            "fill": "#EF4444"
+          }
+        ]
+      },
+      "behaviors": [
+        {
+          "id": "ride-ambulance",
+          "icon": "🚑",
+          "labelTh": "ขับรถพยาบาลฉุกเฉินความเร็วสูง",
+          "labelEn": "Drive Emergency Ambulance",
+          "movementType": "ride",
+          "seatOffsetX": -8,
+          "seatOffsetY": -26,
+          "vehicleDrawables": [
+            {
+              "type": "roundRect",
+              "x": -40,
+              "y": -22,
+              "w": 80,
+              "h": 20,
+              "r": 6,
+              "fill": "#F8FAFC",
+              "stroke": "#0284C7",
+              "lineWidth": 2
+            },
+            {
+              "type": "circle",
+              "x": -20,
+              "y": -25,
+              "r": 5,
+              "fill": "#EF4444",
+              "anim": {
+                "scaleAmp": 0.4,
+                "scaleSpeed": 12
+              }
+            },
+            {
+              "type": "circle",
+              "x": -26,
+              "y": -2,
+              "r": 7,
+              "fill": "#0F172A",
+              "stroke": "#38BDF8",
+              "lineWidth": 1.5,
+              "anim": {
+                "rotateSpeed": 360
+              }
+            },
+            {
+              "type": "circle",
+              "x": 26,
+              "y": -2,
+              "r": 7,
+              "fill": "#0F172A",
+              "stroke": "#38BDF8",
+              "lineWidth": 1.5,
+              "anim": {
+                "rotateSpeed": 360
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 15,
+            "offsetX": -42,
+            "offsetY": -16,
+            "vxRange": [
+              -40,
+              -10
+            ],
+            "vyRange": [
+              -20,
+              10
+            ],
+            "gravity": -10,
+            "size": 4,
+            "life": 0.6,
+            "shape": "text",
+            "text": "💨",
+            "colors": [
+              "#38BDF8",
+              "#FFFFFF"
+            ]
+          }
+        },
+        {
+          "id": "stethoscope-check",
+          "icon": "🩺",
+          "labelTh": "ตรวจวัดชีพจรและฟังเสียงหัวใจ",
+          "labelEn": "Check Heartbeat & Pulse",
+          "movementType": "work-pause",
+          "pose": {
+            "frontArmBaseDeg": -25,
+            "frontArmSwingDeg": 20,
+            "frontArmSwingSpeed": 6,
+            "headTiltDeg": 8,
+            "headSwingDeg": 5,
+            "headSwingSpeed": 4
+          },
+          "toolDrawables": [
+            {
+              "type": "circle",
+              "x": 12,
+              "y": -4,
+              "r": 6,
+              "fill": "#0284C7",
+              "stroke": "#FFFFFF",
+              "lineWidth": 1.5,
+              "anim": {
+                "scaleAmp": 0.15,
+                "scaleSpeed": 8
+              }
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "circle",
+              "x": 18,
+              "y": -16,
+              "r": 10,
+              "fill": "transparent",
+              "stroke": "#EF4444",
+              "lineWidth": 2,
+              "anim": {
+                "scaleAmp": 0.25,
+                "scaleSpeed": 6
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 20,
+            "offsetX": 22,
+            "offsetY": -22,
+            "vxRange": [
+              -10,
+              30
+            ],
+            "vyRange": [
+              -60,
+              -20
+            ],
+            "gravity": -10,
+            "size": 6,
+            "life": 0.8,
+            "shape": "heart",
+            "colors": [
+              "#EF4444",
+              "#F43F5E",
+              "#FB7185"
+            ]
+          }
+        },
+        {
+          "id": "dispense-meds",
+          "icon": "💊",
+          "labelTh": "จัดยาและวิตามินบำรุงพลัง",
+          "labelEn": "Dispense Healing Pills",
+          "movementType": "walk",
+          "pose": {
+            "frontArmBaseDeg": -40,
+            "frontArmSwingDeg": 30,
+            "frontArmSwingSpeed": 8,
+            "legSwingDeg": 22
+          },
+          "toolDrawables": [
+            {
+              "type": "roundRect",
+              "x": 8,
+              "y": -6,
+              "w": 12,
+              "h": 6,
+              "r": 3,
+              "fill": "#EF4444",
+              "stroke": "#FFFFFF",
+              "lineWidth": 1
+            }
+          ],
+          "particles": {
+            "spawnRate": 16,
+            "offsetX": 30,
+            "offsetY": -30,
+            "vxRange": [
+              10,
+              40
+            ],
+            "vyRange": [
+              -50,
+              -10
+            ],
+            "gravity": 80,
+            "size": 5,
+            "life": 0.7,
+            "shape": "star",
+            "colors": [
+              "#38BDF8",
+              "#34D399",
+              "#FBBF24"
+            ]
+          }
+        },
+        {
+          "id": "iv-drip",
+          "icon": "💉",
+          "labelTh": "ให้สารน้ำและเกลือแร่เสริมสมาธิ",
+          "labelEn": "Setup IV Energy Drip",
+          "movementType": "work-pause",
+          "pose": {
+            "frontArmBaseDeg": -50,
+            "frontArmSwingDeg": 15,
+            "frontArmSwingSpeed": 5
+          },
+          "propDrawables": [
+            {
+              "type": "line",
+              "x1": 20,
+              "y1": -50,
+              "x2": 20,
+              "y2": 10,
+              "stroke": "#94A3B8",
+              "lineWidth": 2
+            },
+            {
+              "type": "roundRect",
+              "x": 14,
+              "y": -38,
+              "w": 12,
+              "h": 16,
+              "r": 4,
+              "fill": "#38BDF8",
+              "stroke": "#FFFFFF",
+              "lineWidth": 1.5,
+              "anim": {
+                "scaleAmp": 0.1,
+                "scaleSpeed": 4
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 22,
+            "offsetX": 20,
+            "offsetY": -18,
+            "vxRange": [
+              -5,
+              5
+            ],
+            "vyRange": [
+              20,
+              60
+            ],
+            "gravity": 120,
+            "size": 4,
+            "life": 0.5,
+            "shape": "circle",
+            "colors": [
+              "#38BDF8",
+              "#7DD3FC"
+            ]
+          }
+        },
+        {
+          "id": "research-cure",
+          "icon": "🔬",
+          "labelTh": "วิจัยเซรุ่มต้านความเหนื่อยล้า",
+          "labelEn": "Research Focus Antidote",
+          "movementType": "work-pause",
+          "pose": {
+            "frontArmBaseDeg": -20,
+            "frontArmSwingDeg": 25,
+            "frontArmSwingSpeed": 7,
+            "headTiltDeg": -12
+          },
+          "toolDrawables": [
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  8,
+                  -4
+                ],
+                [
+                  14,
+                  10
+                ],
+                [
+                  2,
+                  10
+                ]
+              ],
+              "fill": "#34D399",
+              "stroke": "#FFFFFF",
+              "lineWidth": 1.5,
+              "anim": {
+                "scaleAmp": 0.2,
+                "scaleSpeed": 8
+              }
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "roundRect",
+              "x": -25,
+              "y": -32,
+              "w": 50,
+              "h": 32,
+              "r": 4,
+              "fill": "#1E293B",
+              "stroke": "#0284C7",
+              "lineWidth": 2
+            },
+            {
+              "type": "circle",
+              "x": 12,
+              "y": -16,
+              "r": 5,
+              "fill": "#FBBF24",
+              "anim": {
+                "rotateSpeed": 180
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 18,
+            "offsetX": 35,
+            "offsetY": -40,
+            "vxRange": [
+              -20,
+              40
+            ],
+            "vyRange": [
+              -70,
+              -30
+            ],
+            "gravity": 40,
+            "size": 4.5,
+            "life": 0.8,
+            "shape": "spark",
+            "colors": [
+              "#34D399",
+              "#38BDF8",
+              "#FBBF24"
+            ]
+          }
+        },
+        {
+          "id": "bandage-care",
+          "icon": "🩹",
+          "labelTh": "ทำแผลและฟื้นฟูพลังจิตใจ",
+          "labelEn": "Apply First Aid & Care",
+          "movementType": "walk",
+          "pose": {
+            "frontArmBaseDeg": -35,
+            "frontArmSwingDeg": 35,
+            "frontArmSwingSpeed": 9,
+            "legSwingDeg": 26
+          },
+          "toolDrawables": [
+            {
+              "type": "roundRect",
+              "x": 6,
+              "y": -4,
+              "w": 14,
+              "h": 6,
+              "r": 2,
+              "fill": "#FDE68A",
+              "stroke": "#D97706",
+              "lineWidth": 1.5
+            }
+          ],
+          "particles": {
+            "spawnRate": 15,
+            "offsetX": 28,
+            "offsetY": -25,
+            "vxRange": [
+              -10,
+              30
+            ],
+            "vyRange": [
+              -40,
+              -10
+            ],
+            "gravity": 50,
+            "size": 5,
+            "life": 0.6,
+            "shape": "star",
+            "colors": [
+              "#FDE68A",
+              "#FBBF24",
+              "#FFFFFF"
+            ]
+          }
+        },
+        {
+          "id": "upgrade-tech",
+          "icon": "⚡",
+          "labelTh": "อัปเกรดระบบเครื่องมือแพทย์",
+          "labelEn": "Upgrade Medical Tech",
+          "movementType": "work-pause",
+          "pose": {
+            "frontArmBaseDeg": -45,
+            "frontArmSwingDeg": 28,
+            "frontArmSwingSpeed": 10
+          },
+          "toolDrawables": [
+            {
+              "type": "text",
+              "x": 10,
+              "y": 2,
+              "text": "🔧",
+              "font": "16px sans-serif",
+              "fill": "#38BDF8",
+              "anim": {
+                "rotateSpeed": 90
+              }
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "roundRect",
+              "x": -20,
+              "y": -28,
+              "w": 40,
+              "h": 28,
+              "r": 4,
+              "fill": "#0F172A",
+              "stroke": "#38BDF8",
+              "lineWidth": 1.5
+            }
+          ],
+          "particles": {
+            "spawnRate": 25,
+            "offsetX": 30,
+            "offsetY": -35,
+            "vxRange": [
+              -30,
+              30
+            ],
+            "vyRange": [
+              -80,
+              -30
+            ],
+            "gravity": 30,
+            "size": 4,
+            "life": 0.5,
+            "shape": "spark",
+            "colors": [
+              "#38BDF8",
+              "#F43F5E",
+              "#FBBF24"
+            ]
+          }
+        }
+      ]
+    },
+    "mecha-dragon-knight": {
+      "id": "mecha-dragon-knight",
+      "nameTh": "🐉 อัศวินมังกรจักรกล",
+      "nameEn": "🐉 Mecha Dragon Knight",
+      "characterName": "ดราก้อนไนท์เรย์ (Dragon Knight Ray)",
+      "alertMessageFocusEnd": "🐉 พลังมังกรเต็มเปี่ยม! พักฟื้นเกราะพลังงานก่อนนะ (Dragon Core Charged! Time for a Break!)",
+      "character": {
+        "skinTone": "#F3C6A0",
+        "cheek": "#FF8A80",
+        "hatStyle": "none",
+        "shirt": "#1E293B",
+        "shirtSleeve": "#0F172A",
+        "overalls": "#B71C1C",
+        "pants": "#0F172A",
+        "boots": "#FFD54F",
+        "sunglasses": false,
+        "mustache": false,
+        "groundColor": "#FF5252",
+        "hatDrawables": [
+          {
+            "type": "polygon",
+            "points": [
+              [
+                -16,
+                4
+              ],
+              [
+                -14,
+                -12
+              ],
+              [
+                0,
+                -18
+              ],
+              [
+                14,
+                -12
+              ],
+              [
+                16,
+                4
+              ]
+            ],
+            "fill": "#263238",
+            "stroke": "#FFD54F",
+            "lineWidth": 1.5
+          },
+          {
+            "type": "polygon",
+            "points": [
+              [
+                -10,
+                -10
+              ],
+              [
+                -24,
+                -28
+              ],
+              [
+                -4,
+                -14
+              ]
+            ],
+            "fill": "#FF5252",
+            "stroke": "#FFD54F",
+            "lineWidth": 1.2
+          },
+          {
+            "type": "polygon",
+            "points": [
+              [
+                10,
+                -10
+              ],
+              [
+                24,
+                -28
+              ],
+              [
+                4,
+                -14
+              ]
+            ],
+            "fill": "#FF5252",
+            "stroke": "#FFD54F",
+            "lineWidth": 1.2
+          },
+          {
+            "type": "circle",
+            "x": 0,
+            "y": -8,
+            "r": 4,
+            "fill": "#00E5FF",
+            "anim": {
+              "scaleAmp": 0.25,
+              "scaleSpeed": 6
+            }
+          }
+        ],
+        "torsoDrawables": [
+          {
+            "type": "group",
+            "x": -10,
+            "y": -48,
+            "anim": {
+              "swingDeg": 18,
+              "swingSpeed": 7,
+              "pivotX": 0,
+              "pivotY": 0
+            },
+            "children": [
+              {
+                "type": "polygon",
+                "points": [
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    -28,
+                    -18
+                  ],
+                  [
+                    -22,
+                    6
+                  ],
+                  [
+                    -8,
+                    12
+                  ]
+                ],
+                "fill": "#D32F2F",
+                "stroke": "#FFD54F",
+                "lineWidth": 1.2
+              }
+            ]
+          },
+          {
+            "type": "star",
+            "x": 0,
+            "y": -44,
+            "points": 4,
+            "outerR": 6,
+            "innerR": 2.5,
+            "fill": "#00E5FF"
+          }
+        ]
+      },
+      "behaviors": [
+        {
+          "id": "ride-dragon",
+          "icon": "🐉",
+          "labelTh": "ขี่มังกรไซเบอร์บินลาดตระเวน",
+          "labelEn": "Fly Cyber Dragon Mount",
+          "movementType": "hover",
+          "seatOffsetX": -6,
+          "seatOffsetY": -34,
+          "vehicleDrawables": [
+            {
+              "type": "roundRect",
+              "x": -38,
+              "y": -38,
+              "w": 76,
+              "h": 22,
+              "r": 10,
+              "fill": "#B71C1C",
+              "stroke": "#FFD54F",
+              "lineWidth": 2
+            },
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  36,
+                  -38
+                ],
+                [
+                  58,
+                  -48
+                ],
+                [
+                  54,
+                  -24
+                ],
+                [
+                  36,
+                  -20
+                ]
+              ],
+              "fill": "#D32F2F",
+              "stroke": "#FFD54F",
+              "lineWidth": 1.5
+            },
+            {
+              "type": "circle",
+              "x": 48,
+              "y": -38,
+              "r": 3,
+              "fill": "#00E5FF"
+            },
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  -8,
+                  -34
+                ],
+                [
+                  -34,
+                  -72
+                ],
+                [
+                  12,
+                  -56
+                ]
+              ],
+              "fill": "rgba(0, 229, 255, 0.65)",
+              "stroke": "#00E5FF",
+              "lineWidth": 1.5,
+              "anim": {
+                "swingDeg": 26,
+                "swingSpeed": 9,
+                "pivotX": -8,
+                "pivotY": -34
+              }
+            },
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  -36,
+                  -28
+                ],
+                [
+                  -64,
+                  -38
+                ],
+                [
+                  -54,
+                  -18
+                ]
+              ],
+              "fill": "#FF9100",
+              "anim": {
+                "scaleAmp": 0.25,
+                "scaleSpeed": 14
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 18,
+            "offsetX": -45,
+            "offsetY": -32,
+            "vxRange": [
+              -55,
+              -20
+            ],
+            "vyRange": [
+              -25,
+              25
+            ],
+            "gravity": -10,
+            "size": 4.5,
+            "life": 0.6,
+            "shape": "star",
+            "colors": [
+              "#FF9100",
+              "#FFD54F",
+              "#00E5FF"
+            ]
+          }
+        },
+        {
+          "id": "dragon-glaive",
+          "icon": "⚔️",
+          "labelTh": "ฟาดทวนมังกรเพลิง",
+          "labelEn": "Slash Dragon Flame Glaive",
+          "movementType": "walk",
+          "pose": {
+            "frontArmBaseDeg": -25,
+            "frontArmSwingDeg": 55,
+            "frontArmSwingSpeed": 8.5,
+            "legSwingDeg": 28
+          },
+          "toolDrawables": [
+            {
+              "type": "line",
+              "x1": -6,
+              "y1": 8,
+              "x2": 32,
+              "y2": -22,
+              "stroke": "#FFD54F",
+              "lineWidth": 3.5
+            },
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  26,
+                  -18
+                ],
+                [
+                  46,
+                  -34
+                ],
+                [
+                  38,
+                  -8
+                ],
+                [
+                  22,
+                  -10
+                ]
+              ],
+              "fill": "#00E5FF",
+              "stroke": "#FFFFFF",
+              "lineWidth": 1.2
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "group",
+              "x": 0,
+              "y": 0,
+              "anim": {
+                "moveYAmp": 4,
+                "moveYSpeed": 6
+              },
+              "children": [
+                {
+                  "type": "circle",
+                  "x": 0,
+                  "y": -22,
+                  "r": 14,
+                  "fill": "#7E57C2",
+                  "stroke": "#EA80FC",
+                  "lineWidth": 2
+                },
+                {
+                  "type": "circle",
+                  "x": -5,
+                  "y": -25,
+                  "r": 2.5,
+                  "fill": "#FFF"
+                },
+                {
+                  "type": "circle",
+                  "x": 5,
+                  "y": -25,
+                  "r": 2.5,
+                  "fill": "#FFF"
+                }
+              ]
+            }
+          ],
+          "particles": {
+            "spawnRate": 22,
+            "offsetX": 42,
+            "offsetY": -28,
+            "vxRange": [
+              20,
+              75
+            ],
+            "vyRange": [
+              -70,
+              -20
+            ],
+            "gravity": 180,
+            "size": 4,
+            "life": 0.55,
+            "shape": "star",
+            "colors": [
+              "#00E5FF",
+              "#FF5252",
+              "#FFD54F"
+            ]
+          }
+        },
+        {
+          "id": "alchemy-chalice",
+          "icon": "🏆",
+          "labelTh": "รินน้ำอมฤตมังกร",
+          "labelEn": "Pour Dragon Elixir Chalice",
+          "movementType": "walk",
+          "pose": {
+            "frontArmBaseDeg": -40,
+            "frontArmSwingDeg": 10,
+            "frontArmSwingSpeed": 4
+          },
+          "toolDrawables": [
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  16,
+                  -6
+                ],
+                [
+                  12,
+                  10
+                ],
+                [
+                  2,
+                  8
+                ]
+              ],
+              "fill": "#FFD54F",
+              "stroke": "#F57F17",
+              "lineWidth": 1.5
+            },
+            {
+              "type": "circle",
+              "x": 14,
+              "y": 0,
+              "r": 3.5,
+              "fill": "#00E5FF"
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "group",
+              "x": 0,
+              "y": 0,
+              "anim": {
+                "scaleAmp": 0.15,
+                "scaleSpeed": 4
+              },
+              "children": [
+                {
+                  "type": "polygon",
+                  "points": [
+                    [
+                      -12,
+                      0
+                    ],
+                    [
+                      0,
+                      -36
+                    ],
+                    [
+                      12,
+                      0
+                    ]
+                  ],
+                  "fill": "#00E5FF",
+                  "stroke": "#80D8FF",
+                  "lineWidth": 1.5
+                },
+                {
+                  "type": "star",
+                  "x": 0,
+                  "y": -42,
+                  "points": 5,
+                  "outerR": 7,
+                  "innerR": 3,
+                  "fill": "#FFD54F",
+                  "anim": {
+                    "rotateSpeed": 120
+                  }
+                }
+              ]
+            }
+          ],
+          "particles": {
+            "spawnRate": 30,
+            "offsetX": 46,
+            "offsetY": -42,
+            "vxRange": [
+              15,
+              45
+            ],
+            "vyRange": [
+              10,
+              40
+            ],
+            "gravity": 210,
+            "size": 3,
+            "life": 0.55,
+            "shape": "circle",
+            "colors": [
+              "#00E5FF",
+              "#80D8FF",
+              "#EA80FC"
+            ]
+          }
+        },
+        {
+          "id": "summon-totem",
+          "icon": "⛩️",
+          "labelTh": "อัญเชิญเสาโทเท็มมังกร",
+          "labelEn": "Summon Dragon Totem Pillar",
+          "movementType": "work-pause",
+          "pose": {
+            "frontArmBaseDeg": -45,
+            "frontArmSwingDeg": 30,
+            "frontArmSwingSpeed": 6
+          },
+          "toolDrawables": [
+            {
+              "type": "circle",
+              "x": 10,
+              "y": 0,
+              "r": 7,
+              "fill": "rgba(255, 213, 79, 0.4)",
+              "stroke": "#FFD54F",
+              "lineWidth": 2,
+              "anim": {
+                "scaleAmp": 0.3,
+                "scaleSpeed": 8
+              }
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "roundRect",
+              "x": -10,
+              "y": -64,
+              "w": 20,
+              "h": 64,
+              "r": 4,
+              "fill": "#37474F",
+              "stroke": "#FFD54F",
+              "lineWidth": 1.5
+            },
+            {
+              "type": "circle",
+              "x": 0,
+              "y": -76,
+              "r": 10,
+              "fill": "#FF5252",
+              "stroke": "#FFD54F",
+              "lineWidth": 2,
+              "anim": {
+                "moveYAmp": 5,
+                "moveYSpeed": 5
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 20,
+            "offsetX": 48,
+            "offsetY": -55,
+            "vxRange": [
+              -35,
+              35
+            ],
+            "vyRange": [
+              -65,
+              -20
+            ],
+            "gravity": -20,
+            "size": 4,
+            "life": 0.7,
+            "shape": "star",
+            "colors": [
+              "#FFD54F",
+              "#FF5252"
+            ]
+          }
+        },
+        {
+          "id": "meteor-harvest",
+          "icon": "☄️",
+          "labelTh": "สอยผลึกดาวตกจากฟากฟ้า",
+          "labelEn": "Harvest Falling Star Crystals",
+          "movementType": "work-pause",
+          "pose": {
+            "headTiltDeg": -20,
+            "frontArmBaseDeg": -65,
+            "frontArmSwingDeg": 18,
+            "frontArmSwingSpeed": 6
+          },
+          "toolDrawables": [
+            {
+              "type": "line",
+              "x1": -4,
+              "y1": 10,
+              "x2": 58,
+              "y2": -45,
+              "stroke": "#ECEFF1",
+              "lineWidth": 3
+            },
+            {
+              "type": "star",
+              "x": 58,
+              "y": -45,
+              "points": 4,
+              "outerR": 10,
+              "innerR": 4,
+              "fill": "#00E5FF",
+              "anim": {
+                "rotateSpeed": 180
+              }
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "line",
+              "x1": 0,
+              "y1": 0,
+              "x2": 0,
+              "y2": -105,
+              "stroke": "#455A64",
+              "lineWidth": 8
+            },
+            {
+              "type": "circle",
+              "x": 0,
+              "y": -110,
+              "r": 18,
+              "fill": "#1A237E",
+              "stroke": "#00E5FF",
+              "lineWidth": 2
+            },
+            {
+              "type": "star",
+              "x": -10,
+              "y": -98,
+              "points": 5,
+              "outerR": 11,
+              "innerR": 5,
+              "fill": "#FFD54F",
+              "stroke": "#FF6D00",
+              "lineWidth": 1.5,
+              "anim": {
+                "fallLoop": {
+                  "duration": 2.4,
+                  "startAt": 1.1,
+                  "dropY": 88,
+                  "bounce": true
+                }
+              }
+            }
+          ],
+          "particles": {
+            "spawnRate": 16,
+            "offsetX": 46,
+            "offsetY": -85,
+            "vxRange": [
+              -40,
+              40
+            ],
+            "vyRange": [
+              -30,
+              30
+            ],
+            "gravity": 90,
+            "size": 3.5,
+            "life": 0.65,
+            "shape": "star",
+            "colors": [
+              "#FFD54F",
+              "#00E5FF"
+            ]
+          }
+        },
+        {
+          "id": "dragon-music",
+          "icon": "🎸",
+          "labelTh": "บรรเลงพิณมังกรปล่อยคลื่นเสียง",
+          "labelEn": "Play Dragon Lute & Soundwaves",
+          "movementType": "walk",
+          "pose": {
+            "frontArmBaseDeg": -20,
+            "frontArmSwingDeg": 35,
+            "frontArmSwingSpeed": 10
+          },
+          "toolDrawables": [
+            {
+              "type": "ellipse",
+              "x": 8,
+              "y": 4,
+              "rx": 11,
+              "ry": 8,
+              "fill": "#D32F2F",
+              "stroke": "#FFD54F",
+              "lineWidth": 1.5
+            },
+            {
+              "type": "rect",
+              "x": 16,
+              "y": -2,
+              "w": 18,
+              "h": 4,
+              "r": 2,
+              "fill": "#FFD54F"
+            }
+          ],
+          "particles": {
+            "spawnRate": 16,
+            "offsetX": 28,
+            "offsetY": -56,
+            "vxRange": [
+              15,
+              55
+            ],
+            "vyRange": [
+              -65,
+              -25
+            ],
+            "gravity": -15,
+            "size": 4.5,
+            "life": 0.85,
+            "shape": "note",
+            "colors": [
+              "#FFD54F",
+              "#00E5FF",
+              "#FF80AB"
+            ]
+          }
+        },
+        {
+          "id": "forge-armor",
+          "icon": "🔨",
+          "labelTh": "ตีเกราะมังกรบนทั่งพลังงาน",
+          "labelEn": "Forge Dragon Armor on Anvil",
+          "movementType": "work-pause",
+          "pose": {
+            "frontArmBaseDeg": -25,
+            "frontArmSwingDeg": 45,
+            "frontArmSwingSpeed": 11
+          },
+          "toolDrawables": [
+            {
+              "type": "rect",
+              "x": 0,
+              "y": -2,
+              "w": 18,
+              "h": 4,
+              "r": 2,
+              "fill": "#8D6E63"
+            },
+            {
+              "type": "roundRect",
+              "x": 14,
+              "y": -9,
+              "w": 9,
+              "h": 18,
+              "r": 3,
+              "fill": "#00E5FF",
+              "stroke": "#FFF",
+              "lineWidth": 1
+            }
+          ],
+          "propDrawables": [
+            {
+              "type": "polygon",
+              "points": [
+                [
+                  -16,
+                  0
+                ],
+                [
+                  -10,
+                  -24
+                ],
+                [
+                  10,
+                  -24
+                ],
+                [
+                  16,
+                  0
+                ]
+              ],
+              "fill": "#263238",
+              "stroke": "#90A4AE",
+              "lineWidth": 1.5
+            },
+            {
+              "type": "roundRect",
+              "x": -18,
+              "y": -30,
+              "w": 36,
+              "h": 8,
+              "r": 3,
+              "fill": "#455A64"
+            }
+          ],
+          "particles": {
+            "spawnRate": 28,
+            "offsetX": 40,
+            "offsetY": -32,
+            "vxRange": [
+              -70,
+              70
+            ],
+            "vyRange": [
+              -85,
+              -20
+            ],
+            "gravity": 220,
+            "size": 3.5,
+            "life": 0.45,
+            "shape": "star",
+            "colors": [
+              "#FFD54F",
+              "#FF6D00",
+              "#00E5FF"
+            ]
+          }
+        }
+      ]
+    },
+    "pirate-captain": {
+      "id": "pirate-captain",
+      "nameTh": "🏴‍☠️ กัปตันโจรสลัดสายโฟกัส (Pirate Captain)",
+      "nameEn": "🏴‍☠️ Pirate Captain",
+      "characterName": "กัปตันแจ็ค (Captain Jack)",
+      "alertMessageFocusEnd": "🏴‍☠️ พบเกาะมหาสมบัติแล้ว! พักดื่มน้ำผลไม้ก่อนนะพวกลูกเรือ (Treasure Found! Take a break!)",
+      "character": {
+        "skinTone": "#E8B48A",
+        "cheek": "#E57373",
+        "hatStyle": "crown",
+        "hatMain": "#FFD54F",
+        "hatDark": "#F57F17",
+        "hatBand": "#B71C1C",
+        "shirt": "#B71C1C",
+        "shirtSleeve": "#8E0000",
+        "overalls": "#212121",
+        "kamarBelt": true,
+        "pants": "#1C2833",
+        "boots": "#3E2723",
+        "sunglasses": false,
+        "mustache": true,
+        "vehicleStyle": "scooter",
+        "vehicleBody": "#5D4037",
+        "vehicleTrim": "#FFD54F",
+        "vehicleWheel": "#212121",
+        "vehicleRim": "#FFB300",
+        "groundColor": "#26C6DA",
+        "customHeadShapes": []
+      },
+      "behaviors": [
+        {
+          "id": "tractor",
+          "icon": "🚢",
+          "labelTh": "แล่นเรือโจรสลัดมินิ",
+          "labelEn": "Sail Mini Galleon",
+          "movementType": "ride",
+          "toolType": "steering",
+          "propType": "none",
+          "particleType": "smoke",
+          "particleColor": "#80DEEA"
+        },
+        {
+          "id": "machete",
+          "icon": "🗡️",
+          "labelTh": "ฟันดาบโจรสลัดเคลียร์ทาง",
+          "labelEn": "Swing Cutlass Sword",
+          "movementType": "walk",
+          "toolType": "machete",
+          "propType": "grass",
+          "particleType": "spark",
+          "particleColor": "#FFD54F"
+        },
+        {
+          "id": "water",
+          "icon": "🍺",
+          "labelTh": "รินน้ำผลไม้เกาะมหาสมบัติ",
+          "labelEn": "Pour Island Punch",
+          "movementType": "walk",
+          "toolType": "watering-can",
+          "propType": "flowers",
+          "particleType": "water",
+          "particleColor": "#FFB300"
+        },
+        {
+          "id": "plant",
+          "icon": "🗺️",
+          "labelTh": "ขุดหลุมฝังหีบสมบัติ",
+          "labelEn": "Bury Treasure Chest",
+          "movementType": "work-pause",
+          "toolType": "shovel",
+          "propType": "sapling",
+          "particleType": "spark",
+          "particleColor": "#FFE082"
+        },
+        {
+          "id": "palm",
+          "icon": "🌴",
+          "labelTh": "สอยมะพร้าวเกาะสวรรค์",
+          "labelEn": "Harvest Island Coconuts",
+          "movementType": "work-pause",
+          "toolType": "sickle-pole",
+          "propType": "palm-tree",
+          "particleType": "spark",
+          "particleColor": "#66BB6A"
+        },
+        {
+          "id": "fertilizer",
+          "icon": "🪙",
+          "labelTh": "โปรยเหรียญทองฉลองชัย",
+          "labelEn": "Toss Gold Doubloons",
+          "movementType": "walk",
+          "toolType": "sack-throw",
+          "propType": "none",
+          "particleType": "fertilizer",
+          "particleColor": "#FFD700"
+        },
+        {
+          "id": "fix",
+          "icon": "⚓",
+          "labelTh": "ซ่อมพังงาเรือและสมอ",
+          "labelEn": "Repair Ship Helm",
+          "movementType": "work-pause",
+          "toolType": "hammer",
+          "propType": "fence-toolbox",
+          "particleType": "spark",
+          "particleColor": "#FF8A65"
+        }
+      ]
+    },
+    "space-explorer": {
+      "id": "space-explorer",
+      "nameTh": "🚀 นักบินอวกาศโฟกัส",
+      "nameEn": "🚀 Space Explorer",
+      "characterName": "กัปตันแอสโตร",
+      "alertMessageFocusEnd": "🍅 ภารกิจโฟกัสสำเร็จ! พักเติมออกซิเจนก่อนนะ",
+      "character": {
+        "skinTone": "#F3C6A0",
+        "cheek": "#F28B82",
+        "hatStyle": "straw-hat",
+        "hatMain": "#ffd54f",
+        "hatDark": "#263238",
+        "hatBand": "#00acc1",
+        "shirt": "#1e88e5",
+        "shirtSleeve": "#1e88e5",
+        "overalls": "#263238",
+        "kamarBelt": false,
+        "pants": "#1E293B",
+        "boots": "#3E2723",
+        "sunglasses": false,
+        "mustache": false,
+        "vehicleStyle": "tractor",
+        "vehicleBody": "#00acc1",
+        "vehicleTrim": "#ffd54f",
+        "vehicleWheel": "#212121",
+        "vehicleRim": "#00e5ff",
+        "groundColor": "#00e5ff",
+        "customHeadShapes": []
+      },
+      "behaviors": [
+        {
+          "id": "tractor",
+          "icon": "🛸",
+          "labelTh": "ขับรถสำรวจดวงจันทร์",
+          "labelEn": "Ride Lunar Rover",
+          "movementType": "ride",
+          "toolType": "steering",
+          "propType": "none",
+          "particleType": "smoke",
+          "particleColor": "#00e5ff"
+        },
+        {
+          "id": "machete",
+          "icon": "⚔️",
+          "labelTh": "กวัดแกว่งดาบเลเซอร์",
+          "labelEn": "Swing Laser Blade",
+          "movementType": "walk",
+          "toolType": "katana",
+          "propType": "grass",
+          "particleType": "spark",
+          "particleColor": "#ffd54f"
+        },
+        {
+          "id": "water",
+          "icon": "🧪",
+          "labelTh": "เติมเชื้อเพลิงดวงดาว",
+          "labelEn": "Pour Starlight Fuel",
+          "movementType": "walk",
+          "toolType": "watering-can",
+          "propType": "flowers",
+          "particleType": "water",
+          "particleColor": "#4FC3F7"
+        },
+        {
+          "id": "plant",
+          "icon": "🌱",
+          "labelTh": "ปลูกต้นไม้ไบโอโดม",
+          "labelEn": "Plant Bio-Dome Tree",
+          "movementType": "work-pause",
+          "toolType": "shovel",
+          "propType": "sapling",
+          "particleType": "spark",
+          "particleColor": "#81C784"
+        },
+        {
+          "id": "palm",
+          "icon": "☄️",
+          "labelTh": "เก็บคริสตัลอวกาศ",
+          "labelEn": "Harvest Space Crystal",
+          "movementType": "work-pause",
+          "toolType": "sickle-pole",
+          "propType": "palm-tree",
+          "particleType": "spark",
+          "particleColor": "#FFD54F"
+        },
+        {
+          "id": "fertilizer",
+          "icon": "✨",
+          "labelTh": "โปรยละอองดาว",
+          "labelEn": "Scatter Stardust",
+          "movementType": "walk",
+          "toolType": "sack-throw",
+          "propType": "none",
+          "particleType": "fertilizer",
+          "particleColor": "#ffd54f"
+        },
+        {
+          "id": "fix",
+          "icon": "🔧",
+          "labelTh": "ซ่อมและอัปเกรดอุปกรณ์",
+          "labelEn": "Upgrade & Repair Gear",
+          "movementType": "work-pause",
+          "toolType": "hammer",
+          "propType": "fence-toolbox",
+          "particleType": "spark",
+          "particleColor": "#FF8A65"
+        }
+      ]
+    }
+  }
+}

@@ -15,7 +15,23 @@ const aboutVersionBadge = document.getElementById('aboutVersionBadge');
 const releaseNotesList = document.getElementById('releaseNotesList');
 const valConfigPath = document.getElementById('valConfigPath');
 const valThemesDir = document.getElementById('valThemesDir');
+const valUpdatesDir = document.getElementById('valUpdatesDir');
 const badgeElectronVer = document.getElementById('badgeElectronVer');
+
+// Updater UI elements
+const updStatusBadge = document.getElementById('updStatusBadge');
+const inputUpdateFeedUrl = document.getElementById('inputUpdateFeedUrl');
+const btnCheckUpdates = document.getElementById('btnCheckUpdates');
+const btnOpenUpdatesDir = document.getElementById('btnOpenUpdatesDir');
+const chkAutoCheckUpdates = document.getElementById('chkAutoCheckUpdates');
+const updDetailsBox = document.getElementById('updDetailsBox');
+const updDetailsTitle = document.getElementById('updDetailsTitle');
+const updDetailsNotes = document.getElementById('updDetailsNotes');
+const updProgressWrap = document.getElementById('updProgressWrap');
+const updProgressBar = document.getElementById('updProgressBar');
+const btnDownloadUpdate = document.getElementById('btnDownloadUpdate');
+const btnInstallUpdateNow = document.getElementById('btnInstallUpdateNow');
+const updErrorBox = document.getElementById('updErrorBox');
 
 // Pomodoro Dashboard elements
 const pomoDashboardCard = document.getElementById('pomoDashboardCard');
@@ -172,6 +188,7 @@ function renderReleaseNotes() {
   }
   if (appInfoState.configPath) valConfigPath.textContent = appInfoState.configPath;
   if (appInfoState.themesDir) valThemesDir.textContent = appInfoState.themesDir;
+  if (appInfoState.updatesDir && valUpdatesDir) valUpdatesDir.textContent = appInfoState.updatesDir;
 
   releaseNotesList.innerHTML = '';
   const releases = Array.isArray(appInfoState.releases) ? appInfoState.releases : [];
@@ -358,6 +375,27 @@ function applyLanguageTranslations() {
   );
   document.getElementById('lblPathConfig').textContent = tr('ไฟล์การตั้งค่า:', 'Config File:');
   document.getElementById('lblPathThemes').textContent = tr('โฟลเดอร์ชุดธีม:', 'Themes Folder:');
+  if (document.getElementById('lblPathUpdates')) {
+    document.getElementById('lblPathUpdates').textContent = tr('โฟลเดอร์ไฟล์อัปเดต:', 'Updates Folder:');
+  }
+  if (document.getElementById('hdrUpdaterCard')) {
+    document.getElementById('hdrUpdaterCard').textContent = tr(
+      '🔄 ระบบอัปเดตแอปอัตโนมัติ (Electron Updater)',
+      '🔄 Electron App Updater'
+    );
+    document.getElementById('lblUpdateFeedUrl').textContent = tr(
+      'แหล่งไฟล์อัปเดต (Local Folder / Network Share / HTTP URL)',
+      'Update Feed Source (Local Folder / Network Share / HTTP URL)'
+    );
+    btnCheckUpdates.textContent = tr('🔍 ตรวจสอบอัปเดต', '🔍 Check for Updates');
+    btnOpenUpdatesDir.textContent = tr('📂 เปิดโฟลเดอร์ updates/', '📂 Open updates/ Folder');
+    document.getElementById('lblAutoCheckUpdates').textContent = tr(
+      'ตรวจสอบอัปเดตอัตโนมัติเมื่อเปิดโปรแกรม',
+      'Automatically check for updates on startup'
+    );
+    btnDownloadUpdate.textContent = tr('⬇️ ดาวน์โหลดและติดตั้งอัปเดต', '⬇️ Download & Apply Update');
+    btnInstallUpdateNow.textContent = tr('🔄 รีสตาร์ทเพื่ออัปเดตทันที', '🔄 Restart & Install Update');
+  }
   document.getElementById('hdrReleaseNotes').textContent = tr(
     '📜 ประวัติเวอร์ชันและบันทึกการอัปเดต',
     '📜 Version Control & Release Notes'
@@ -605,7 +643,52 @@ function syncUIFromConfig(cfg) {
   inputWakeTime.value = cfg.wakeTime || '16:00';
   chkSoundEnabled.checked = cfg.soundEnabled !== false;
 
+  if (inputUpdateFeedUrl) inputUpdateFeedUrl.value = cfg.updateFeedUrl || './updates';
+  if (chkAutoCheckUpdates) chkAutoCheckUpdates.checked = cfg.autoCheckUpdates !== false;
+
   syncPomodoroDashboard();
+}
+
+function renderUpdateState(upd) {
+  if (!upd || !updStatusBadge) return;
+  const st = upd.status || 'idle';
+
+  updErrorBox.style.display = 'none';
+  updDetailsBox.style.display = 'none';
+  updProgressWrap.style.display = 'none';
+  btnDownloadUpdate.style.display = 'none';
+  btnInstallUpdateNow.style.display = 'none';
+  btnCheckUpdates.disabled = st === 'checking' || st === 'downloading';
+
+  if (st === 'idle') {
+    updStatusBadge.textContent = tr('พร้อมตรวจสอบ', 'Ready');
+  } else if (st === 'checking') {
+    updStatusBadge.textContent = tr('⏳ กำลังตรวจสอบ...', '⏳ Checking...');
+  } else if (st === 'up-to-date') {
+    updStatusBadge.textContent = tr(`✅ เวอร์ชันล่าสุดแล้ว (v${upd.currentVersion})`, `✅ Up to Date (v${upd.currentVersion})`);
+  } else if (st === 'available') {
+    updStatusBadge.textContent = tr(`✨ มีเวอร์ชันใหม่ v${upd.availableVersion}!`, `✨ Update Available: v${upd.availableVersion}`);
+    updDetailsBox.style.display = 'block';
+    updDetailsTitle.textContent = tr(upd.titleTh, upd.titleEn) || `v${upd.availableVersion}`;
+    const notes = configState.language === 'en' ? upd.notesEn || [] : upd.notesTh || [];
+    updDetailsNotes.innerHTML = notes.map((n) => `<li>${n}</li>`).join('');
+    btnDownloadUpdate.style.display = 'inline-block';
+  } else if (st === 'downloading') {
+    updStatusBadge.textContent = tr(`⬇️ กำลังดาวน์โหลด ${upd.progressPercent}%`, `⬇️ Downloading ${upd.progressPercent}%`);
+    updDetailsBox.style.display = 'block';
+    updProgressWrap.style.display = 'block';
+    updProgressBar.style.width = `${upd.progressPercent || 0}%`;
+  } else if (st === 'downloaded') {
+    updStatusBadge.textContent = tr(`🎉 อัปเดตเป็น v${upd.availableVersion} สำเร็จ!`, `🎉 Ready to Restart (v${upd.availableVersion})`);
+    updDetailsBox.style.display = 'block';
+    updProgressWrap.style.display = 'block';
+    updProgressBar.style.width = '100%';
+    btnInstallUpdateNow.style.display = 'inline-block';
+  } else if (st === 'error') {
+    updStatusBadge.textContent = tr('⚠️ ตรวจสอบไม่สำเร็จ', '⚠️ Update Error');
+    updErrorBox.style.display = 'block';
+    updErrorBox.textContent = upd.errorMessage || 'Unknown error';
+  }
 }
 
 async function savePartial(partial, toastLabel) {
@@ -618,11 +701,13 @@ async function savePartial(partial, toastLabel) {
 Promise.all([
   window.companionAPI.getConfig(),
   window.companionAPI.getState(),
-  window.companionAPI.getAppInfo()
-]).then(([cfg, st, appInfo]) => {
+  window.companionAPI.getAppInfo(),
+  window.companionAPI.getUpdateState()
+]).then(([cfg, st, appInfo, updState]) => {
   runtimeState = st;
   if (appInfo) appInfoState = appInfo;
   syncUIFromConfig(cfg);
+  if (updState) renderUpdateState(updState);
 });
 
 window.companionAPI.onConfigUpdated((cfg) => {
@@ -639,6 +724,59 @@ window.companionAPI.onStateUpdated((st) => {
   }
   updateActiveBehaviorChipUI(activeB);
 });
+
+window.companionAPI.onUpdateStateChanged((upd) => {
+  renderUpdateState(upd);
+  if (upd && upd.status === 'downloaded') {
+    window.companionAPI.getAppInfo().then((info) => {
+      if (info) {
+        appInfoState = info;
+        renderReleaseNotes();
+      }
+    });
+  }
+});
+
+if (btnCheckUpdates) {
+  btnCheckUpdates.addEventListener('click', async () => {
+    const upd = await window.companionAPI.checkForUpdates();
+    renderUpdateState(upd);
+  });
+}
+
+if (btnDownloadUpdate) {
+  btnDownloadUpdate.addEventListener('click', async () => {
+    const upd = await window.companionAPI.downloadUpdate();
+    renderUpdateState(upd);
+    if (upd && upd.status === 'downloaded') {
+      showToast(tr('🎉 ดาวน์โหลดอัปเดตสำเร็จ! กดรีสตาร์ทเพื่อใช้งาน', '🎉 Update applied! Click Restart to finish.'));
+    }
+  });
+}
+
+if (btnInstallUpdateNow) {
+  btnInstallUpdateNow.addEventListener('click', () => {
+    window.companionAPI.installUpdateNow();
+  });
+}
+
+if (btnOpenUpdatesDir) {
+  btnOpenUpdatesDir.addEventListener('click', () => {
+    window.companionAPI.openUpdatesFolder();
+  });
+}
+
+if (inputUpdateFeedUrl) {
+  inputUpdateFeedUrl.addEventListener('change', () => {
+    savePartial({ updateFeedUrl: inputUpdateFeedUrl.value.trim() || './updates' });
+  });
+}
+
+if (chkAutoCheckUpdates) {
+  chkAutoCheckUpdates.addEventListener('change', () => {
+    savePartial({ autoCheckUpdates: chkAutoCheckUpdates.checked });
+  });
+}
 
 window.companionAPI.onSwitchViewTab((tab) => {
   switchTopView(tab === 'about' ? 'about' : 'main');

@@ -1,11 +1,26 @@
 {
   "appName": "Pomodoro Cartoon Companion",
-  "currentVersion": "1.2.0",
+  "currentVersion": "1.3.0",
   "releases": [
+    {
+      "version": "1.3.0",
+      "date": "2026-11-19",
+      "tag": "Latest",
+      "titleTh": "อัปเดตเวอร์ชัน v1.3.0 — Pomodoro Cartoon Companion",
+      "titleEn": "Update v1.3.0 — Pomodoro Cartoon Companion",
+      "changesTh": [
+        "เพิ่มระบบอัปเดตอัตโนมัติ (Electron Auto-Update) และรองรับการวางไฟล์อัปเดตในโฟลเดอร์ updates/ หรือ Web Server",
+        "อัปเดตชุดธีมตัวละครและท่าทางล่าสุดในโฟลเดอร์ themes/ อัตโนมัติ"
+      ],
+      "changesEn": [
+        "Added Electron Auto-Update system supporting local updates/ folder, shared LAN drive, or HTTP web server.",
+        "Automatically syncs latest character & behavior Theme Sets."
+      ]
+    },
     {
       "version": "1.2.0",
       "date": "2026-11-18",
-      "tag": "Latest",
+      "tag": "Release",
       "titleTh": "ระบบจับเวลาโพโมโดโร & เอนจินวาดการ์ตูนอิสระ (Pomodoro Engine & Universal Drawable Scene Graph)",
       "titleEn": "Core Pomodoro Timer Engine & Universal 2D Drawable Scene Graph",
       "changesTh": [
