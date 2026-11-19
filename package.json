@@ -56,7 +56,7 @@
     "cartoon",
     "electron"
   ],
-  "author": "NattakornS",
+  "author": "Nattakorn Sanpabopit",
   "license": "MIT",
   "dependencies": {
     "electron-updater": "^6.3.9"

@@ -366,6 +366,10 @@ function applyLanguageTranslations() {
     'แอปจับเวลาโพโมโดโรพร้อมเพื่อนคู่หูการ์ตูนแอนิเมชัน บน Windows Taskbar ที่เปิดให้คุณออกแบบตัวละคร ยานพาหนะ และท่าทางแอนิเมชันได้อย่างอิสระผ่านไฟล์ JSON และ Generative AI',
     'A 60 FPS animated Windows Taskbar Pomodoro Focus Companion powered by a Universal Declarative 2D Drawable Scene Graph that lets you create and import any custom character, vehicle, and behavior with Generative AI.'
   );
+  document.getElementById('hdrDeveloperCard').textContent = tr(
+    '👨‍💻 ผู้พัฒนา',
+    '👨‍💻 Developer'
+  );
   document.getElementById('hdrSystemPaths').textContent = tr(
     '📂 ข้อมูลระบบและตำแหน่งไฟล์',
     '📂 System & Storage Paths'
